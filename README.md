@@ -1,5 +1,7 @@
 # SMLite
 
+English | [简体中文](./README.zh.md)
+
 fast, header only, simple state machine implementation
 
 A state machine is an object used to maintain state.For example, I assume a half-duplex network state machine that cannot write when reading data and cannot read when writing data. This state machine has four states: not running, on standby, reading, and writing. Then, let's assume that there are six kinds of events, start, close, write, read, write complete, read complete. OK, let's use if to define the rule to see what methods can be triggered by each state:
