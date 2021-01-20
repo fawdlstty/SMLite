@@ -1,4 +1,4 @@
-# smlite
+# SMLite
 
 fast, header only, simple state machine implementation
 
