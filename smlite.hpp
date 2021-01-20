@@ -5,79 +5,153 @@
 #include <functional>
 #include <map>
 #include <memory>
+#include <tuple>
 #include <variant>
 #include <vector>
 
 
 
 namespace SMLite {
-	template<typename TState, typename TTrigger> class _SMLite_ConfigItem;
-	template<typename TState, typename TTrigger> class _SMLite_ConfigState;
-	template<typename TState, typename TTrigger> class SMLite;
+
+	class _SMLite_ConfigItem {
+		virtual void f () = 0;
+	};
+
+	template<typename TState, typename TTrigger>					class _SMLite_ConfigItem0;
+	template<typename TState, typename TTrigger, typename... Args>	class _SMLite_ConfigItem1;
+	template<typename TState, typename TTrigger>					class _SMLite_ConfigState;
+	template<typename TState, typename TTrigger>					class SMLite;
 
 
+
+	//
+	// trigger item
+	//
 
 	template<typename TState, typename TTrigger>
-	class _SMLite_ConfigItem {
+	class _SMLite_ConfigItem0: public _SMLite_ConfigItem {
+		void f () override {}
+
 	public:
-		_SMLite_ConfigItem (TState old_state, TTrigger trigger, std::function<TState (TState old_state, TTrigger trigger)> action) : m_state (old_state), m_trigger (trigger), m_action (action) {}
+		_SMLite_ConfigItem0 (TState state, TTrigger trigger, std::function<TState (TState, TTrigger)> action)
+			: m_state (state), m_trigger (trigger), m_action (action) {}
 		TState _call () { return m_action (m_state, m_trigger); }
 
 	private:
 		TState m_state;
 		TTrigger m_trigger;
-		std::function<TState (TState old_state, TTrigger trigger)> m_action;
+		std::function<TState (TState, TTrigger)> m_action;
+	};
+
+	template<typename TState, typename TTrigger, typename... Args>
+	class _SMLite_ConfigItem1: public _SMLite_ConfigItem {
+		void f () override {}
+
+	public:
+		_SMLite_ConfigItem1 (TState state, TTrigger trigger, std::function<TState (TState, TTrigger, Args...)> action)
+			: m_state (state), m_trigger (trigger), m_action (action) {}
+		TState _call (Args... args) { return m_action (m_state, m_trigger, args...); }
+
+	private:
+		TState m_state;
+		TTrigger m_trigger;
+		std::function<TState (TState, TTrigger, Args...)> m_action;
 	};
 
 
+
+	//
+	// state item (include trigger groups)
+	//
 
 	template<typename TState, typename TTrigger>
 	class _SMLite_ConfigState : public std::enable_shared_from_this<_SMLite_ConfigState<TState, TTrigger>> {
 		friend class SMLite<TState, TTrigger>;
+		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> _try_add_trigger (TTrigger _trigger, _SMLite_ConfigItem *_ptr) {
+			if (m_items.contains (_trigger))
+				throw std::exception ("state is already has this trigger methods.");
+			m_items [_trigger] = std::shared_ptr<_SMLite_ConfigItem> (_ptr);
+			return this->shared_from_this ();
+		}
+
 	public:
 		_SMLite_ConfigState (TState state) : m_state (state) {}
-		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenFunc (TTrigger trigger, std::function<TState (TState state, TTrigger trigger)> action) {
-			if (m_items.contains (trigger))
-				throw std::exception ("state is already has this trigger methods.");
-			m_items [trigger] = std::make_shared<_SMLite_ConfigItem<TState, TTrigger>> (m_state, trigger, action);
-			return this->shared_from_this ();
+		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenFunc (TTrigger trigger, std::function<TState (TState, TTrigger)> action) {
+			return _try_add_trigger (trigger, new _SMLite_ConfigItem0<TState, TTrigger> (m_state, trigger, action));
 		}
-		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenAction (TTrigger trigger, std::function<void (TState state, TTrigger trigger)> action) {
-			if (m_items.contains (trigger))
-				throw std::exception ("state is already has this trigger methods.");
-			m_items [trigger] = std::make_shared<_SMLite_ConfigItem<TState, TTrigger>> (m_state, trigger, [action] (TState state, TTrigger trigger) {
+		template<typename... Args>
+		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenFunc (TTrigger trigger, std::function<TState (TState, TTrigger, Args...)> action) {
+			return _try_add_trigger (trigger, new _SMLite_ConfigItem1<TState, TTrigger, Args...> (m_state, trigger, action));
+		}
+		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenAction (TTrigger trigger, std::function<void (TState, TTrigger)> action) {
+			return _try_add_trigger (trigger, new _SMLite_ConfigItem0<TState, TTrigger> (m_state, trigger, std::function ([action] (TState state, TTrigger trigger) -> TState {
 				action (state, trigger);
 				return state;
-			});
-			return this->shared_from_this ();
+			})));
+		}
+		template<typename... Args>
+		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenAction (TTrigger trigger, std::function<void (TState, TTrigger, Args...)> action) {
+			return _try_add_trigger (trigger, new _SMLite_ConfigItem1<TState, TTrigger, Args...> (m_state, trigger, std::function ([action] (TState state, TTrigger trigger, Args... args) -> TState {
+				action (state, trigger, args...);
+				return state;
+			})));
 		}
 		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenChangeTo (TTrigger trigger, TState new_state) {
-			if (m_items.contains (trigger))
-				throw std::exception ("state is already has this trigger methods.");
-			m_items [trigger] = std::make_shared<_SMLite_ConfigItem<TState, TTrigger>> (m_state, trigger, [new_state] (TState state, TTrigger trigger) {
+			return _try_add_trigger (trigger, new _SMLite_ConfigItem0<TState, TTrigger> (m_state, trigger, std::function ([new_state] (TState state, TTrigger trigger) -> TState {
 				return new_state;
-			});
-			return this->shared_from_this ();
+			})));
 		}
 		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenIgnore (TTrigger trigger) {
-			if (m_items.contains (trigger))
-				throw std::exception ("state is already has this trigger methods.");
-			m_items [trigger] = std::make_shared<_SMLite_ConfigItem<TState, TTrigger>> (m_state, trigger, [] (TState state, TTrigger trigger) {
+			std::function<TState (TState, TTrigger)> f = std::function ([] (TState state, TTrigger trigger) -> TState {
 				return state;
 			});
+			return _try_add_trigger (trigger, new _SMLite_ConfigItem0<TState, TTrigger> (m_state, trigger, f));
+		}
+		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> OnEntry (std::function<void ()> action) {
+			if (m_on_entry)
+				throw std::exception ("OnEntry is already have been set.");
+			m_on_entry = action;
+			return this->shared_from_this ();
+		}
+		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> OnLeave (std::function<void ()> action) {
+			if (m_on_leave)
+				throw std::exception ("OnLeave is already have been set.");
+			m_on_leave = action;
 			return this->shared_from_this ();
 		}
 
-	protected:
-		bool _allow_trigger (TTrigger trigger) { return m_items.contains (trigger); }
-		TState _trigger (TTrigger trigger) { return m_items [trigger]->_call (); }
-
 	private:
+		bool _allow_trigger (TTrigger trigger) { return m_items.contains (trigger); }
+		TState _trigger (TTrigger trigger) {
+			_SMLite_ConfigItem *_ptr0 = m_items [trigger].get ();
+			if (_ptr0) {
+				auto _ptr1 = dynamic_cast<_SMLite_ConfigItem0<TState, TTrigger>*> (_ptr0);
+				if (_ptr1)
+					return _ptr1->_call ();
+			}
+			throw std::exception ("not match function found.");
+		}
+		template<typename... Args>
+		TState _trigger (TTrigger trigger, Args... args) {
+			_SMLite_ConfigItem *_ptr0 = m_items [trigger].get ();
+			if (_ptr0) {
+				auto _ptr1 = dynamic_cast<_SMLite_ConfigItem1<TState, TTrigger, Args...>*> (_ptr0);
+				if (_ptr1)
+					return _ptr1->_call (args...);
+			}
+			throw std::exception ("not match function found.");
+		}
+
+		std::function<void ()> m_on_entry, m_on_leave;
 		TState m_state;
-		std::map<TTrigger, std::shared_ptr<_SMLite_ConfigItem<TState, TTrigger>>> m_items;
+		std::map<TTrigger, std::shared_ptr<_SMLite_ConfigItem>> m_items;
 	};
 
 
+
+	//
+	// state machine (include state groups)
+	//
 
 	template<typename TState, typename TTrigger>
 	class SMLite {
@@ -99,7 +173,31 @@ namespace SMLite {
 		void Triggering (TTrigger trigger) {
 			if (!AllowTriggering (trigger))
 				throw std::exception ("current state cannot launch this trigger.");
-			m_state = m_states [m_state]->_trigger (trigger);
+			auto _p = m_states [m_state];
+			auto _state = _p->_trigger (trigger);
+			if (m_state != _state) {
+				if (_p->m_on_leave)
+					_p->m_on_leave ();
+				m_state = _state;
+				_p = m_states [m_state];
+				if (_p->m_on_entry)
+					_p->m_on_entry ();
+			}
+		}
+		template<typename... Args>
+		void Triggering (TTrigger trigger, Args... args) {
+			if (!AllowTriggering (trigger))
+				throw std::exception ("current state cannot launch this trigger.");
+			auto _p = m_states [m_state];
+			auto _state = _p->_trigger (trigger, args...);
+			if (m_state != _state) {
+				if (_p->m_on_leave)
+					_p->m_on_leave ();
+				m_state = _state;
+				_p = m_states [m_state];
+				if (_p->m_on_entry)
+					_p->m_on_entry ();
+			}
 		}
 
 	private:

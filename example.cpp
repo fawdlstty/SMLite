@@ -1,4 +1,5 @@
 ﻿#include <cassert>
+#include <functional>
 #include <iostream>
 #include <string>
 #include "smlite.hpp"
@@ -9,16 +10,27 @@ enum class MyTrigger { Run, Close, Read, FinishRead, Write, FinishWrite };
 int main () {
 	SMLite::SMLite<MyState, MyTrigger> _sm (MyState::Rest);
 	_sm.Configure (MyState::Rest)
-		->WhenChangeTo (MyTrigger::Run, MyState::Ready)
+		->OnEntry ([] () { std::cout << "entry Rest\n"; })
+		->OnLeave ([] () { std::cout << "leave Rest\n"; })
+		->WhenFunc (MyTrigger::Run, std::function ([] (MyState _state, MyTrigger _trigger, std::string _param) -> MyState {
+			std::cout << "trigger with param [" << _param << "]\n";
+			return MyState::Ready;
+		}))
 		->WhenIgnore (MyTrigger::Close);
 	_sm.Configure (MyState::Ready)
+		->OnEntry ([] () { std::cout << "entry Ready\n"; })
+		->OnLeave ([] () { std::cout << "leave Ready\n"; })
 		->WhenChangeTo (MyTrigger::Read, MyState::Reading)
 		->WhenChangeTo (MyTrigger::Write, MyState::Writing)
 		->WhenChangeTo (MyTrigger::Close, MyState::Rest);
 	_sm.Configure (MyState::Reading)
+		->OnEntry ([] () { std::cout << "entry Reading\n"; })
+		->OnLeave ([] () { std::cout << "leave Reading\n"; })
 		->WhenChangeTo (MyTrigger::FinishRead, MyState::Ready)
 		->WhenChangeTo (MyTrigger::Close, MyState::Rest);
 	_sm.Configure (MyState::Writing)
+		->OnEntry ([] () { std::cout << "entry Writing\n"; })
+		->OnLeave ([] () { std::cout << "leave Writing\n"; })
 		->WhenChangeTo (MyTrigger::FinishWrite, MyState::Ready)
 		->WhenChangeTo (MyTrigger::Close, MyState::Rest);
 
@@ -30,7 +42,7 @@ int main () {
 	assert (!_sm.AllowTriggering (MyTrigger::FinishWrite));
 	assert (_sm.AllowTriggering (MyTrigger::Close));
 
-	_sm.Triggering (MyTrigger::Run);
+	_sm.Triggering (MyTrigger::Run, std::string ("hello"));
 	assert (_sm.GetState () == MyState::Ready);
 
 	_sm.Triggering (MyTrigger::Read);

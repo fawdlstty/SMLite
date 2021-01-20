@@ -86,8 +86,10 @@ _sm.Configure (MyState::Writing)
 
 好了，一个简单的状态机就完成了。当然，简单修改事件可能不太能满足我们的需要，我们想着，遇到某种状态后，调用一个回调函数，然后通过自己的代码来处理，决定将状态修改为某个值，或者让某个状态下，允许触发一个事件，但不做任何操作，等等……
 
-SMLite现提供4个方法，分别是：
+SMLite现提供6个方法，分别是：
 
+- `OnEntry`：进入某种状态时触发
+- `OnLeave`：离开某种状态时触发
 - `WhenFunc`：遇到某个事件时，调用回调函数闭包，通过回调函数决定状态的值
 - `WhenAction`：遇到某个事件时，调用回调函数闭包
 - `WhenChangeTo`：遇到某个事件时，将状态机修改为指定的状态
@@ -116,5 +118,3 @@ assert (!_sm.AllowTriggering (MyTrigger::FinishWrite));
 _sm.Triggering (MyTrigger::Run);
 assert (_sm.GetState () == MyState::Ready);
 ```
-
-通过引申的方式还能实现更多功能，比如通过闭包将shared_ptr作为参打包进去，使得在触发事件后，还能接收自定义参数。

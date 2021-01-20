@@ -86,8 +86,10 @@ The line that follows the Configure function means Specify a state, and then con
 
 All right, so a simple state machine is done.Of course, simply changing the event may not satisfy our needs, we want to encounter a certain state, call a callback function, and then through our own code to handle, decide to change the state to a certain value, or let a certain state, allow an event to fire, but do nothing, etc...
 
-SMLite now provides 4 methods, which are:
+SMLite now provides 6 methods, which are:
 
+- `OnEntry`: Triggered when entering a state
+- `OnLeave`: Triggered when leaving a state
 - `WhenFunc`: When an trigger is encountered, the callback function closure is invoked to determine the value of the state through the callback function
 - `WhenAction`: When an event is encountered, the callback function closure is invoked
 - `WhenChangeTo`: When an event is encountered, changes the state machine to the specified state
@@ -116,5 +118,3 @@ Now let's complete an event firing. According to the logic, the state will chang
 _sm.Triggering (MyTrigger::Run);
 assert (_sm.GetState () == MyState::Ready);
 ```
-
-More functionality can be achieved by extension, such as wrapping shared_ptr as a parameter through closures that allow custom parameters to be received after the event is fired.
