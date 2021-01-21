@@ -4,12 +4,13 @@
     <TargetFramework>net5.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Description>Easy to use state machine library</Description>
+    <Description>Suitable for C++ (C++17) &amp; C# (.NET5) and easy to use state machine library</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <Copyright>Copyright © Fawdlstty 2021</Copyright>
+    <Copyright>Copyright (C) 2021 Fawdlstty &lt;https://www.fawdlstty.com&gt;</Copyright>
     <PackageProjectUrl>https://github.com/fawdlstty/SMLite</PackageProjectUrl>
     <RepositoryUrl>https://github.com/fawdlstty/SMLite</RepositoryUrl>
     <RepositoryType></RepositoryType>
+    <Version>0.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
