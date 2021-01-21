@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>SMLite</id>
+    <version>0.1.0</version>
+    <authors>Fawdlstty</authors>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <license type="file">LICENSE</license>
+    <licenseUrl>https://aka.ms/deprecateLicenseUrl</licenseUrl>
+    <projectUrl>https://github.com/fawdlstty/SMLite</projectUrl>
+    <description>Suitable for C++ (C++17) &amp; C# (.NET5) and easy to use state machine library</description>
+    <copyright>Copyright (C) 2021 Fawdlstty &lt;https://www.fawdlstty.com&gt;</copyright>
+    <repository url="https://github.com/fawdlstty/SMLite" />
+  </metadata>
+  <files>
+    <file src="D:\GitHub\_\SMLite\SMLite\smlite.hpp" target="include\smlite.hpp" />
+    <file src="D:\GitHub\_\SMLite\LICENSE" target="LICENSE" />
+  </files>
+</package>

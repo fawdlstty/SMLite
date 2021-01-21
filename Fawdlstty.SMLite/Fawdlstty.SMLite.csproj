@@ -11,6 +11,7 @@
     <RepositoryUrl>https://github.com/fawdlstty/SMLite</RepositoryUrl>
     <RepositoryType></RepositoryType>
     <Version>0.1.0</Version>
+    <Authors>Fawdlstty</Authors>
   </PropertyGroup>
 
   <ItemGroup>

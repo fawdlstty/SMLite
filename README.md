@@ -4,236 +4,221 @@ English | [简体中文](./README.zh.md)
 
 Suitable for `C++` (C++17) & `C#` (.NET5) and easy to use state machine library
 
-A state machine is an object used to maintain state.For example, I assume a half-duplex network state machine that cannot write when reading data and cannot read when writing data. This state machine has four states: not running, on standby, reading, and writing. Then, let's assume that there are six kinds of events, start, close, write, read, write complete, read complete. OK, let's use if to define the rule to see what methods can be triggered by each state:
+## Tutorials
 
-<details><summary><strong>Click to expand the C++ code</strong></summary>
-<p>
+### C++
+
+Step 1. Download the repository, copy the `SMLite/smlite.hpp` file in the repository into your solution project, and include it
+
+```cpp
+#include "smlite.hpp"
+```
+
+Step 2. Define two enum class that represent all states and all triggers
 
 ```cpp
 enum class MyState { Rest, Ready, Reading, Writing };
 enum class MyTrigger { Run, Close, Read, FinishRead, Write, FinishWrite };
-
-// ...
-
-if (_state == MyState::Rest) {
-    if (_trigger == MyTrigger::Run) {
-        _state = MyState::Ready;
-    } else if (_trigger == MyTrigger::Close) {
-        //
-    } else {
-        throw std::exception ();
-    }
-} else if (_state == MyState::Ready) {
-    if (_trigger == MyTrigger::Read) {
-        _state = MyState::Reading;
-    } else if (_trigger == MyTrigger::Write) {
-        _state = MyState::Writing;
-    } else if (_trigger == MyTrigger::Close) {
-        _state = MyState::Rest;
-    } else {
-        throw std::exception ();
-    }
-} else if (_state == MyState::Reading) {
-    if (_trigger == MyTrigger::FinishRead) {
-        _state = MyState::Ready;
-    } else if (_trigger == MyTrigger::Close) {
-        _state = MyState::Rest;
-    } else {
-        throw std::exception ();
-    }
-} else if (_state == MyState::Writing) {
-    if (_trigger == MyTrigger::FinishWrite) {
-        _state = MyState::Ready;
-    } else if (_trigger == MyTrigger::Close) {
-        _state = MyState::Rest;
-    } else {
-        throw std::exception ();
-    }
-}
 ```
 
-</p>
-</details>
-
-<details><summary><strong>Click to expand the C# code</strong></summary>
-<p>
-
-```csharp
-enum MyState { Rest, Ready, Reading, Writing };
-enum MyTrigger { Run, Close, Read, FinishRead, Write, FinishWrite };
-
-// ...
-
-if (_state == MyState.Rest) {
-    if (_trigger == MyTrigger.Run) {
-        _state = MyState.Ready;
-    } else if (_trigger == MyTrigger.Close) {
-        //
-    } else {
-        throw new Exception ();
-    }
-} else if (_state == MyState.Ready) {
-    if (_trigger == MyTrigger.Read) {
-        _state = MyState.Reading;
-    } else if (_trigger == MyTrigger.Write) {
-        _state = MyState.Writing;
-    } else if (_trigger == MyTrigger.Close) {
-        _state = MyState.Rest;
-    } else {
-        throw new Exception ();
-    }
-} else if (_state == MyState.Reading) {
-    if (_trigger == MyTrigger.FinishRead) {
-        _state = MyState.Ready;
-    } else if (_trigger == MyTrigger.Close) {
-        _state = MyState.Rest;
-    } else {
-        throw new Exception ();
-    }
-} else if (_state == MyState.Writing) {
-    if (_trigger == MyTrigger.FinishWrite) {
-        _state = MyState.Ready;
-    } else if (_trigger == MyTrigger.Close) {
-        _state = MyState.Rest;
-    } else {
-        throw new Exception ();
-    }
-}
-```
-
-</p>
-</details>
-
-There are not many states and events, only ten in total, I haven't started to write the implementation, just the rule code, it looks a bit cluttered, difficult to maintain, easy to cause problems. All right, now let's think about implementing this using a state machine.
+Step 3. Define state machine variables with templates as two enum class and parameters as initial values
 
 ```cpp
-// C++
-enum class MyState { Rest, Ready, Reading, Writing };
-enum class MyTrigger { Run, Close, Read, FinishRead, Write, FinishWrite };
-
-// ...
-
 SMLite::SMLite<MyState, MyTrigger> _sm (MyState::Rest);
-_sm.Configure (MyState::Rest)
-    ->WhenChangeTo (MyTrigger::Run, MyState::Ready)
-    ->WhenIgnore (MyTrigger::Close);
-_sm.Configure (MyState::Ready)
-    ->WhenChangeTo (MyTrigger::Read, MyState::Reading)
-    ->WhenChangeTo (MyTrigger::Write, MyState::Writing)
-    ->WhenChangeTo (MyTrigger::Close, MyState::Rest);
-_sm.Configure (MyState::Reading)
-    ->WhenChangeTo (MyTrigger::FinishRead, MyState::Ready)
-    ->WhenChangeTo (MyTrigger::Close, MyState::Rest);
-_sm.Configure (MyState::Writing)
-    ->WhenChangeTo (MyTrigger::FinishWrite, MyState::Ready)
-    ->WhenChangeTo (MyTrigger::Close, MyState::Rest);
 ```
 
-```csharp
-// C#
-using Fawdlstty.SMLite;
+Step 4. Rules that define a state machine, specifying what triggers are allowed to be fired for a specific state
 
+```cpp
+// If the current state of the state machine is MyState::Rest
+_sm.Configure (MyState::Rest)
+
+    // This method is fired if the state changes from another state to MyState::Rest state, not by the initial value specified when the state machine is initialized
+    ->OnEntry ([] () { std::cout << "entry Rest\n"; })
+
+    // This method is fired if the state changes from the MyState::Rest state to another state
+    ->OnLeave ([] () { std::cout << "leave Rest\n"; })
+
+    // If MyTrigger::Run is triggered, the state is changed to MyState::Ready
+    ->WhenChangeTo (MyTrigger::Run, MyState::Ready)
+
+    // If MyTrigger::Close is triggered, ignore it
+    ->WhenIgnore (MyTrigger::Close)
+
+    // If MyTrigger::Read is fired, the callback function is called and the state is adjusted to the return value
+    ->WhenFunc (MyTrigger::Read, std::function ([] (MyState _state, MyTrigger _trigger) -> MyState {
+    std::cout << "call WhenFunc callback\n";
+        return MyState::Ready;
+    }))
+
+    // If MyTrigger::FinishRead is fired, the callback function is called and the state is adjusted to the return value
+    // Note that an argument must be passed when firing, and the number and type must match exactly, otherwise an exception is thrown
+    ->WhenFunc (MyTrigger::FinishRead, std::function ([] (MyState _state, MyTrigger _trigger, std::string _param) -> MyState {
+        std::cout << "call WhenFunc callback with param [" << _param << "]\n";
+        return MyState::Ready;
+    }))
+
+    // If MyTrigger::Read is fired, the callback function is called (triggering this method callback does not adjust the return value)
+    ->WhenAction (MyTrigger::Read, std::function ([] (MyState _state, MyTrigger _trigger) {
+        std::cout << "call WhenAction callback\n";
+    }))
+
+    // If MyTrigger::FinishRead is fired, the callback function is called (triggering this method callback does not adjust the return value).
+    // Note that an argument must be passed when firing, and the number and type must match exactly, otherwise an exception is thrown
+    ->WhenAction (MyTrigger::FinishRead, std::function ([] (MyState _state, MyTrigger _trigger, std::string _param) {
+        std::cout << "call WhenAction callback with param [" << _param << "]\n";
+    }));
+```
+
+If you encounter the same trigger in the same state, you are allowed to define at most one way to handle it. The code above explains the defined trigger in detail.If a trigger is not defined but is encountered, the exception is thrown.
+
+Step 5. Now let's get to the actual use of the state machine
+
+```cpp
+// Get current status
+assert (_sm.GetState () == MyState::Rest);
+
+// Determine whether an trigger is allowed to fire
+_sm.AllowTriggering (MyTrigger::Run);
+
+// Fire an trigger
+_sm.Triggering (MyTrigger::Run);
+
+// Fires an trigger and passes in the specified parameters
+_sm.Triggering (MyTrigger::Run, std::string ("hello"));
+```
+
+### C\#
+
+Step 1. Download the `Fawdlstty.SMLite` library via NuGet. (Note that only .NET5 is currently supported, other framework versions are not yet supported).
+
+Step 2. Define two enumerated classes that represent all states and all triggers
+
+```csharp
 enum MyState { Rest, Ready, Reading, Writing };
 enum MyTrigger { Run, Close, Read, FinishRead, Write, FinishWrite };
+```
 
-// ...
+Step 3. Define state machine variables, templates as two enumeration classes, and parameters as initial values
 
+```csharp
 var _sm = new SMLite<MyState, MyTrigger> (MyState.Rest);
+```
+
+Step 4. Rules that define a state machine, specifying what triggers are allowed to be fired for a specific state
+
+```csharp
 _sm.Configure (MyState.Rest)
+    // This method is fired if the state changes from another state to myState.rest state, not by the initial value specified when the state machine is initialized
+    .OnEntry (() => Console.WriteLine ("entry Rest"))
+
+    // This method is fired if the state changes from the myState.rest state to another state
+    .OnLeave (() => Console.WriteLine ("leave Rest"))
+
+    // If myTrigger.Run is triggered, change the status to MyState.ready
     .WhenChangeTo (MyTrigger.Run, MyState.Ready)
-    .WhenIgnore (MyTrigger.Close);
-_sm.Configure (MyState.Ready)
-    .WhenChangeTo (MyTrigger.Read, MyState.Reading)
-    .WhenChangeTo (MyTrigger.Write, MyState.Writing)
-    .WhenChangeTo (MyTrigger.Close, MyState.Rest);
-_sm.Configure (MyState.Reading)
-    .WhenChangeTo (MyTrigger.FinishRead, MyState.Ready)
-    .WhenChangeTo (MyTrigger.Close, MyState.Rest);
-_sm.Configure (MyState.Writing)
-    .WhenChangeTo (MyTrigger.FinishWrite, MyState.Ready)
-    .WhenChangeTo (MyTrigger.Close, MyState.Rest);
+
+    // If MyTrigger.Run is triggered, ignore it
+    .WhenIgnore (MyTrigger.Close)
+
+    // If MyTrigger.read is triggered, the callback function is called and the state is adjusted to the return value
+    .WhenFunc (MyTrigger.Read, (MyState _state, MyTrigger _trigger) => {
+        Console.WriteLine ("call WhenFunc callback");
+        return MyState.Ready;
+    })
+
+    // If MyTrigger.FinishRead is fired, the callback function is called and the state is adjusted to the return value
+    // Note that an argument must be passed when firing, and the number and type must match exactly, otherwise an exception is thrown
+    .WhenFunc (MyTrigger.FinishRead, (MyState _state, MyTrigger _trigger, string _param) => {
+        Console.WriteLine ($"call WhenFunc callback with param [{_param}]");
+        return MyState.Ready;
+    })
+
+    // If MyTrigger.Read is fired, the callback function is called (triggering this method callback does not adjust the return value)
+    .WhenAction (MyTrigger.Read, (MyState _state, MyTrigger _trigger) => {
+        Console.WriteLine ("call WhenAction callback");
+    })
+
+    // If MyTrigger.FinishRead is fired, the callback function is called (triggering this method callback does not adjust the return value)
+    // Note that an argument must be passed when firing, and the number and type must match exactly, otherwise an exception is thrown
+    .WhenAction (MyTrigger.FinishRead, (MyState _state, MyTrigger _trigger, string _param) => {
+        Console.WriteLine ($"call WhenAction callback with param [{_param}]");
+    });
 ```
 
-The number of rule lines decreased by two-thirds. Let me explain what this code means in more detail. The _sm variable defines this line, which means defining a state machine and specifying the initialization state of the current state machine.
+If you encounter the same trigger in the same state, you are allowed to define at most one way to handle it. The code above explains the defined trigger in detail.If a trigger is not defined but is encountered, the exception is thrown.
 
-The line that follows the Configure function means Specify a state, and then configure that state, what events are allowed to be fired from that state, and what actions are taken. WhenChangeTo means that when an event is triggered, the state is changed to the latter. Let's explain this code in detail:
-
-- When the state is`MyState::Rest`, change the state to `MyState::Ready` if the `MyTrigger::Run` is encountered
-- When the state is`MyState::Rest`, ignore it if the `MyTrigger::Close` is encountered
-- When the state is`MyState::Ready`, change the state to `MyState::Reading` if the `MyTrigger::Read` is encountered
-- When the state is`MyState::Ready`, change the state to `MyState::Writing` if the `MyTrigger::Write` is encountered
-- When the state is`MyState::Ready`, change the state to `MyState::Rest` if the `MyTrigger::Close` is encountered
-- ...
-
-All right, so a simple state machine is done.Of course, simply changing the event may not satisfy our needs, we want to encounter a certain state, call a callback function, and then through our own code to handle, decide to change the state to a certain value, or let a certain state, allow an event to fire, but do nothing, etc...
-
-SMLite now provides 6 synchronous methods, which are:
-
-- `OnEntry`: Trigger when entering a state
-- `OnLeave`: Trigger when leaving a state
-- `WhenFunc`: When an trigger is encountered, the callback function closure is invoked to determine the value of the state through the callback function
-- `WhenAction`: When an event is encountered, the callback function closure is invoked
-- `WhenChangeTo`: When an event is encountered, changes the state machine to the specified state
-- `WhenIgnore`: When an event is encountered, ignore it
-
-The C# library provides 4 more asynchronous methods:
-
-- `OnEntryAsync`: Asynchronous trigger when entering a state
-- `OnLeaveAsync`: Asynchronous trigger when leaving a state
-- `WhenFuncAsync`: When an event is encountered, the Asynchronous callback function closure is invoked, and the state value is determined by the callback function
-- `WhenActionAsync`: When an event is encountered, the Asynchronous callback function closure is invoked
-
-Okay, now that we've defined the states and the rules, let's look at how to use them.First, since we specified the initial state when we defined the state machine, the state of the state machine is the initial value:
-
-```cpp
-// C++
-assert (_sm.GetState () == MyState::Rest);
-```
+Step 5. Now let's get to the actual use of the state machine
 
 ```csharp
-// C#
+// Get current status
 assert (_sm.State == MyState.Rest);
-```
 
-Since we define two triggers for this state, this state accepts only those triggers:
+// Determine whether an trigger is allowed to fire
+_sm.AllowTriggering (MyTrigger.Run);
 
-```cpp
-// C++
-assert (_sm.AllowTriggering (MyTrigger::Run));
-assert (_sm.AllowTriggering (MyTrigger::Close));
-assert (!_sm.AllowTriggering (MyTrigger::Read));
-assert (!_sm.AllowTriggering (MyTrigger::FinishRead));
-assert (!_sm.AllowTriggering (MyTrigger::Write));
-assert (!_sm.AllowTriggering (MyTrigger::FinishWrite));
-```
-
-```csharp
-// C#
-assert (_sm.AllowTriggering (MyTrigger.Run));
-assert (_sm.AllowTriggering (MyTrigger.Close));
-assert (!_sm.AllowTriggering (MyTrigger.Read));
-assert (!_sm.AllowTriggering (MyTrigger.FinishRead));
-assert (!_sm.AllowTriggering (MyTrigger.Write));
-assert (!_sm.AllowTriggering (MyTrigger.FinishWrite));
-```
-
-Now let's complete an event firing. According to the logic, the state will change to the state we specified:
-
-```cpp
-// C++
-_sm.Triggering (MyTrigger::Run);
-assert (_sm.GetState () == MyState::Ready);
-```
-
-```csharp
-// C#
+// Fire an triggered
 _sm.Triggering (MyTrigger.Run);
-// Or trigger events asynchronously
-//await _sm.TriggeringAsync (MyTrigger.Run);
 
-assert (_sm.State == MyState.Ready);
+// Fires an trigger and passes in the specified parameters
+_sm.Triggering (MyTrigger.Run, "hello");
 ```
 
-C# Asynchronous Exposure:
+Step 6. If you use asynchrony
 
-Synchronous and asynchronous code can be mixed in the same state machine, such as triggering values with asynchronous triggering events that allow synchronous calls.Has a start value for the triggered event synchronously and also allows asynchronous invocation.Be aware, however, that the business layer code, especially synchronous method calls, will execute the Task.wait () method in the asynchronous code, which is likely to cause a deadlock.Unified synchronous or unified asynchronous mode is recommended.
+Much like the above, the following is to specify the asynchronous trigger callback function
+
+```csharp
+_sm.Configure (MyState.Ready)
+
+    // Same effect as onEntry, except this function specifies an asynchronous method and cannot be called at the same time as OnEntry
+    .OnEntryAsync (async () => {
+        await Task.Yield ();
+        Console.WriteLine ("entry Ready");
+    })
+
+    // This function specifies an asynchronous method and cannot be called at the same time as OnLeave
+    .OnLeaveAsync (async () => {
+        await Task.Yield ();
+        Console.WriteLine ("leave Ready");
+    })
+
+    // The effect is identical to WhenFunc, but this function specifies an asynchronous method
+    .WhenFuncAsync (MyTrigger.Read, async (MyState _state, MyTrigger _trigger) => {
+        await Task.Yield ();
+        Console.WriteLine ("call WhenFunc callback");
+        return MyState.Ready;
+    })
+
+    // The effect is identical to WhenFunc, but this function specifies an asynchronous method
+    .WhenFuncAsync (MyTrigger.FinishRead, async (MyState _state, MyTrigger _trigger, string _param) => {
+        await Task.Yield ();
+        Console.WriteLine ($"call WhenFunc callback with param [{_param}]");
+        return MyState.Ready;
+    })
+
+    // The effect is identical to WhenAction, but this function specifies an asynchronous method
+    .WhenActionAsync (MyTrigger.Read, async (MyState _state, MyTrigger _trigger) => {
+        await Task.Yield ();
+        Console.WriteLine ("call WhenAction callback");
+    })
+
+    // The effect is identical to WhenAction, but this function specifies an asynchronous method
+    .WhenActionAsync (MyTrigger.FinishRead, async (MyState _state, MyTrigger _trigger, string _param) => {
+        await Task.Yield ();
+        Console.WriteLine ($"call WhenAction callback with param [{_param}]");
+    });
+```
+
+Then there is the firing of an event:
+
+```csharp
+// An event is fired asynchronously, passing in the specified parameters
+await _sm.TriggeringAsync (MyTrigger.Run, "hello");
+```
+
+Await asynchronously fired events will be returned after all functions have finished executing.In addition, it is important to note that synchronous and asynchronous should not be used together. If not used properly, it will easily lead to deadlock. The best practice is to use uniform synchronous or uniform asynchronous.
+
+## License
+
+MIT License
