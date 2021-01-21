@@ -2,7 +2,7 @@
 
 English | [简体中文](./README.zh.md)
 
-Suitable for `C++` & `C#` easy to use state machine library
+Suitable for `C++` (C++17) & `C#` (.NET5) easy to use state machine library
 
 A state machine is an object used to maintain state.For example, I assume a half-duplex network state machine that cannot write when reading data and cannot read when writing data. This state machine has four states: not running, on standby, reading, and writing. Then, let's assume that there are six kinds of events, start, close, write, read, write complete, read complete. OK, let's use if to define the rule to see what methods can be triggered by each state:
 
@@ -167,7 +167,7 @@ The line that follows the Configure function means Specify a state, and then con
 
 All right, so a simple state machine is done.Of course, simply changing the event may not satisfy our needs, we want to encounter a certain state, call a callback function, and then through our own code to handle, decide to change the state to a certain value, or let a certain state, allow an event to fire, but do nothing, etc...
 
-SMLite now provides 6 methods, which are:
+SMLite now provides 6 synchronous methods, which are:
 
 - `OnEntry`: Trigger when entering a state
 - `OnLeave`: Trigger when leaving a state
@@ -176,7 +176,7 @@ SMLite now provides 6 methods, which are:
 - `WhenChangeTo`: When an event is encountered, changes the state machine to the specified state
 - `WhenIgnore`: When an event is encountered, ignore it
 
-The C# version has four asynchronous methods:
+The C# library provides 4 more asynchronous methods:
 
 - `OnEntryAsync`: Asynchronous trigger when entering a state
 - `OnLeaveAsync`: Asynchronous trigger when leaving a state
