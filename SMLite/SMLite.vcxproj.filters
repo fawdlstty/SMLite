@@ -20,7 +20,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="smlite.hpp">
+    <ClInclude Include="SMLite.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
