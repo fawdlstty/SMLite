@@ -21,17 +21,17 @@ enum class MyState { Rest, Ready, Reading, Writing };
 enum class MyTrigger { Run, Close, Read, FinishRead, Write, FinishWrite };
 ```
 
-Step 3. 定义状态机变量，模板为两个强枚举类，参数为初始值
+Step 3. 定义状态机生成器，模板为两个强枚举类
 
 ```cpp
-SMLite::SMLite<MyState, MyTrigger> _sm (MyState::Rest);
+SMLite::SMLiteBuilder<MyState, MyTrigger> _smb {};
 ```
 
 Step 4. 定义状态机的规则，指定具体的某个状态允许触发什么事件
 
 ```cpp
 // 如果当状态机的当前状态是 MyState::Rest
-_sm.Configure (MyState::Rest)
+_smb.Configure (MyState::Rest)
 
     // 如果状态由其他状态变成 MyState::Rest 状态，那么触发此方法，初始化状态机时指定的初始值不触发此方法
     ->OnEntry ([] () { std::cout << "entry Rest\n"; })
@@ -75,17 +75,20 @@ _sm.Configure (MyState::Rest)
 Step 5. 下面开始真正使用到状态机
 
 ```cpp
+// 生成状态机
+auto _sm = _smb.Build (MyState::Rest);
+
 // 获取当前状态
-assert (_sm.GetState () == MyState::Rest);
+assert (_sm->GetState () == MyState::Rest);
 
 // 判断是否允许触发某一个事件
-_sm.AllowTriggering (MyTrigger::Run);
+_sm->AllowTriggering (MyTrigger::Run);
 
 // 触发一个事件
-_sm.Triggering (MyTrigger::Run);
+_sm->Triggering (MyTrigger::Run);
 
 // 触发一个事件，并传入指定参数
-_sm.Triggering (MyTrigger::Run, std::string ("hello"));
+_sm->Triggering (MyTrigger::Run, std::string ("hello"));
 ```
 
 ### C\#
@@ -102,13 +105,13 @@ enum MyTrigger { Run, Close, Read, FinishRead, Write, FinishWrite };
 Step 3. 定义状态机变量，模板为两个枚举类，参数为初始值
 
 ```csharp
-var _sm = new SMLite<MyState, MyTrigger> (MyState.Rest);
+var _smb = new SMLiteBuilder<MyState, MyTrigger> ();
 ```
 
 Step 4. 定义状态机的规则，指定具体的某个状态允许触发什么事件
 
 ```csharp
-_sm.Configure (MyState.Rest)
+_smb.Configure (MyState.Rest)
 
     // 如果状态由其他状态变成 MyState.Rest 状态，那么触发此方法，初始化状态机时指定的初始值不触发此方法
     .OnEntry (() => Console.WriteLine ("entry Rest"))
@@ -152,6 +155,9 @@ _sm.Configure (MyState.Rest)
 Step 5. 下面开始真正使用到状态机
 
 ```csharp
+// 生成状态机
+auto _sm = _smb.Build (MyState.Rest);
+
 // 获取当前状态
 assert (_sm.State == MyState.Rest);
 
@@ -170,7 +176,7 @@ Step 6. 如果用到异步
 使用与上面非常相似，下面是指定异步触发回调函数
 
 ```csharp
-_sm.Configure (MyState.Ready)
+_smb.Configure (MyState.Ready)
 
     // 与 OnEntry 效果一致，不过这函数指定异步方法，并且不能与 OnEntry 同时调用
     .OnEntryAsync (async () => {

@@ -8,22 +8,24 @@ namespace Fawdlstty.SMLite.Example {
 
 	class Program {
         static void Main (string[] args) {
-			var _sm = new SMLite<MyState, MyTrigger> (MyState.Rest);
-			_sm.Configure (MyState.Rest)
+			var _smb = new SMLiteBuilder<MyState, MyTrigger> ();
+			_smb.Configure (MyState.Rest)
 				.OnEntry (() => Console.WriteLine ("entry Rest"))
 				.OnLeave (() => Console.WriteLine ("leave Rest"))
 				.WhenChangeTo (MyTrigger.Run, MyState.Ready)
 				.WhenIgnore (MyTrigger.Close);
-			_sm.Configure (MyState.Ready)
+			_smb.Configure (MyState.Ready)
 				.WhenChangeTo (MyTrigger.Read, MyState.Reading)
 				.WhenChangeTo (MyTrigger.Write, MyState.Writing)
 				.WhenChangeTo (MyTrigger.Close, MyState.Rest);
-			_sm.Configure (MyState.Reading)
+			_smb.Configure (MyState.Reading)
 				.WhenChangeTo (MyTrigger.FinishRead, MyState.Ready)
 				.WhenChangeTo (MyTrigger.Close, MyState.Rest);
-			_sm.Configure (MyState.Writing)
+			_smb.Configure (MyState.Writing)
 				.WhenChangeTo (MyTrigger.FinishWrite, MyState.Ready)
 				.WhenChangeTo (MyTrigger.Close, MyState.Rest);
+
+			var _sm = _smb.Build (MyState.Rest);
 
 			assert (_sm.State == MyState.Rest);
 			assert (_sm.AllowTriggering (MyTrigger.Run));

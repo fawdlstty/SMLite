@@ -5,13 +5,9 @@ using System.Threading.Tasks;
 
 namespace Fawdlstty.SMLite {
     public class SMLite<TState, TTrigger> where TState : Enum where TTrigger : Enum {
-		public SMLite (TState init_state) { State = init_state; }
-		public _SMLite_ConfigState<TState, TTrigger> Configure (TState state) {
-			if (m_states.ContainsKey (state))
-				throw new Exception ("state is already exists.");
-			var _state = new _SMLite_ConfigState<TState, TTrigger> { State = state };
-			m_states.Add (state, _state);
-			return _state;
+		public SMLite (TState init_state, Dictionary<TState, _SMLite_ConfigState<TState, TTrigger>> _states) {
+			State = init_state;
+			m_states = _states;
 		}
 
 		public bool AllowTriggering (TTrigger trigger) {
@@ -63,6 +59,6 @@ namespace Fawdlstty.SMLite {
 		}
 
 		public TState State { get; private set; }
-		Dictionary<TState, _SMLite_ConfigState<TState, TTrigger>> m_states = new Dictionary<TState, _SMLite_ConfigState<TState, TTrigger>> ();
+		Dictionary<TState, _SMLite_ConfigState<TState, TTrigger>> m_states = null;
 	}
 }

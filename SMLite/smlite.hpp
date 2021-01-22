@@ -30,6 +30,7 @@ namespace SMLite {
 	template<typename TState, typename TTrigger, typename... Args>	class _SMLite_ConfigItem1;
 	template<typename TState, typename TTrigger>					class _SMLite_ConfigState;
 	template<typename TState, typename TTrigger>					class SMLite;
+	template<typename TState, typename TTrigger>					class SMLiteBuilder;
 
 
 
@@ -164,31 +165,26 @@ namespace SMLite {
 
 	template<typename TState, typename TTrigger>
 	class SMLite {
+		friend class SMLiteBuilder<TState, TTrigger>;
+		SMLite (TState init_state, std::shared_ptr<std::map<TState, std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>>>> _states)
+			: m_state (init_state), m_states (_states) {}
 	public:
-		SMLite (TState init_state) : m_state (init_state) {}
-		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> Configure (TState state) {
-			if (m_states.contains (state))
-				throw std::exception ("state is already exists.");
-			auto _ptr = std::make_shared<_SMLite_ConfigState<TState, TTrigger>> (state);
-			m_states [state] = _ptr;
-			return _ptr;
-		}
 		TState GetState () { return m_state; }
 		bool AllowTriggering (TTrigger trigger) {
-			if (m_states.contains (m_state))
-				return m_states [m_state]->_allow_trigger (trigger);
+			if (m_states->contains (m_state))
+				return (*m_states) [m_state]->_allow_trigger (trigger);
 			return false;
 		}
 		void Triggering (TTrigger trigger) {
 			if (!AllowTriggering (trigger))
 				throw std::exception ("current state cannot launch this trigger.");
-			auto _p = m_states [m_state];
+			auto _p = (*m_states) [m_state];
 			auto _state = _p->_trigger (trigger);
 			if (m_state != _state) {
 				if (_p->m_on_leave)
 					_p->m_on_leave ();
 				m_state = _state;
-				_p = m_states [m_state];
+				_p = (*m_states) [m_state];
 				if (_p->m_on_entry)
 					_p->m_on_entry ();
 			}
@@ -197,13 +193,13 @@ namespace SMLite {
 		void Triggering (TTrigger trigger, Args... args) {
 			if (!AllowTriggering (trigger))
 				throw std::exception ("current state cannot launch this trigger.");
-			auto _p = m_states [m_state];
+			auto _p = (*m_states) [m_state];
 			auto _state = _p->_trigger (trigger, args...);
 			if (m_state != _state) {
 				if (_p->m_on_leave)
 					_p->m_on_leave ();
 				m_state = _state;
-				_p = m_states [m_state];
+				_p = (*m_states) [m_state];
 				if (_p->m_on_entry)
 					_p->m_on_entry ();
 			}
@@ -211,7 +207,31 @@ namespace SMLite {
 
 	private:
 		TState m_state;
-		std::map<TState, std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>>> m_states;
+		std::shared_ptr<std::map<TState, std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>>>> m_states;
+	};
+
+	template<typename TState, typename TTrigger>
+	class SMLiteBuilder {
+	public:
+		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> Configure (TState state) {
+			if (m_builded)
+				throw std::exception ("shouldn't configure builder after builded.");
+			if (m_states->contains (state))
+				throw std::exception ("state is already exists.");
+			auto _ptr = std::make_shared<_SMLite_ConfigState<TState, TTrigger>> (state);
+			(*m_states) [state] = _ptr;
+			return _ptr;
+		}
+		std::shared_ptr<SMLite<TState, TTrigger>> Build (TState init_state) {
+			m_builded = true;
+			return std::shared_ptr<SMLite<TState, TTrigger>> (new SMLite<TState, TTrigger> (init_state, m_states));
+			//return std::make_shared<SMLite<TState, TTrigger>> (init_state, m_states);
+		}
+
+	private:
+		std::shared_ptr<std::map<TState, std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>>>> m_states
+			= std::make_shared<std::map<TState, std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>>>> ();
+		bool m_builded = false;
 	};
 }
 

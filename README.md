@@ -21,17 +21,17 @@ enum class MyState { Rest, Ready, Reading, Writing };
 enum class MyTrigger { Run, Close, Read, FinishRead, Write, FinishWrite };
 ```
 
-Step 3. Define state machine variables with templates as two enum class and parameters as initial values
+Step 3. Define state machine builder with templates as two enum class and parameters as initial values
 
 ```cpp
-SMLite::SMLite<MyState, MyTrigger> _sm (MyState::Rest);
+SMLite::SMLiteBuilder<MyState, MyTrigger> _smb {};
 ```
 
 Step 4. Rules that define a state machine, specifying what triggers are allowed to be fired for a specific state
 
 ```cpp
 // If the current state of the state machine is MyState::Rest
-_sm.Configure (MyState::Rest)
+_smb.Configure (MyState::Rest)
 
     // This method is fired if the state changes from another state to MyState::Rest state, not by the initial value specified when the state machine is initialized
     ->OnEntry ([] () { std::cout << "entry Rest\n"; })
@@ -75,17 +75,20 @@ If you encounter the same trigger in the same state, you are allowed to define a
 Step 5. Now let's get to the actual use of the state machine
 
 ```cpp
+// Build state machine
+auto _sm = _smb.Build (MyState::Rest);
+
 // Get current status
-assert (_sm.GetState () == MyState::Rest);
+assert (_sm->GetState () == MyState::Rest);
 
 // Determine whether an trigger is allowed to fire
-_sm.AllowTriggering (MyTrigger::Run);
+_sm->AllowTriggering (MyTrigger::Run);
 
 // Fire an trigger
-_sm.Triggering (MyTrigger::Run);
+_sm->Triggering (MyTrigger::Run);
 
 // Fires an trigger and passes in the specified parameters
-_sm.Triggering (MyTrigger::Run, std::string ("hello"));
+_sm->Triggering (MyTrigger::Run, std::string ("hello"));
 ```
 
 ### C\#
@@ -99,16 +102,16 @@ enum MyState { Rest, Ready, Reading, Writing };
 enum MyTrigger { Run, Close, Read, FinishRead, Write, FinishWrite };
 ```
 
-Step 3. Define state machine variables, templates as two enumeration classes, and parameters as initial values
+Step 3. Define state machine builder, templates as two enumeration classes, and parameters as initial values
 
 ```csharp
-var _sm = new SMLite<MyState, MyTrigger> (MyState.Rest);
+var _smb = new SMLiteBuilder<MyState, MyTrigger> ();
 ```
 
 Step 4. Rules that define a state machine, specifying what triggers are allowed to be fired for a specific state
 
 ```csharp
-_sm.Configure (MyState.Rest)
+_smb.Configure (MyState.Rest)
     // This method is fired if the state changes from another state to myState.rest state, not by the initial value specified when the state machine is initialized
     .OnEntry (() => Console.WriteLine ("entry Rest"))
 
@@ -151,6 +154,9 @@ If you encounter the same trigger in the same state, you are allowed to define a
 Step 5. Now let's get to the actual use of the state machine
 
 ```csharp
+// Build state machine
+var _sm = _smb.Build (MyState.Rest);
+
 // Get current status
 assert (_sm.State == MyState.Rest);
 
@@ -169,7 +175,7 @@ Step 6. If you use asynchrony
 Much like the above, the following is to specify the asynchronous trigger callback function
 
 ```csharp
-_sm.Configure (MyState.Ready)
+_smb.Configure (MyState.Ready)
 
     // Same effect as onEntry, except this function specifies an asynchronous method and cannot be called at the same time as OnEntry
     .OnEntryAsync (async () => {
