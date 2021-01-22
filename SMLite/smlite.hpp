@@ -1,9 +1,12 @@
 /*
 * SMLite
 * Suitable for C++ (C++17) & C# (.NET5) and easy to use state machine library
-* Version 0.1.0
+* Version 0.1.1
 * 
-* Licensed under the MIT License <http://opensource.org/licenses/MIT>
+* Author: Fawdlstty            <https://www.fawdlstty.com>
+* Source Repository            <https://github.com/fawdlstty/SMLite>
+* Report                       <https://github.com/fawdlstty/SMLite/issues>
+* MIT License                  <http://opensource.org/licenses/MIT>
 * Copyright (C) 2021 Fawdlstty <https://www.fawdlstty.com>
 */
 
