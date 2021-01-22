@@ -230,7 +230,7 @@ namespace Fawdlstty.SMLite.ItemStruct {
 
 		internal Action m_on_entry = null, m_on_leave = null;
 		internal Func<Task> m_on_entry_async = null, m_on_leave_async = null;
-		internal TState State { get; init; }
+		internal TState State { get; set; }
 		Dictionary<TTrigger, _SMLite_ConfigItem<TState, TTrigger>> m_items = new Dictionary<TTrigger, _SMLite_ConfigItem<TState, TTrigger>> ();
 	}
 }

@@ -8,7 +8,7 @@ enum class MyState { Rest, Ready, Reading, Writing };
 enum class MyTrigger { Run, Close, Read, FinishRead, Write, FinishWrite };
 
 int main () {
-	SMLite::SMLiteBuilder<MyState, MyTrigger> _smb {};
+	Fawdlstty::SMLiteBuilder<MyState, MyTrigger> _smb {};
 	_smb.Configure (MyState::Rest)
 		->OnEntry ([] () { std::cout << "entry Rest\n"; })
 		->OnLeave ([] () { std::cout << "leave Rest\n"; })

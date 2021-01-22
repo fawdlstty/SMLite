@@ -2,16 +2,16 @@
 
 English | [简体中文](./README.zh.md)
 
-Suitable for `C++` (C++17) & `C#` (.NET5) and easy to use state machine library
+Suitable for `C++` (C++17) & `C#` and easy to use state machine library
 
 ## Tutorials
 
 ### C++
 
-Step 1. Download the repository, copy the `SMLite/smlite.hpp` file in the repository into your solution project, and include it
+Step 1. Download the repository, copy the `SMLite/SMLite.hpp` file in the repository into your solution project, and include it
 
 ```cpp
-#include "smlite.hpp"
+#include "SMLite.hpp"
 ```
 
 Step 2. Define two enum class that represent all states and all triggers
@@ -24,7 +24,7 @@ enum class MyTrigger { Run, Close, Read, FinishRead, Write, FinishWrite };
 Step 3. Define state machine builder with templates as two enum class and parameters as initial values
 
 ```cpp
-SMLite::SMLiteBuilder<MyState, MyTrigger> _smb {};
+Fawdlstty::SMLiteBuilder<MyState, MyTrigger> _smb {};
 ```
 
 Step 4. Rules that define a state machine, specifying what triggers are allowed to be fired for a specific state
@@ -93,7 +93,7 @@ _sm->Triggering (MyTrigger::Run, std::string ("hello"));
 
 ### C\#
 
-Step 1. Download the `Fawdlstty.SMLite` library via NuGet. (Note that only .NET5 is currently supported, other framework versions are not yet supported).
+Step 1. Download the `Fawdlstty.SMLite` library via NuGet.
 
 Step 2. Define two enumerated classes that represent all states and all triggers
 

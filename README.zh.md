@@ -2,16 +2,16 @@
 
 [English](./README.md) | 简体中文
 
-适用于 `C++` (C++17)、`C#` (.NET5) 的简单易用的状态机库
+适用于 `C++` (C++17)、`C#` 的简单易用的状态机库
 
 ## 如何使用
 
 ### C++
 
-Step 1. 下载仓库，将仓库中的`SMLite/smlite.hpp`文件拷贝进自己的解决方案项目，并引用
+Step 1. 下载仓库，将仓库中的`SMLite/SMLite.hpp`文件拷贝进自己的解决方案项目，并引用
 
 ```cpp
-#include "smlite.hpp"
+#include "SMLite.hpp"
 ```
 
 Step 2. 定义两个强枚举类，分别代表所有的状态与所有的触发器
@@ -24,7 +24,7 @@ enum class MyTrigger { Run, Close, Read, FinishRead, Write, FinishWrite };
 Step 3. 定义状态机生成器，模板为两个强枚举类
 
 ```cpp
-SMLite::SMLiteBuilder<MyState, MyTrigger> _smb {};
+Fawdlstty::SMLiteBuilder<MyState, MyTrigger> _smb {};
 ```
 
 Step 4. 定义状态机的规则，指定具体的某个状态允许触发什么事件
@@ -93,7 +93,7 @@ _sm->Triggering (MyTrigger::Run, std::string ("hello"));
 
 ### C\#
 
-Step 1. 通过 NuGet 下载 `Fawdlstty.SMLite` 库。（注意，当前仅支持.NET5，暂不支持其他框架版本）
+Step 1. 通过 NuGet 下载 `Fawdlstty.SMLite` 库
 
 Step 2. 定义两个枚举类，分别代表所有的状态与所有的触发器
 

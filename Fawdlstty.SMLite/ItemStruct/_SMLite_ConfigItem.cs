@@ -22,9 +22,9 @@ namespace Fawdlstty.SMLite.ItemStruct {
             }
         }
 
-        internal TState State { get; init; }
-        internal TTrigger Trigger { get; init; }
-        internal object Callback { get; init; }
-        internal MethodInfo CallbackInfo { get; init; }
+        internal TState State { get; set; }
+        internal TTrigger Trigger { get; set; }
+        internal object Callback { get; set; }
+        internal MethodInfo CallbackInfo { get; set; }
     }
 }
