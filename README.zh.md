@@ -89,6 +89,9 @@ _sm->Triggering (MyTrigger::Run);
 
 // 触发一个事件，并传入指定参数
 _sm->Triggering (MyTrigger::Run, std::string ("hello"));
+
+// 强行修改当前状态，此操作将不会触发OnEntry、OnLeave事件
+_sm->SetState (MyState::Ready);
 ```
 
 ### C\#
@@ -169,6 +172,9 @@ _sm.Triggering (MyTrigger.Run);
 
 // 触发一个事件，并传入指定参数
 _sm.Triggering (MyTrigger.Run, "hello");
+
+// 强行修改当前状态，此操作将不会触发OnEntry、OnLeave事件
+_sm.State = MyState.Rest;
 ```
 
 Step 6. 如果用到异步

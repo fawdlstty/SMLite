@@ -2,7 +2,7 @@
 * SMLite
 * Suitable for C++ (C++17) & C# and easy to use state machine library
 * Author: Fawdlstty
-* Version 0.1.2
+* Version 0.1.3
 * 
 * Source Repository            <https://github.com/fawdlstty/SMLite>
 * Report                       <https://github.com/fawdlstty/SMLite/issues>
@@ -173,6 +173,7 @@ namespace Fawdlstty {
 			: m_state (init_state), m_states (_states) {}
 	public:
 		TState GetState () { return m_state; }
+		void SetState (TState new_state) { m_state = new_state; }
 		bool AllowTriggering (TTrigger trigger) {
 			if (m_states->contains (m_state))
 				return (*m_states) [m_state]->_allow_trigger (trigger);

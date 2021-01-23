@@ -89,6 +89,9 @@ _sm->Triggering (MyTrigger::Run);
 
 // Fires an trigger and passes in the specified parameters
 _sm->Triggering (MyTrigger::Run, std::string ("hello"));
+
+// Forced to modify the current state, this code will not trigger OnEntry and OnLeave methods
+_sm->SetState (MyState::Ready);
 ```
 
 ### C\#
@@ -168,6 +171,9 @@ _sm.Triggering (MyTrigger.Run);
 
 // Fires an trigger and passes in the specified parameters
 _sm.Triggering (MyTrigger.Run, "hello");
+
+// Forced to modify the current state, this code will not trigger OnEntry and OnLeave methods
+_sm.State = MyState.Rest;
 ```
 
 Step 6. If you use asynchrony

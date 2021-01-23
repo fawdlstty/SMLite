@@ -58,7 +58,7 @@ namespace Fawdlstty.SMLite {
 			throw new Exception ("not match function found.");
 		}
 
-		public TState State { get; private set; }
+		public TState State { get; set; }
 		Dictionary<TState, _SMLite_ConfigState<TState, TTrigger>> m_states = null;
 	}
 }
