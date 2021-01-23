@@ -27,6 +27,9 @@ namespace Fawdlstty {
 
 	class _SMLite_ConfigItem {
 		virtual void f () = 0;
+
+	public:
+		virtual ~_SMLite_ConfigItem () = default; // fix warning
 	};
 
 	template<typename TState, typename TTrigger>					class _SMLite_ConfigItem0;
@@ -46,6 +49,7 @@ namespace Fawdlstty {
 		void f () override {}
 
 	public:
+		virtual ~_SMLite_ConfigItem0 () = default; // fix warning
 		_SMLite_ConfigItem0 (TState state, TTrigger trigger, std::function<TState (TState, TTrigger)> callback)
 			: m_state (state), m_trigger (trigger), m_callback (callback) {}
 		TState _call () { return m_callback (m_state, m_trigger); }
@@ -61,6 +65,7 @@ namespace Fawdlstty {
 		void f () override {}
 
 	public:
+		virtual ~_SMLite_ConfigItem1 () = default; // fix warning
 		_SMLite_ConfigItem1 (TState state, TTrigger trigger, std::function<TState (TState, TTrigger, Args...)> callback)
 			: m_state (state), m_trigger (trigger), m_callback (callback) {}
 		TState _call (Args... args) { return m_callback (m_state, m_trigger, args...); }
@@ -228,7 +233,7 @@ namespace Fawdlstty {
 		}
 		std::shared_ptr<SMLite<TState, TTrigger>> Build (TState init_state) {
 			m_builded = true;
-			return std::shared_ptr<SMLite<TState, TTrigger>> (new SMLite<TState, TTrigger> (init_state, m_states));
+			return std::shared_ptr<SMLite<TState, TTrigger>> (new SMLite<TState, TTrigger> (init_state, m_states)); // fix compile error
 			//return std::make_shared<SMLite<TState, TTrigger>> (init_state, m_states);
 		}
 

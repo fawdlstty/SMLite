@@ -2,7 +2,8 @@
 #include <functional>
 #include <iostream>
 #include <string>
-#include "smlite.hpp"
+
+#include "SMLite.hpp"
 
 enum class MyState { Rest, Ready, Reading, Writing };
 enum class MyTrigger { Run, Close, Read, FinishRead, Write, FinishWrite };
