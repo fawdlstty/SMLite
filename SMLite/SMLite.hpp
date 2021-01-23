@@ -1,6 +1,6 @@
 /*
 * SMLite
-* Suitable for C++ (C++17) & C# and easy to use state machine library
+* Suitable for C++ & C# and easy to use state machine library
 * Author: Fawdlstty
 * Version 0.1.3
 * 
@@ -13,12 +13,11 @@
 #ifndef __SMLITE_HPP__
 #define __SMLITE_HPP__
 
-#include <execution>
+#include <exception>
 #include <functional>
 #include <map>
 #include <memory>
 #include <tuple>
-#include <variant>
 #include <vector>
 
 
@@ -86,8 +85,8 @@ namespace Fawdlstty {
 	class _SMLite_ConfigState : public std::enable_shared_from_this<_SMLite_ConfigState<TState, TTrigger>> {
 		friend class SMLite<TState, TTrigger>;
 		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> _try_add_trigger (TTrigger _trigger, _SMLite_ConfigItem *_ptr) {
-			if (m_items.contains (_trigger))
-				throw std::exception ("state is already has this trigger methods.");
+			if (m_items.find (_trigger) != m_items.end ())
+				throw std::exception ((char const* const) "state is already has this trigger methods.");
 			m_items [_trigger] = std::shared_ptr<_SMLite_ConfigItem> (_ptr);
 			return this->shared_from_this ();
 		}
@@ -102,44 +101,44 @@ namespace Fawdlstty {
 			return _try_add_trigger (trigger, new _SMLite_ConfigItem1<TState, TTrigger, Args...> (m_state, trigger, callback));
 		}
 		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenAction (TTrigger trigger, std::function<void (TState, TTrigger)> callback) {
-			return _try_add_trigger (trigger, new _SMLite_ConfigItem0<TState, TTrigger> (m_state, trigger, std::function ([callback] (TState state, TTrigger trigger) -> TState {
+			return _try_add_trigger (trigger, new _SMLite_ConfigItem0<TState, TTrigger> (m_state, trigger, std::function<TState (TState, TTrigger)> ([callback] (TState state, TTrigger trigger) -> TState {
 				callback (state, trigger);
 				return state;
 			})));
 		}
 		template<typename... Args>
 		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenAction (TTrigger trigger, std::function<void (TState, TTrigger, Args...)> callback) {
-			return _try_add_trigger (trigger, new _SMLite_ConfigItem1<TState, TTrigger, Args...> (m_state, trigger, std::function ([callback] (TState state, TTrigger trigger, Args... args) -> TState {
+			return _try_add_trigger (trigger, new _SMLite_ConfigItem1<TState, TTrigger, Args...> (m_state, trigger, std::function<TState (TState, TTrigger)> ([callback] (TState state, TTrigger trigger, Args... args) -> TState {
 				callback (state, trigger, args...);
 				return state;
 			})));
 		}
 		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenChangeTo (TTrigger trigger, TState new_state) {
-			return _try_add_trigger (trigger, new _SMLite_ConfigItem0<TState, TTrigger> (m_state, trigger, std::function ([new_state] (TState state, TTrigger trigger) -> TState {
+			return _try_add_trigger (trigger, new _SMLite_ConfigItem0<TState, TTrigger> (m_state, trigger, std::function<TState (TState, TTrigger)> ([new_state] (TState state, TTrigger trigger) -> TState {
 				return new_state;
 			})));
 		}
 		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenIgnore (TTrigger trigger) {
-			std::function<TState (TState, TTrigger)> f = std::function ([] (TState state, TTrigger trigger) -> TState {
+			std::function<TState (TState, TTrigger)> f = std::function<TState (TState, TTrigger)> ([] (TState state, TTrigger trigger) -> TState {
 				return state;
 			});
 			return _try_add_trigger (trigger, new _SMLite_ConfigItem0<TState, TTrigger> (m_state, trigger, f));
 		}
 		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> OnEntry (std::function<void ()> callback) {
 			if (m_on_entry)
-				throw std::exception ("OnEntry is already have been set.");
+				throw std::exception ((char const* const) "OnEntry is already have been set.");
 			m_on_entry = callback;
 			return this->shared_from_this ();
 		}
 		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> OnLeave (std::function<void ()> callback) {
 			if (m_on_leave)
-				throw std::exception ("OnLeave is already have been set.");
+				throw std::exception ((char const* const) "OnLeave is already have been set.");
 			m_on_leave = callback;
 			return this->shared_from_this ();
 		}
 
 	private:
-		bool _allow_trigger (TTrigger trigger) { return m_items.contains (trigger); }
+		bool _allow_trigger (TTrigger trigger) { return m_items.find (trigger) != m_items.end (); }
 		TState _trigger (TTrigger trigger) {
 			_SMLite_ConfigItem *_ptr0 = m_items [trigger].get ();
 			if (_ptr0) {
@@ -147,7 +146,7 @@ namespace Fawdlstty {
 				if (_ptr1)
 					return _ptr1->_call ();
 			}
-			throw std::exception ("not match function found.");
+			throw std::exception ((char const* const) "not match function found.");
 		}
 		template<typename... Args>
 		TState _trigger (TTrigger trigger, Args... args) {
@@ -157,7 +156,7 @@ namespace Fawdlstty {
 				if (_ptr1)
 					return _ptr1->_call (args...);
 			}
-			throw std::exception ("not match function found.");
+			throw std::exception ((char const* const) "not match function found.");
 		}
 
 		std::function<void ()> m_on_entry, m_on_leave;
@@ -180,13 +179,13 @@ namespace Fawdlstty {
 		TState GetState () { return m_state; }
 		void SetState (TState new_state) { m_state = new_state; }
 		bool AllowTriggering (TTrigger trigger) {
-			if (m_states->contains (m_state))
+			if (m_states->find (m_state) != m_states->end ())
 				return (*m_states) [m_state]->_allow_trigger (trigger);
 			return false;
 		}
 		void Triggering (TTrigger trigger) {
 			if (!AllowTriggering (trigger))
-				throw std::exception ("current state cannot launch this trigger.");
+				throw std::exception ((char const* const) "current state cannot launch this trigger.");
 			auto _p = (*m_states) [m_state];
 			auto _state = _p->_trigger (trigger);
 			if (m_state != _state) {
@@ -201,7 +200,7 @@ namespace Fawdlstty {
 		template<typename... Args>
 		void Triggering (TTrigger trigger, Args... args) {
 			if (!AllowTriggering (trigger))
-				throw std::exception ("current state cannot launch this trigger.");
+				throw std::exception ((char const* const) "current state cannot launch this trigger.");
 			auto _p = (*m_states) [m_state];
 			auto _state = _p->_trigger (trigger, args...);
 			if (m_state != _state) {
@@ -224,9 +223,9 @@ namespace Fawdlstty {
 	public:
 		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> Configure (TState state) {
 			if (m_builded)
-				throw std::exception ("shouldn't configure builder after builded.");
-			if (m_states->contains (state))
-				throw std::exception ("state is already exists.");
+				throw std::exception ((char const* const) "shouldn't configure builder after builded.");
+			if (m_states->find (state) != m_states->end ())
+				throw std::exception ((char const* const) "state is already exists.");
 			auto _ptr = std::make_shared<_SMLite_ConfigState<TState, TTrigger>> (state);
 			(*m_states) [state] = _ptr;
 			return _ptr;
