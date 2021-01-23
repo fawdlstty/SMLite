@@ -1,5 +1,10 @@
 # SMLite
 
+[![license](https://img.shields.io/github/license/fawdlstty/SMLite?color=09f)](./LICENSE)
+[![cpp](https://img.shields.io/lgtm/grade/cpp/github/fawdlstty/SMLite)](https://lgtm.com/projects/g/fawdlstty/SMLite)
+[![csharp](https://img.shields.io/lgtm/grade/csharp/github/fawdlstty/SMLite)](https://lgtm.com/projects/g/fawdlstty/SMLite)
+[![nuget](https://img.shields.io/nuget/dt/Fawdlstty.SMLite?label=NuGet%20downloads)](https://www.nuget.org/packages/Fawdlstty.SMLite)
+
 [English](./README.md) | 简体中文
 
 适用于 `C++`、`C#` 的简单易用的状态机库
