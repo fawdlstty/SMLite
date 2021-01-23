@@ -55,5 +55,6 @@ int main () {
 	assert (_sm->GetState () == MyState::Rest);
 
 	std::cout << "Hello World!\n";
+	getchar ();
 	return 0;
 }

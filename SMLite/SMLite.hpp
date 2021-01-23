@@ -24,6 +24,15 @@
 
 namespace Fawdlstty {
 
+	class _SMLite_Exception: public std::exception {
+	public:
+		_SMLite_Exception (const char* _reason): m_reason (_reason) {}
+		const char* what () const noexcept override { return m_reason; }
+
+	private:
+		const char* m_reason;
+	};
+
 	class _SMLite_ConfigItem {
 		virtual void f () = 0;
 
@@ -86,7 +95,7 @@ namespace Fawdlstty {
 		friend class SMLite<TState, TTrigger>;
 		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> _try_add_trigger (TTrigger _trigger, _SMLite_ConfigItem *_ptr) {
 			if (m_items.find (_trigger) != m_items.end ())
-				throw std::exception ((char const* const) "state is already has this trigger methods.");
+				throw _SMLite_Exception ("state is already has this trigger methods.");
 			m_items [_trigger] = std::shared_ptr<_SMLite_ConfigItem> (_ptr);
 			return this->shared_from_this ();
 		}
@@ -126,13 +135,13 @@ namespace Fawdlstty {
 		}
 		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> OnEntry (std::function<void ()> callback) {
 			if (m_on_entry)
-				throw std::exception ((char const* const) "OnEntry is already have been set.");
+				throw _SMLite_Exception ("OnEntry is already have been set.");
 			m_on_entry = callback;
 			return this->shared_from_this ();
 		}
 		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> OnLeave (std::function<void ()> callback) {
 			if (m_on_leave)
-				throw std::exception ((char const* const) "OnLeave is already have been set.");
+				throw _SMLite_Exception ("OnLeave is already have been set.");
 			m_on_leave = callback;
 			return this->shared_from_this ();
 		}
@@ -146,7 +155,7 @@ namespace Fawdlstty {
 				if (_ptr1)
 					return _ptr1->_call ();
 			}
-			throw std::exception ((char const* const) "not match function found.");
+			throw _SMLite_Exception ("not match function found.");
 		}
 		template<typename... Args>
 		TState _trigger (TTrigger trigger, Args... args) {
@@ -156,7 +165,7 @@ namespace Fawdlstty {
 				if (_ptr1)
 					return _ptr1->_call (args...);
 			}
-			throw std::exception ((char const* const) "not match function found.");
+			throw _SMLite_Exception ("not match function found.");
 		}
 
 		std::function<void ()> m_on_entry, m_on_leave;
@@ -185,7 +194,7 @@ namespace Fawdlstty {
 		}
 		void Triggering (TTrigger trigger) {
 			if (!AllowTriggering (trigger))
-				throw std::exception ((char const* const) "current state cannot launch this trigger.");
+				throw _SMLite_Exception ("current state cannot launch this trigger.");
 			auto _p = (*m_states) [m_state];
 			auto _state = _p->_trigger (trigger);
 			if (m_state != _state) {
@@ -200,7 +209,7 @@ namespace Fawdlstty {
 		template<typename... Args>
 		void Triggering (TTrigger trigger, Args... args) {
 			if (!AllowTriggering (trigger))
-				throw std::exception ((char const* const) "current state cannot launch this trigger.");
+				throw _SMLite_Exception ("current state cannot launch this trigger.");
 			auto _p = (*m_states) [m_state];
 			auto _state = _p->_trigger (trigger, args...);
 			if (m_state != _state) {
@@ -223,9 +232,9 @@ namespace Fawdlstty {
 	public:
 		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> Configure (TState state) {
 			if (m_builded)
-				throw std::exception ((char const* const) "shouldn't configure builder after builded.");
+				throw _SMLite_Exception ("shouldn't configure builder after builded.");
 			if (m_states->find (state) != m_states->end ())
-				throw std::exception ((char const* const) "state is already exists.");
+				throw _SMLite_Exception ("state is already exists.");
 			auto _ptr = std::make_shared<_SMLite_ConfigState<TState, TTrigger>> (state);
 			(*m_states) [state] = _ptr;
 			return _ptr;
