@@ -20,7 +20,6 @@
 	+ [ ] 'OnEntryAsync'
 	+ [ ] 'OnLeaveAsync'
 - SMLite
-	+ [ ] Thread Safe
 	+ [x] 'GetState'
 	+ [x] 'SetState'
 	+ [x] 'Triggering'
@@ -28,6 +27,8 @@
 	+ [ ] 'TriggeringAsync'
 	+ [ ] 'TriggeringAsync' with argument
 - [ ] Test
+- [ ] thread safe
+- [ ] cancellation
 
 ### C\#
 
@@ -47,7 +48,6 @@
 	+ [x] 'OnEntryAsync'
 	+ [x] 'OnLeaveAsync'
 - SMLite
-	+ [ ] Thread Safe
 	+ [x] 'State' getter
 	+ [x] 'State' setter
 	+ [x] 'Triggering'
@@ -55,6 +55,8 @@
 	+ [x] 'TriggeringAsync'
 	+ [x] 'TriggeringAsync' with argument
 - [x] Test
+- [ ] thread safe
+- [ ] cancellation
 
 ## TODO
 
@@ -62,3 +64,5 @@
 2. C++: co_async/co_await
 3. C++: thread safe
 4. C#: thread safe
+5. C++: cancellation
+6. C#: cancellation
