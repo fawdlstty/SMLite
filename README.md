@@ -9,6 +9,32 @@ English | [简体中文](./README.zh.md)
 
 Suitable for `C++` & `C#` and easy to use state machine library
 
+## Support Environments
+
+<table><tr><td>
+
+| C++ Version | Support |
+| :---: | :---: |
+| C++ 98 | × |
+| C++ 03 | × |
+| C++ 11 | √ |
+| C++ 14 | √ |
+| C++ 17 | √ |
+| C++ 20 | √ |
+
+</td><td>
+
+| C# Runtime | Support |
+| :---: | :---: |
+| .NET Framework 3.5 | × |
+| .NET Framework 4.0 | × |
+| .NET Framework 4.5 | √ |
+| .NET Standard 2.0 | √ |
+| .NET Standard 2.1 | √ |
+| .NET 5.0 | √ |
+
+</td></tr></table>
+
 ## Tutorials
 
 ### C++
@@ -235,7 +261,3 @@ await _sm.TriggeringAsync (MyTrigger.Run, "hello");
 ```
 
 Await asynchronously fired events will be returned after all functions have finished executing.In addition, it is important to note that synchronous and asynchronous should not be used together. If not used properly, it will easily lead to deadlock. The best practice is to use uniform synchronous or uniform asynchronous.
-
-## License
-
-MIT License
