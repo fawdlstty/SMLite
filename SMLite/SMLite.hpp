@@ -1,6 +1,6 @@
 /*
 * SMLite
-* Suitable for C++ & C# and easy to use state machine library
+* State machine library for `C++` & `C#`
 * Author: Fawdlstty
 * Version 0.1.4
 * 
