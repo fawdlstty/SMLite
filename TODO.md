@@ -26,7 +26,7 @@
 	+ [x] 'Triggering' with argument
 	+ [ ] 'TriggeringAsync'
 	+ [ ] 'TriggeringAsync' with argument
-- [ ] Test
+- [x] Test
 - [ ] thread safe
 - [ ] cancellation
 
@@ -60,9 +60,8 @@
 
 ## TODO
 
-1. C++: Test
-2. C++: co_async/co_await
-3. C++: thread safe
-4. C#: thread safe
-5. C++: cancellation
-6. C#: cancellation
+1. C++: co_async/co_await
+2. C++: thread safe
+3. C#: thread safe
+4. C++: cancellation
+5. C#: cancellation

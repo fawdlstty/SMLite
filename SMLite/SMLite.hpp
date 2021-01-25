@@ -2,7 +2,7 @@
 * SMLite
 * Suitable for C++ & C# and easy to use state machine library
 * Author: Fawdlstty
-* Version 0.1.3
+* Version 0.1.4
 * 
 * Source Repository            <https://github.com/fawdlstty/SMLite>
 * Report                       <https://github.com/fawdlstty/SMLite/issues>
@@ -117,7 +117,7 @@ namespace Fawdlstty {
 		}
 		template<typename... Args>
 		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenAction (TTrigger trigger, std::function<void (TState, TTrigger, Args...)> callback) {
-			return _try_add_trigger (trigger, new _SMLite_ConfigItem1<TState, TTrigger, Args...> (m_state, trigger, std::function<TState (TState, TTrigger)> ([callback] (TState state, TTrigger trigger, Args... args) -> TState {
+			return _try_add_trigger (trigger, new _SMLite_ConfigItem1<TState, TTrigger, Args...> (m_state, trigger, std::function<TState (TState, TTrigger, Args...)> ([callback] (TState state, TTrigger trigger, Args... args) -> TState {
 				callback (state, trigger, args...);
 				return state;
 			})));

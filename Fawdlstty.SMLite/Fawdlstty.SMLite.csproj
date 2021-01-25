@@ -10,9 +10,10 @@
     <PackageProjectUrl>https://github.com/fawdlstty/SMLite</PackageProjectUrl>
     <RepositoryUrl>https://github.com/fawdlstty/SMLite</RepositoryUrl>
     <RepositoryType></RepositoryType>
-    <Version>0.1.3</Version>
+    <Version>0.1.4</Version>
     <Authors>Fawdlstty</Authors>
     <PackageTags>statemachine</PackageTags>
+    <AssemblyVersion>0.1.4.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
