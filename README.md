@@ -232,27 +232,27 @@ _smb.Configure (MyState.Ready)
     })
 
     // The effect is identical to WhenFunc, but this function specifies an asynchronous method
-    .WhenFuncAsync (MyTrigger.Read, async (MyState _state, MyTrigger _trigger) => {
+    .WhenFuncAsync (MyTrigger.Read, async (MyState _state, MyTrigger _trigger, CancellationToken _token) => {
         await Task.Yield ();
         Console.WriteLine ("call WhenFunc callback");
         return MyState.Ready;
     })
 
     // The effect is identical to WhenFunc, but this function specifies an asynchronous method
-    .WhenFuncAsync (MyTrigger.FinishRead, async (MyState _state, MyTrigger _trigger, string _param) => {
+    .WhenFuncAsync (MyTrigger.FinishRead, async (MyState _state, MyTrigger _trigger, CancellationToken _token, string _param) => {
         await Task.Yield ();
         Console.WriteLine ($"call WhenFunc callback with param [{_param}]");
         return MyState.Ready;
     })
 
     // The effect is identical to WhenAction, but this function specifies an asynchronous method
-    .WhenActionAsync (MyTrigger.Read, async (MyState _state, MyTrigger _trigger) => {
+    .WhenActionAsync (MyTrigger.Read, async (MyState _state, MyTrigger _trigger, CancellationToken _token) => {
         await Task.Yield ();
         Console.WriteLine ("call WhenAction callback");
     })
 
     // The effect is identical to WhenAction, but this function specifies an asynchronous method
-    .WhenActionAsync (MyTrigger.FinishRead, async (MyState _state, MyTrigger _trigger, string _param) => {
+    .WhenActionAsync (MyTrigger.FinishRead, async (MyState _state, MyTrigger _trigger, CancellationToken _token, string _param) => {
         await Task.Yield ();
         Console.WriteLine ($"call WhenAction callback with param [{_param}]");
     });
@@ -263,6 +263,10 @@ Then there is the firing of an event:
 ```csharp
 // An event is fired asynchronously, passing in the specified parameters
 await _sm.TriggeringAsync (MyTrigger.Run, "hello");
+
+// Limit the maximum execution time of an asynchronous task, timeout to cancel
+var _source = new CancellationTokenSource (TimeSpan.FromSeconds (10));
+await _sm.TriggeringAsync (MyTrigger.Run, _source.Token, "hello");
 ```
 
 Await asynchronously fired events will be returned after all functions have finished executing.In addition, it is important to note that synchronous and asynchronous should not be used together. If not used properly, it will easily lead to deadlock. The best practice is to use uniform synchronous or uniform asynchronous.

@@ -233,27 +233,27 @@ _smb.Configure (MyState.Ready)
     })
 
     // 效果与 WhenFunc 一致，不过这函数指定异步方法
-    .WhenFuncAsync (MyTrigger.Read, async (MyState _state, MyTrigger _trigger) => {
+    .WhenFuncAsync (MyTrigger.Read, async (MyState _state, MyTrigger _trigger, CancellationToken _token) => {
         await Task.Yield ();
         Console.WriteLine ("call WhenFunc callback");
         return MyState.Ready;
     })
 
     // 效果与 WhenFunc 一致，不过这函数指定异步方法
-    .WhenFuncAsync (MyTrigger.FinishRead, async (MyState _state, MyTrigger _trigger, string _param) => {
+    .WhenFuncAsync (MyTrigger.FinishRead, async (MyState _state, MyTrigger _trigger, CancellationToken _token, string _param) => {
         await Task.Yield ();
         Console.WriteLine ($"call WhenFunc callback with param [{_param}]");
         return MyState.Ready;
     })
 
     // 效果与 WhenAction 一致，不过这函数指定异步方法
-    .WhenActionAsync (MyTrigger.Read, async (MyState _state, MyTrigger _trigger) => {
+    .WhenActionAsync (MyTrigger.Read, async (MyState _state, MyTrigger _trigger, CancellationToken _token) => {
         await Task.Yield ();
         Console.WriteLine ("call WhenAction callback");
     })
 
     // 效果与 WhenAction 一致，不过这函数指定异步方法
-    .WhenActionAsync (MyTrigger.FinishRead, async (MyState _state, MyTrigger _trigger, string _param) => {
+    .WhenActionAsync (MyTrigger.FinishRead, async (MyState _state, MyTrigger _trigger, CancellationToken _token, string _param) => {
         await Task.Yield ();
         Console.WriteLine ($"call WhenAction callback with param [{_param}]");
     });
@@ -264,6 +264,10 @@ _smb.Configure (MyState.Ready)
 ```csharp
 // 异步触发一个事件，并传入指定参数
 await _sm.TriggeringAsync (MyTrigger.Run, "hello");
+
+// 限定异步任务最长执行时间，超时取消
+var _source = new CancellationTokenSource (TimeSpan.FromSeconds (10));
+await _sm.TriggeringAsync (MyTrigger.Run, _source.Token, "hello");
 ```
 
 await异步触发的事件将在所有函数执行完毕之后返回。另外需要注意，同步与异步最好不要混用，使用的不好就很容易导致死锁，最佳实践是统一同步或统一异步。
