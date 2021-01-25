@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Fawdlstty.SMLite.Test {
@@ -243,12 +244,12 @@ namespace Fawdlstty.SMLite.Test {
 			string s = "";
 			var _smb = new SMLiteBuilder<MyState, MyTrigger> ();
 			_smb.Configure (MyState.Rest)
-				.WhenFuncAsync (MyTrigger.Run, async (MyState _state, MyTrigger _trigger) => { await Task.Yield (); s = "WhenFunc_Run"; return MyState.Ready; })
-				.WhenFuncAsync (MyTrigger.Read, async (MyState _state, MyTrigger _trigger, string _p1) => { await Task.Yield (); s = _p1; return MyState.Ready; })
-				.WhenFuncAsync (MyTrigger.FinishRead, async (MyState _state, MyTrigger _trigger, string _p1, int _p2) => { await Task.Yield (); s = $"{_p1}{_p2}"; return MyState.Ready; })
-				.WhenActionAsync (MyTrigger.Close, async (MyState _state, MyTrigger _trigger) => { await Task.Yield (); s = "WhenAction_Close"; })
-				.WhenActionAsync (MyTrigger.Write, async (MyState _state, MyTrigger _trigger, string _p1) => { await Task.Yield (); s = _p1; })
-				.WhenActionAsync (MyTrigger.FinishWrite, async (MyState _state, MyTrigger _trigger, string _p1, int _p2) => { await Task.Yield (); s = $"{_p1}{_p2}"; });
+				.WhenFuncAsync (MyTrigger.Run, async (MyState _state, MyTrigger _trigger, CancellationToken _token) => { await Task.Yield (); s = "WhenFunc_Run"; return MyState.Ready; })
+				.WhenFuncAsync (MyTrigger.Read, async (MyState _state, MyTrigger _trigger, CancellationToken _token, string _p1) => { await Task.Yield (); s = _p1; return MyState.Ready; })
+				.WhenFuncAsync (MyTrigger.FinishRead, async (MyState _state, MyTrigger _trigger, CancellationToken _token, string _p1, int _p2) => { await Task.Yield (); s = $"{_p1}{_p2}"; return MyState.Ready; })
+				.WhenActionAsync (MyTrigger.Close, async (MyState _state, MyTrigger _trigger, CancellationToken _token) => { await Task.Yield (); s = "WhenAction_Close"; })
+				.WhenActionAsync (MyTrigger.Write, async (MyState _state, MyTrigger _trigger, CancellationToken _token, string _p1) => { await Task.Yield (); s = _p1; })
+				.WhenActionAsync (MyTrigger.FinishWrite, async (MyState _state, MyTrigger _trigger, CancellationToken _token, string _p1, int _p2) => { await Task.Yield (); s = $"{_p1}{_p2}"; });
 			_smb.Configure (MyState.Ready)
 				.WhenChangeTo (MyTrigger.Close, MyState.Rest);
 

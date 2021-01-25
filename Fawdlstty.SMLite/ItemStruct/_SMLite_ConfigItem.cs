@@ -3,12 +3,35 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Fawdlstty.SMLite.ItemStruct {
+    [Flags]
+    enum _SMLite_BuildItem {
+        None = 0,
+        State = 1,
+        Trigger = 2,
+        CancellationToken = 4,
+	}
+
     class _SMLite_ConfigItem<TState, TTrigger> {
-        internal async Task<TState> _call_async (params object[] args) {
-            var _v = new List<object> () { State, Trigger };
+        internal _SMLite_ConfigItem (_SMLite_BuildItem build_item, TState state, TTrigger trigger, object callback, MethodInfo callback_info) {
+            BuildItem = build_item;
+            State = state;
+            Trigger = trigger;
+            Callback = callback;
+            CallbackInfo = callback_info;
+        }
+
+        internal async Task<TState> _call_async (CancellationToken token, params object[] args) {
+            var _v = new List<object> ();
+            if ((BuildItem & _SMLite_BuildItem.State) > 0)
+                _v.Add (State);
+            if ((BuildItem & _SMLite_BuildItem.Trigger) > 0)
+                _v.Add (Trigger);
+            if ((BuildItem & _SMLite_BuildItem.CancellationToken) > 0)
+                _v.Add (token);
             if (args?.Length > 0)
                 _v.AddRange (args);
             var _state = Callback.GetType ().InvokeMember ("Invoke", BindingFlags.InvokeMethod, null, Callback, _v.ToArray ());
@@ -22,9 +45,10 @@ namespace Fawdlstty.SMLite.ItemStruct {
             }
         }
 
-        internal TState State { get; set; }
-        internal TTrigger Trigger { get; set; }
-        internal object Callback { get; set; }
-        internal MethodInfo CallbackInfo { get; set; }
+        internal _SMLite_BuildItem BuildItem { get; private set; }
+        internal TState State { get; private set; }
+        internal TTrigger Trigger { get; private set; }
+        internal object Callback { get; private set; }
+        internal MethodInfo CallbackInfo { get; private set; }
     }
 }

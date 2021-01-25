@@ -56,7 +56,7 @@
 	+ [x] 'TriggeringAsync' with argument
 - [x] Test
 - [ ] thread safe
-- [ ] cancellation
+- [x] cancellation
 
 ## TODO
 
@@ -64,4 +64,3 @@
 2. C++: thread safe
 3. C#: thread safe
 4. C++: cancellation
-5. C#: cancellation
