@@ -3,6 +3,7 @@
 [![license](https://img.shields.io/github/license/fawdlstty/SMLite?color=09f)](./LICENSE)
 [![cpp](https://img.shields.io/lgtm/grade/cpp/github/fawdlstty/SMLite)](https://lgtm.com/projects/g/fawdlstty/SMLite)
 [![csharp](https://img.shields.io/lgtm/grade/csharp/github/fawdlstty/SMLite)](https://lgtm.com/projects/g/fawdlstty/SMLite)
+[![python](https://img.shields.io/lgtm/grade/python/github/fawdlstty/SMLite)](https://lgtm.com/projects/g/fawdlstty/SMLite)
 [![nuget](https://img.shields.io/nuget/dt/Fawdlstty.SMLite?label=nuget%20downloads)](https://www.nuget.org/packages/Fawdlstty.SMLite)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/fawdlstty/SMLite.svg?logo=lgtm)](https://lgtm.com/projects/g/fawdlstty/SMLite/alerts/)
 [![AppVeyor Build](https://img.shields.io/appveyor/build/fawdlstty/SMLite)](https://ci.appveyor.com/project/fawdlstty/SMLite)
@@ -16,35 +17,14 @@ State machine library for C++ & C# & Python
 
 ## Support Environments
 
-<table><tr><td>
-
-| C++ Version | Support |
-| :---: | :---: |
-| C++ 98 | × |
-| C++ 03 | × |
-| C++ 11 | √ |
-| C++ 14 | √ |
-| C++ 17 | √ |
-| C++ 20 | √ |
-
-</td><td>
-
-| C# Runtime | Support |
-| :---: | :---: |
-| .NET Framework 3.5 | × |
-| .NET Framework 4.0 | × |
-| .NET Framework 4.5 | √ |
-| .NET Standard 2.0 | √ |
-| .NET Standard 2.1 | √ |
-| .NET 5.0 | √ |
-
-</td><td>
-
-| Python Runtime | Support |
-| :---: | :---: |
-| Python 3.7 | √ |
-
-</td></tr></table>
+- C++ library supported versions
+    + `C++ 11` and above
+- C# library supported runtimes
+    + `.Net Framework 4.5` and above
+    + `.Net Standard 2.0/2.1`
+    + `.Net 5`
+- Python library supported runtimes
+    + `Python 3.7`
 
 ## Tutorials
 
