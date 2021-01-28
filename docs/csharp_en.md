@@ -44,14 +44,14 @@ _smb.Configure (MyState.Rest)
         return MyState.Ready;
     })
 
-    // If MyTrigger.Read is fired, the callback function is called (triggering this method callback does not adjust the return value)
-    .WhenAction (MyTrigger.Read, (MyState _state, MyTrigger _trigger) => {
+    // If MyTrigger.Write is fired, the callback function is called (triggering this method callback does not adjust the return value)
+    .WhenAction (MyTrigger.Write, (MyState _state, MyTrigger _trigger) => {
         Console.WriteLine ("call WhenAction callback");
     })
 
-    // If MyTrigger.FinishRead is fired, the callback function is called (triggering this method callback does not adjust the return value)
+    // If MyTrigger.FinishWrite is fired, the callback function is called (triggering this method callback does not adjust the return value)
     // Note that an argument must be passed when firing, and the number and type must match exactly, otherwise an exception is thrown
-    .WhenAction (MyTrigger.FinishRead, (MyState _state, MyTrigger _trigger, string _param) => {
+    .WhenAction (MyTrigger.FinishWrite, (MyState _state, MyTrigger _trigger, string _param) => {
         Console.WriteLine ($"call WhenAction callback with param [{_param}]");
     });
 ```
