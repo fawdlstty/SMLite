@@ -28,7 +28,7 @@ State machine library for C++ & C# & Python
 
 ## Tutorials
 
-<div style="display: none">[Online Reading](https://www.fawdlstty.com/smlite/)</div>
+Accelerated access from mainland Chinese users: [Document Images](https://www.fawdlstty.com/smlite/)
 
 - [C++ Library Tutorials](docs/cpp_en.md)
 - [C# Library Tutorials](docs/csharp_en.md)

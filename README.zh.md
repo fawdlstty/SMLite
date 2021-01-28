@@ -28,7 +28,7 @@ C++、C#、Python 的状态机库
 
 ## 用户手册
 
-<div style="display: none">[在线阅读](https://www.fawdlstty.com/smlite/)</div>
+中国大陆用户加速访问：[文档镜像](https://www.fawdlstty.com/smlite/)
 
 - [C++库用户手册](docs/cpp_zh.md)
 - [C#库用户手册](docs/csharp_zh.md)

@@ -50,14 +50,14 @@ _smb.Configure (MyState::Rest)
         return MyState::Ready;
     }))
 
-    // If MyTrigger::Read is fired, the callback function is called (triggering this method callback does not adjust the return value)
-    ->WhenAction (MyTrigger::Read, std::function ([] (MyState _state, MyTrigger _trigger) {
+    // If MyTrigger::Write is fired, the callback function is called (triggering this method callback does not adjust the return value)
+    ->WhenAction (MyTrigger::Write, std::function ([] (MyState _state, MyTrigger _trigger) {
         std::cout << "call WhenAction callback\n";
     }))
 
-    // If MyTrigger::FinishRead is fired, the callback function is called (triggering this method callback does not adjust the return value).
+    // If MyTrigger::FinishWrite is fired, the callback function is called (triggering this method callback does not adjust the return value).
     // Note that an argument must be passed when firing, and the number and type must match exactly, otherwise an exception is thrown
-    ->WhenAction (MyTrigger::FinishRead, std::function ([] (MyState _state, MyTrigger _trigger, std::string _param) {
+    ->WhenAction (MyTrigger::FinishWrite, std::function ([] (MyState _state, MyTrigger _trigger, std::string _param) {
         std::cout << "call WhenAction callback with param [" << _param << "]\n";
     }));
 ```

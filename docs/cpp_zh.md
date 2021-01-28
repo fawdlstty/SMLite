@@ -50,14 +50,14 @@ _smb.Configure (MyState::Rest)
         return MyState::Ready;
     }))
 
-    // 如果触发 MyTrigger::Read，则调用回调函数（触发此方法回调不调整返回值）
-    ->WhenAction (MyTrigger::Read, std::function ([] (MyState _state, MyTrigger _trigger) {
+    // 如果触发 MyTrigger::Write，则调用回调函数（触发此方法回调不调整返回值）
+    ->WhenAction (MyTrigger::Write, std::function ([] (MyState _state, MyTrigger _trigger) {
         std::cout << "call WhenAction callback\n";
     }))
 
-    // 如果触发 MyTrigger::FinishRead，则调用回调函数（触发此方法回调不调整返回值）
+    // 如果触发 MyTrigger::FinishWrite，则调用回调函数（触发此方法回调不调整返回值）
     // 需注意，触发时候需传入参数，数量与类型必须完全匹配，否则抛异常
-    ->WhenAction (MyTrigger::FinishRead, std::function ([] (MyState _state, MyTrigger _trigger, std::string _param) {
+    ->WhenAction (MyTrigger::FinishWrite, std::function ([] (MyState _state, MyTrigger _trigger, std::string _param) {
         std::cout << "call WhenAction callback with param [" << _param << "]\n";
     }));
 ```
