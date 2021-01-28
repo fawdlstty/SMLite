@@ -6,4 +6,4 @@ cmake_minimum_required (VERSION 3.8)
 project ("SMLite")
 
 # 包含子项目。
-add_subdirectory ("SMLite")
+add_subdirectory ("src_cpp/SMLite")
