@@ -38,13 +38,19 @@ State machine library for `C++` & `C#`
 | .NET Standard 2.1 | √ |
 | .NET 5.0 | √ |
 
+</td><td>
+
+| Python Runtime | Support |
+| :---: | :---: |
+| Python 3.7 | √ |
+
 </td></tr></table>
 
 ## Tutorials
 
 ### C++
 
-Step 1. Download the repository, copy the `SMLite/SMLite.hpp` file in the repository into your solution project, and include it
+Step 1. Download the repository, copy the `src_cpp/SMLite/SMLite.hpp` file in the repository into your solution project, and include it
 
 ```cpp
 #include "SMLite.hpp"

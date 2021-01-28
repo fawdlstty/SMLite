@@ -58,9 +58,30 @@
 - [ ] thread safe
 - [x] cancellation
 
-## TODO
+### Python
 
-1. C++: co_async/co_await
-2. C++: thread safe
-3. C#: thread safe
-4. C++: cancellation
+- SMLiteBuilder
+	+ [ ] 'WhenFunc'
+	+ [ ] 'WhenFunc' with argument
+	+ [ ] 'WhenAction'
+	+ [ ] 'WhenAction' with argument
+	+ [ ] 'WhenChangeTo'
+	+ [ ] 'WhenIgnore'
+	+ [ ] 'OnEntry'
+	+ [ ] 'OnLeave'
+	+ [ ] 'WhenFuncAsync'
+	+ [ ] 'WhenFuncAsync' with argument
+	+ [ ] 'WhenActionAsync'
+	+ [ ] 'WhenActionAsync' with argument
+	+ [ ] 'OnEntryAsync'
+	+ [ ] 'OnLeaveAsync'
+- SMLite
+	+ [ ] 'GetState'
+	+ [ ] 'SetState'
+	+ [ ] 'Triggering'
+	+ [ ] 'Triggering' with argument
+	+ [ ] 'TriggeringAsync'
+	+ [ ] 'TriggeringAsync' with argument
+- [ ] Test
+- [ ] thread safe
+- [ ] cancellation

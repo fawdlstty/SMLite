@@ -4,20 +4,20 @@
     <TargetFrameworks>net45;netstandard2.0;netstandard2.1;net5.0</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Description>State machine library for C++ &amp; C#</Description>
+    <Description>State machine library for C++ &amp; C# &amp; Python</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <Copyright>Copyright (C) 2021 Fawdlstty &lt;https://www.fawdlstty.com&gt;</Copyright>
     <PackageProjectUrl>https://github.com/fawdlstty/SMLite</PackageProjectUrl>
     <RepositoryUrl>https://github.com/fawdlstty/SMLite</RepositoryUrl>
     <RepositoryType></RepositoryType>
-    <Version>0.1.4</Version>
+    <Version>0.1.5</Version>
     <Authors>Fawdlstty</Authors>
     <PackageTags>statemachine</PackageTags>
-    <AssemblyVersion>0.1.4.0</AssemblyVersion>
+    <AssemblyVersion>0.1.5.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\LICENSE">
+    <None Include="..\..\LICENSE">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>

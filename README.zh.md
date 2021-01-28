@@ -38,13 +38,19 @@
 | .NET Standard 2.1 | √ |
 | .NET 5.0 | √ |
 
+</td><td>
+
+| Python Runtime | Support |
+| :---: | :---: |
+| Python 3.7 | √ |
+
 </td></tr></table>
 
 ## 如何使用
 
 ### C++
 
-Step 1. 下载仓库，将仓库中的`SMLite/SMLite.hpp`文件拷贝进自己的解决方案项目，并引用
+Step 1. 下载仓库，将仓库中的`src_cpp/SMLite/SMLite.hpp`文件拷贝进自己的解决方案项目，并引用
 
 ```cpp
 #include "SMLite.hpp"

@@ -1,8 +1,8 @@
 /*
 * SMLite
-* State machine library for C++ & C#
+* State machine library for C++ & C# & Python
 * Author: Fawdlstty
-* Version 0.1.4
+* Version 0.1.5
 * 
 * Source Repository            <https://github.com/fawdlstty/SMLite>
 * Report                       <https://github.com/fawdlstty/SMLite/issues>
