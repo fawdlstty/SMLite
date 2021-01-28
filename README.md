@@ -10,7 +10,7 @@
 
 English | [简体中文](./README.zh.md)
 
-State machine library for `C++` & `C#`
+State machine library for C++ & C# & Python
 
 [TODO](./TODO.md)
 

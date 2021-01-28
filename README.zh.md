@@ -10,7 +10,7 @@
 
 [English](./README.md) | 简体中文
 
-`C++`、`C#` 的状态机库
+C++、C#、Python 的状态机库
 
 [TODO](./TODO.md)
 
