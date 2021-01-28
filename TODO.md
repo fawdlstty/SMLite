@@ -61,14 +61,14 @@
 ### Python
 
 - SMLiteBuilder
-	+ [ ] 'WhenFunc'
-	+ [ ] 'WhenFunc' with argument
-	+ [ ] 'WhenAction'
-	+ [ ] 'WhenAction' with argument
-	+ [ ] 'WhenChangeTo'
-	+ [ ] 'WhenIgnore'
-	+ [ ] 'OnEntry'
-	+ [ ] 'OnLeave'
+	+ [x] 'WhenFunc'
+	+ [x] 'WhenFunc' with argument
+	+ [x] 'WhenAction'
+	+ [x] 'WhenAction' with argument
+	+ [x] 'WhenChangeTo'
+	+ [x] 'WhenIgnore'
+	+ [x] 'OnEntry'
+	+ [x] 'OnLeave'
 	+ [ ] 'WhenFuncAsync'
 	+ [ ] 'WhenFuncAsync' with argument
 	+ [ ] 'WhenActionAsync'
@@ -76,12 +76,12 @@
 	+ [ ] 'OnEntryAsync'
 	+ [ ] 'OnLeaveAsync'
 - SMLite
-	+ [ ] 'GetState'
-	+ [ ] 'SetState'
-	+ [ ] 'Triggering'
-	+ [ ] 'Triggering' with argument
+	+ [x] 'GetState'
+	+ [x] 'SetState'
+	+ [x] 'Triggering'
+	+ [x] 'Triggering' with argument
 	+ [ ] 'TriggeringAsync'
 	+ [ ] 'TriggeringAsync' with argument
-- [ ] Test
+- [x] Test
 - [ ] thread safe
 - [ ] cancellation
