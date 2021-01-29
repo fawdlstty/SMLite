@@ -17,6 +17,8 @@ State machine library for C++ & C# & Python
 
 ## Support Environments
 
+- C library supported versions
+    + `C99` and above (WIP)
 - C++ library supported versions
     + `C++ 11` and above
 - C# library supported runtimes
@@ -33,3 +35,9 @@ Accelerated access from mainland Chinese users: [Document Images](https://www.fa
 - [C++ Library Tutorials](docs/cpp_en.md)
 - [C# Library Tutorials](docs/csharp_en.md)
 - [Python Library Tutorials](docs/python_en.md)
+
+## Dependence
+
+- tstl2cl
+    + https://sourceforge.net/projects/tstl2cl/
+    + License: zlib/libpng License

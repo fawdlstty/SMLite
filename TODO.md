@@ -1,87 +1,47 @@
 # SMLite TODO
 
-## Implements
+## 实现进度
+
+### C
+
+- [ ] 指定同步方法
+- [ ] 指定异步方法
+- [ ] 同步触发
+- [ ] 异步触发
+- [ ] 测试
+- [ ] 线程安全
+- [ ] 撤销触发
 
 ### C++
 
-- SMLiteBuilder
-	+ [x] 'WhenFunc'
-	+ [x] 'WhenFunc' with argument
-	+ [x] 'WhenAction'
-	+ [x] 'WhenAction' with argument
-	+ [x] 'WhenChangeTo'
-	+ [x] 'WhenIgnore'
-	+ [x] 'OnEntry'
-	+ [x] 'OnLeave'
-	+ [ ] 'WhenFuncAsync'
-	+ [ ] 'WhenFuncAsync' with argument
-	+ [ ] 'WhenActionAsync'
-	+ [ ] 'WhenActionAsync' with argument
-	+ [ ] 'OnEntryAsync'
-	+ [ ] 'OnLeaveAsync'
-- SMLite
-	+ [x] 'GetState'
-	+ [x] 'SetState'
-	+ [x] 'Triggering'
-	+ [x] 'Triggering' with argument
-	+ [ ] 'TriggeringAsync'
-	+ [ ] 'TriggeringAsync' with argument
-- [x] Test
-- [ ] thread safe
-- [ ] cancellation
+- [x] 指定同步方法
+- [ ] 指定异步方法
+- [x] 同步触发
+- [ ] 异步触发
+- [x] 测试
+- [ ] 线程安全
+- [ ] 撤销触发
 
 ### C\#
 
-- SMLiteBuilder
-	+ [x] 'WhenFunc'
-	+ [x] 'WhenFunc' with argument
-	+ [x] 'WhenAction'
-	+ [x] 'WhenAction' with argument
-	+ [x] 'WhenChangeTo'
-	+ [x] 'WhenIgnore'
-	+ [x] 'OnEntry'
-	+ [x] 'OnLeave'
-	+ [x] 'WhenFuncAsync'
-	+ [x] 'WhenFuncAsync' with argument
-	+ [x] 'WhenActionAsync'
-	+ [x] 'WhenActionAsync' with argument
-	+ [x] 'OnEntryAsync'
-	+ [x] 'OnLeaveAsync'
-- SMLite
-	+ [x] 'State' getter
-	+ [x] 'State' setter
-	+ [x] 'Triggering'
-	+ [x] 'Triggering' with argument
-	+ [x] 'TriggeringAsync'
-	+ [x] 'TriggeringAsync' with argument
-- [x] Test
-- [ ] thread safe
-- [x] cancellation
+- [x] 指定同步方法
+- [x] 指定异步方法
+- [x] 同步触发
+- [x] 异步触发
+- [x] 测试
+- [x] 线程安全
+- [x] 撤销触发
 
 ### Python
 
-- SMLiteBuilder
-	+ [x] 'WhenFunc'
-	+ [x] 'WhenFunc' with argument
-	+ [x] 'WhenAction'
-	+ [x] 'WhenAction' with argument
-	+ [x] 'WhenChangeTo'
-	+ [x] 'WhenIgnore'
-	+ [x] 'OnEntry'
-	+ [x] 'OnLeave'
-	+ [ ] 'WhenFuncAsync'
-	+ [ ] 'WhenFuncAsync' with argument
-	+ [ ] 'WhenActionAsync'
-	+ [ ] 'WhenActionAsync' with argument
-	+ [ ] 'OnEntryAsync'
-	+ [ ] 'OnLeaveAsync'
-- SMLite
-	+ [x] 'GetState'
-	+ [x] 'SetState'
-	+ [x] 'Triggering'
-	+ [x] 'Triggering' with argument
-	+ [ ] 'TriggeringAsync'
-	+ [ ] 'TriggeringAsync' with argument
-- [x] Test
-- [ ] thread safe
-- [ ] cancellation
+- [x] 指定同步方法
+- [ ] 指定异步方法
+- [x] 同步触发
+- [ ] 异步触发
+- [x] 测试
+- [ ] 线程安全
+- [ ] 撤销触发
+
+## TODO
+
+切换状态时，对于不存在的状态的判断

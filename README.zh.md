@@ -17,6 +17,8 @@ C++、C#、Python 的状态机库
 
 ## 支持的环境
 
+- C库 支持的版本
+    + `C99` 及以上 (正在开发)
 - C++库 支持的版本
     + `C++ 11` 及以上
 - C#库 支持的运行时
@@ -33,3 +35,9 @@ C++、C#、Python 的状态机库
 - [C++库用户手册](docs/cpp_zh.md)
 - [C#库用户手册](docs/csharp_zh.md)
 - [Python库用户手册](docs/python_zh.md)
+
+## 依赖库
+
+- tstl2cl
+    + https://sourceforge.net/projects/tstl2cl/
+    + 开源协议: zlib/libpng License
