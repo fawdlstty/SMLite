@@ -38,10 +38,9 @@ typedef struct {
 } smlite_configstate_t, *psmlite_configstate_t;
 
 typedef struct {
-	notify_func_t		m_on_entry;
-	notify_func_t		m_on_leave;
 	int32_t				m_state;
-	c_map				m_items;
+	int32_t				m_trigger;
+	void				*m_callback;
 } smlite_configitem_t, *psmlite_configitem_t;
 
 #define LIBSMLITE_IMPL 1

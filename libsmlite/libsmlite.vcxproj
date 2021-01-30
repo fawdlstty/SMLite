@@ -161,7 +161,7 @@
   <ItemGroup>
     <ClCompile Include="smlite.c" />
     <ClCompile Include="smlite_builder.c" />
-    <ClCompile Include="smlite_configitem.cpp" />
+    <ClCompile Include="smlite_configitem.c" />
     <ClCompile Include="smlite_configstate.c" />
     <ClCompile Include="tstl2cl\c_algo.c" />
     <ClCompile Include="tstl2cl\c_function.c" />
