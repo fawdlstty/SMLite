@@ -178,7 +178,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="libsmlite.h" />
-    <ClInclude Include="local.h" />
     <ClInclude Include="tstl2cl\c_algo.h" />
     <ClInclude Include="tstl2cl\c_function.h" />
     <ClInclude Include="tstl2cl\c_memory.h" />

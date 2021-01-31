@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "local.h"
+#include "libsmlite.h"
 
 
 
@@ -41,11 +41,15 @@ psmlite_configstate_t smlite_builder_configure (psmlite_builder_t builder, int32
 	c_iterator _iter, _end;
 	psmlite_configstate_t _ptr;
 	c_pair *_pair;
+	if (!builder) {
+		printf ("parameter connot be null.\n");
+		return 0;
+	}
 	if (builder->m_builded) {
 		printf ("shouldn't configure builder after builded.\n");
 		return 0;
 	}
-	_iter = c_map_find (&builder->m_states, state);
+	_iter = c_map_find (&builder->m_states, (value_type) state);
 	_end = c_map_end (&builder->m_states);
 	if (!ITER_EQUAL (_iter, _end)) {
 		printf ("state is already exists.\0");
@@ -55,26 +59,23 @@ psmlite_configstate_t smlite_builder_configure (psmlite_builder_t builder, int32
 	if (_ptr == 0) {
 		return 0;
 	}
-	//_ptr = (psmlite_configstate_t) malloc (sizeof (smlite_configstate_t));
-	//if (!_ptr) {
-	//	printf ("malloc failed.\0");
-	//	return 0;
-	//}
-	//memset (_ptr, 0, sizeof (smlite_configstate_t));
-	//smlite_configstate_init (_ptr, state);
 	_pair = (c_pair *) malloc (sizeof (c_pair));
 	if (!_pair) {
 		printf ("malloc failed.\0");
 		return 0;
 	}
 	memset (_pair, 0, sizeof (c_pair));
-	_pair->first = state;
-	_pair->second = _ptr;
+	_pair->first = (value_type) state;
+	_pair->second = (value_type) _ptr;
 	c_map_insert (&builder->m_states, _pair);
 	return _ptr;
 }
 
 psmlite_t smlite_builder_build (psmlite_builder_t builder, int32_t init_state) {
+	if (!builder) {
+		printf ("parameter connot be null.\n");
+		return 0;
+	}
 	builder->m_builded = true;
 	return smlite_create (builder, init_state);
 }

@@ -122,8 +122,5 @@
     <ClInclude Include="tstl2cl\include\c_iterator.h">
       <Filter>头文件\tstl2cl</Filter>
     </ClInclude>
-    <ClInclude Include="local.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>
