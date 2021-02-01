@@ -2,12 +2,15 @@
 
 [![license](https://img.shields.io/github/license/fawdlstty/SMLite?color=09f)](./LICENSE)
 [![cpp](https://img.shields.io/lgtm/grade/cpp/github/fawdlstty/SMLite)](https://lgtm.com/projects/g/fawdlstty/SMLite)
-[![csharp](https://img.shields.io/lgtm/grade/csharp/github/fawdlstty/SMLite)](https://lgtm.com/projects/g/fawdlstty/SMLite)
-[![python](https://img.shields.io/lgtm/grade/python/github/fawdlstty/SMLite)](https://lgtm.com/projects/g/fawdlstty/SMLite)
 [![nuget](https://img.shields.io/nuget/dt/Fawdlstty.SMLite?label=nuget%20downloads)](https://www.nuget.org/packages/Fawdlstty.SMLite)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/fawdlstty/SMLite.svg?logo=lgtm)](https://lgtm.com/projects/g/fawdlstty/SMLite/alerts/)
+
+<!--
+[![csharp](https://img.shields.io/lgtm/grade/csharp/github/fawdlstty/SMLite)](https://lgtm.com/projects/g/fawdlstty/SMLite)
+[![python](https://img.shields.io/lgtm/grade/python/github/fawdlstty/SMLite)](https://lgtm.com/projects/g/fawdlstty/SMLite)
 [![AppVeyor Build](https://img.shields.io/appveyor/build/fawdlstty/SMLite)](https://ci.appveyor.com/project/fawdlstty/SMLite)
 [![Coverage Status](https://coveralls.io/repos/github/fawdlstty/SMLite/badge.svg)](https://coveralls.io/github/fawdlstty/SMLite)
+-->
 
 [English](./README.md) | 简体中文
 
