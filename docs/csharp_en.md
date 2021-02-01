@@ -65,7 +65,7 @@ Step 5. Now let's get to the actual use of the state machine
 var _sm = _smb.Build (MyState.Rest);
 
 // Get current status
-assert (_sm.State == MyState.Rest);
+Assert.AreEqual (_sm.State == MyState.Rest);
 
 // Determine whether an trigger is allowed to fire
 _sm.AllowTriggering (MyTrigger.Run);
@@ -114,13 +114,13 @@ _smb.Configure (MyState.Ready)
     })
 
     // The effect is identical to WhenAction, but this function specifies an asynchronous method
-    .WhenActionAsync (MyTrigger.Read, async (MyState _state, MyTrigger _trigger, CancellationToken _token) => {
+    .WhenActionAsync (MyTrigger.Write, async (MyState _state, MyTrigger _trigger, CancellationToken _token) => {
         await Task.Yield ();
         Console.WriteLine ("call WhenAction callback");
     })
 
     // The effect is identical to WhenAction, but this function specifies an asynchronous method
-    .WhenActionAsync (MyTrigger.FinishRead, async (MyState _state, MyTrigger _trigger, CancellationToken _token, string _param) => {
+    .WhenActionAsync (MyTrigger.FinishWrite, async (MyState _state, MyTrigger _trigger, CancellationToken _token, string _param) => {
         await Task.Yield ();
         Console.WriteLine ($"call WhenAction callback with param [{_param}]");
     });

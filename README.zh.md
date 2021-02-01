@@ -37,6 +37,7 @@ C、C++、C#、Python、VB.Net 的状态机库
 - [C++库用户手册](docs/cpp_zh.md)
 - [C#库用户手册](docs/csharp_zh.md)
 - [Python库用户手册](docs/python_zh.md)
+- [VB.Net库用户手册](docs/vb.net_zh.md)
 
 ## 依赖库
 

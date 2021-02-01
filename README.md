@@ -37,6 +37,7 @@ Accelerated access from mainland Chinese users: [Document Images](https://www.fa
 - [C++ Library Tutorials](docs/cpp_en.md)
 - [C# Library Tutorials](docs/csharp_en.md)
 - [Python Library Tutorials](docs/python_en.md)
+- [VB.Net Library Tutorials](docs/vb.net_en.md)
 
 ## Dependence
 

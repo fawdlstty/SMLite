@@ -66,7 +66,7 @@ Step 5. 下面开始真正使用到状态机
 auto _sm = _smb.Build (MyState.Rest);
 
 // 获取当前状态
-assert (_sm.State == MyState.Rest);
+Assert.AreEqual (_sm.State == MyState.Rest);
 
 // 判断是否允许触发某一个事件
 _sm.AllowTriggering (MyTrigger.Run);
@@ -115,13 +115,13 @@ _smb.Configure (MyState.Ready)
     })
 
     // 效果与 WhenAction 一致，不过这函数指定异步方法
-    .WhenActionAsync (MyTrigger.Read, async (MyState _state, MyTrigger _trigger, CancellationToken _token) => {
+    .WhenActionAsync (MyTrigger.Write, async (MyState _state, MyTrigger _trigger, CancellationToken _token) => {
         await Task.Yield ();
         Console.WriteLine ("call WhenAction callback");
     })
 
     // 效果与 WhenAction 一致，不过这函数指定异步方法
-    .WhenActionAsync (MyTrigger.FinishRead, async (MyState _state, MyTrigger _trigger, CancellationToken _token, string _param) => {
+    .WhenActionAsync (MyTrigger.FinishWrite, async (MyState _state, MyTrigger _trigger, CancellationToken _token, string _param) => {
         await Task.Yield ();
         Console.WriteLine ($"call WhenAction callback with param [{_param}]");
     });
