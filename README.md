@@ -11,7 +11,7 @@
 
 English | [简体中文](./README.zh.md)
 
-State machine library for C, C++, C#, Python
+State machine library for C, C++, C#, Python, VB.Net
 
 ## Support Environments
 
@@ -19,7 +19,7 @@ State machine library for C, C++, C#, Python
     + `C99` and above
 - C++ library supported versions
     + `C++ 11` and above
-- C# library supported runtimes
+- C# library (VB.Net) supported runtimes
     + `.Net Framework 4.5` and above
     + `.Net Standard 2.0/2.1`
     + `.Net 5`

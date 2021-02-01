@@ -11,7 +11,7 @@
 
 [English](./README.md) | 简体中文
 
-C、C++、C#、Python 的状态机库
+C、C++、C#、Python、VB.Net 的状态机库
 
 ## 支持的环境
 
@@ -19,7 +19,7 @@ C、C++、C#、Python 的状态机库
     + `C99` 及以上
 - C++库 支持的版本
     + `C++ 11` 及以上
-- C#库 支持的运行时
+- C#库（VB.Net） 支持的运行时
     + `.Net Framework 4.5` 及以上
     + `.Net Standard 2.0/2.1`
     + `.Net 5`
