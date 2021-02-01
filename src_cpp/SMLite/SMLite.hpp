@@ -1,6 +1,6 @@
 /*
 * SMLite
-* State machine library for C++ & C# & Python
+* State machine library for C, C++, C#, Python
 * Author: Fawdlstty
 * Version 0.1.5
 * 

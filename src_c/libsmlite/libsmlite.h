@@ -1,3 +1,15 @@
+/*
+* SMLite
+* State machine library for C, C++, C#, Python
+* Author: Fawdlstty
+* Version 0.1.5
+*
+* Source Repository            <https://github.com/fawdlstty/SMLite>
+* Report                       <https://github.com/fawdlstty/SMLite/issues>
+* MIT License                  <https://opensource.org/licenses/MIT>
+* Copyright (C) 2021 Fawdlstty <https://www.fawdlstty.com>
+*/
+
 #ifndef __LIBSMLITE_H__
 #define __LIBSMLITE_H__
 
@@ -100,13 +112,15 @@ int						smlite_allow_triggering (psmlite_t sm, int32_t trigger);
 		_end = c_map_end (&_cfgstate->m_items);														\
 		if (!ITER_EQUAL (_iter, _end)) {															\
 			_cfgitem = (psmlite_configitem_t) ((c_ppair) ITER_REF (_iter))->second;					\
-			smlite_configitem_call (_cfgitem, _state);												\
+			smlite_configitem_call (_cfgitem, _state, __VA_ARGS__);									\
 			if (_state != sm->m_state) {															\
-				_cfgstate->m_on_leave ();															\
+				if (_cfgstate->m_on_leave)															\
+					_cfgstate->m_on_leave ();														\
 				sm->m_state = _state;																\
 				_iter = c_map_find (&sm->m_builder->m_states, (value_type) sm->m_state);			\
 				_cfgstate = (psmlite_configstate_t) ((c_ppair) ITER_REF (_iter))->second;			\
-				_cfgstate->m_on_entry ();															\
+				if (_cfgstate->m_on_entry)															\
+					_cfgstate->m_on_entry ();														\
 			}																						\
 		}																							\
 	}																								\

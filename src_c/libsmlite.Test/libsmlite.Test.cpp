@@ -2,6 +2,7 @@
 #include "../libsmlite/libsmlite.h"
 
 #include <sstream>
+#include <string>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -42,14 +43,23 @@ namespace Microsoft {
 	}
 }
 
-#ifdef _DEBUG
-#	pragma comment (lib, "../../Debug/libsmlite.lib")
+#ifdef _W64
+#	ifdef _DEBUG
+#		pragma comment (lib, "../../x64/Debug/libsmlite.lib")
+#	else
+#		pragma comment (lib, "../../x64/Release/libsmlite.lib")
+#	endif
 #else
-#	pragma comment (lib, "../../Release/libsmlite.lib")
+#	ifdef _DEBUG
+#		pragma comment (lib, "../../Debug/libsmlite.lib")
+#	else
+#		pragma comment (lib, "../../Release/libsmlite.lib")
+#	endif
 #endif
 
 
 
+// TestMethod1
 int n = 0;
 bool entry_one = true;
 
@@ -61,6 +71,15 @@ void _reading_entry () { Assert::IsFalse (entry_one); entry_one = true; n += 100
 void _reading_leave () { Assert::IsTrue (entry_one); entry_one = false; n += 100000; }
 void _writing_entry () { Assert::IsFalse (entry_one); entry_one = true; n += 1000000; }
 void _writing_leave () { Assert::IsTrue (entry_one); entry_one = false; n += 10000000; }
+
+// TestMethod3
+std::string s = "";
+int32_t _rest_run (int32_t _state, int32_t _trigger) { s = "WhenFunc_Run"; return MyState_Ready; }
+int32_t _rest_read (int32_t _state, int32_t _trigger, const char *_p1) { s = _p1; return MyState_Ready; }
+int32_t _rest_finishread (int32_t _state, int32_t _trigger, const char *_p1, int _p2) { s = _append (_p1, _p2); return MyState_Ready; }
+void _rest_close (int32_t _state, int32_t _trigger) { s = "WhenAction_Close"; }
+void _rest_write (int32_t _state, int32_t _trigger, const char *_p1) { s = _p1; }
+void _rest_finishwrite (int32_t _state, int32_t _trigger, const char *_p1, int _p2) { s = _append (_p1, _p2); }
 
 
 
@@ -168,8 +187,51 @@ public:
 		}
 
 		TEST_METHOD (TestMethod3) {
-			// TODO
-			Assert::IsTrue (false);
+			psmlite_builder_t _smb = smlite_builder_create ();
+			{
+				psmlite_configstate_t _state = smlite_builder_configure (_smb, MyState_Rest);
+				smlite_configstate_when_func (_state, MyTrigger_Run, (whenfunc_t) _rest_run);
+				smlite_configstate_when_func (_state, MyTrigger_Read, (whenfunc_t) _rest_read);
+				smlite_configstate_when_func (_state, MyTrigger_FinishRead, (whenfunc_t) _rest_finishread);
+				smlite_configstate_when_action (_state, MyTrigger_Close, (whenaction_t) _rest_close);
+				smlite_configstate_when_action (_state, MyTrigger_Write, (whenaction_t) _rest_write);
+				smlite_configstate_when_action (_state, MyTrigger_FinishWrite, (whenaction_t) _rest_finishwrite);
+			}
+			{
+				psmlite_configstate_t _state = smlite_builder_configure (_smb, MyState_Ready);
+				smlite_configstate_when_change_to (_state, MyTrigger_Close, MyState_Rest);
+			}
+
+			psmlite_t _sm = smlite_builder_build (_smb, MyState_Rest);
+			Assert::AreEqual ((MyState) smlite_get_state (_sm), MyState_Rest);
+			Assert::AreEqual (s, std::string (""));
+
+			smlite_triggering (_sm, MyTrigger_Run);
+			Assert::AreEqual ((MyState) smlite_get_state (_sm), MyState_Ready);
+			Assert::AreEqual (s, std::string ("WhenFunc_Run"));
+			smlite_triggering (_sm, MyTrigger_Close);
+
+			smlite_triggering (_sm, MyTrigger_Read, (const char *) "hello");
+			Assert::AreEqual ((MyState) smlite_get_state (_sm), MyState_Ready);
+			Assert::AreEqual (s, std::string ("hello"));
+			smlite_triggering (_sm, MyTrigger_Close);
+
+			smlite_triggering (_sm, MyTrigger_FinishRead, (const char *) "hello", 1);
+			Assert::AreEqual ((MyState) smlite_get_state (_sm), MyState_Ready);
+			Assert::AreEqual (s, std::string ("hello1"));
+			smlite_triggering (_sm, MyTrigger_Close);
+
+			smlite_triggering (_sm, MyTrigger_Close);
+			Assert::AreEqual (s, std::string ("WhenAction_Close"));
+			Assert::AreEqual ((MyState) smlite_get_state (_sm), MyState_Rest);
+
+			smlite_triggering (_sm, MyTrigger_Write, (const char *) "world");
+			Assert::AreEqual (s, std::string ("world"));
+			Assert::AreEqual ((MyState) smlite_get_state (_sm), MyState_Rest);
+
+			smlite_triggering (_sm, MyTrigger_FinishWrite, (const char *) "world", 1);
+			Assert::AreEqual (s, std::string ("world1"));
+			Assert::AreEqual ((MyState) smlite_get_state (_sm), MyState_Rest);
 		}
 	};
 }

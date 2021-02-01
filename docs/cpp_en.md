@@ -13,7 +13,7 @@ enum class MyState { Rest, Ready, Reading, Writing };
 enum class MyTrigger { Run, Close, Read, FinishRead, Write, FinishWrite };
 ```
 
-Step 3. Define state machine builder with templates as two enum class and parameters as initial values
+Step 3. Define state machine builder with templates as two enum class
 
 ```cpp
 Fawdlstty::SMLiteBuilder<MyState, MyTrigger> _smb {};

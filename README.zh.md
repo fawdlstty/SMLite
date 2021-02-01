@@ -11,14 +11,12 @@
 
 [English](./README.md) | 简体中文
 
-C++、C#、Python 的状态机库
-
-[TODO](./TODO.md)
+C、C++、C#、Python 的状态机库
 
 ## 支持的环境
 
 - C库 支持的版本
-    + `C99` 及以上 (正在开发)
+    + `C99` 及以上
 - C++库 支持的版本
     + `C++ 11` 及以上
 - C#库 支持的运行时
@@ -32,6 +30,7 @@ C++、C#、Python 的状态机库
 
 中国大陆用户加速访问：[文档镜像](https://www.fawdlstty.com/smlite/)
 
+- [C库用户手册](docs/c_zh.md)
 - [C++库用户手册](docs/cpp_zh.md)
 - [C#库用户手册](docs/csharp_zh.md)
 - [Python库用户手册](docs/python_zh.md)

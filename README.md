@@ -11,14 +11,12 @@
 
 English | [简体中文](./README.zh.md)
 
-State machine library for C++ & C# & Python
-
-[TODO](./TODO.md)
+State machine library for C, C++, C#, Python
 
 ## Support Environments
 
 - C library supported versions
-    + `C99` and above (WIP)
+    + `C99` and above
 - C++ library supported versions
     + `C++ 11` and above
 - C# library supported runtimes
@@ -32,6 +30,7 @@ State machine library for C++ & C# & Python
 
 Accelerated access from mainland Chinese users: [Document Images](https://www.fawdlstty.com/smlite/)
 
+- [C Library Tutorials](docs/c_en.md)
 - [C++ Library Tutorials](docs/cpp_en.md)
 - [C# Library Tutorials](docs/csharp_en.md)
 - [Python Library Tutorials](docs/python_en.md)

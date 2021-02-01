@@ -1,5 +1,17 @@
 # -*- coding: utf-8 -*-
 
+# SMLite
+# State machine library for C, C++, C#, Python
+# Author: Fawdlstty
+# Version 0.1.5
+# 
+# Source Repository            <https://github.com/fawdlstty/SMLite>
+# Report                       <https://github.com/fawdlstty/SMLite/issues>
+# MIT License                  <https://opensource.org/licenses/MIT>
+# Copyright (C) 2021 Fawdlstty <https://www.fawdlstty.com>
+
+
+
 from ItemStruct._SMLite_ConfigState import _SMLite_ConfigState
 
 class SMLite (object):

@@ -92,13 +92,15 @@ int smlite_allow_triggering (psmlite_t sm, int32_t trigger) {
 //		_end = c_map_end (&_cfgstate->m_items);														\
 //		if (!ITER_EQUAL (_iter, _end)) {															\
 //			_cfgitem = (psmlite_configitem_t) ((c_ppair) ITER_REF (_iter))->second;					\
-//			_state = smlite_configitem_call (_cfgitem);												\
+//			smlite_configitem_call (_cfgitem, _state, __VA_ARGS__);									\
 //			if (_state != sm->m_state) {															\
-//				smlite_configstate_on_leave (_cfgstate);											\
+//				if (_cfgstate->m_on_leave)															\
+//					_cfgstate->m_on_leave ();														\
 //				sm->m_state = _state;																\
 //				_iter = c_map_find (&sm->m_builder->m_states, (value_type) sm->m_state);			\
 //				_cfgstate = (psmlite_configstate_t) ((c_ppair) ITER_REF (_iter))->second;			\
-//				smlite_configstate_on_entry (_cfgstate);											\
+//				if (_cfgstate->m_on_entry)															\
+//					_cfgstate->m_on_entry ();														\
 //			}																						\
 //		}																							\
 //	}																								\
