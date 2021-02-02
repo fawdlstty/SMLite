@@ -103,27 +103,27 @@ _smb.Configure (MyState.Ready)
     // 效果与 WhenFunc 一致，不过这函数指定异步方法
     .WhenFuncAsync (MyTrigger.Read, async (MyState _state, MyTrigger _trigger, CancellationToken _token) => {
         await Task.Yield ();
-        Console.WriteLine ("call WhenFunc callback");
+        Console.WriteLine ("call WhenFuncAsync callback");
         return MyState.Ready;
     })
 
     // 效果与 WhenFunc 一致，不过这函数指定异步方法
     .WhenFuncAsync (MyTrigger.FinishRead, async (MyState _state, MyTrigger _trigger, CancellationToken _token, string _param) => {
         await Task.Yield ();
-        Console.WriteLine ($"call WhenFunc callback with param [{_param}]");
+        Console.WriteLine ($"call WhenFuncAsync callback with param [{_param}]");
         return MyState.Ready;
     })
 
     // 效果与 WhenAction 一致，不过这函数指定异步方法
     .WhenActionAsync (MyTrigger.Write, async (MyState _state, MyTrigger _trigger, CancellationToken _token) => {
         await Task.Yield ();
-        Console.WriteLine ("call WhenAction callback");
+        Console.WriteLine ("call WhenActionAsync callback");
     })
 
     // 效果与 WhenAction 一致，不过这函数指定异步方法
     .WhenActionAsync (MyTrigger.FinishWrite, async (MyState _state, MyTrigger _trigger, CancellationToken _token, string _param) => {
         await Task.Yield ();
-        Console.WriteLine ($"call WhenAction callback with param [{_param}]");
+        Console.WriteLine ($"call WhenActionAsync callback with param [{_param}]");
     });
 ```
 

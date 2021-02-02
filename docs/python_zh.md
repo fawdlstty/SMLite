@@ -36,17 +36,6 @@ _smb = SMLiteBuilder ()
 Step 4. 定义状态机的规则，指定具体的某个状态允许触发什么事件
 
 ```python
-def _rest_read (_state, _trigger):
-    print ("call WhenFunc callback")
-    return MyState.Ready
-def _rest_finishread (_state, _trigger, _param):
-    print ("call WhenFunc callback with param [%s]", _param)
-    return MyState.Ready
-def _rest_write (_state, _trigger):
-    print ("call WhenAction callback")
-def _rest_finishwrite (_state, _trigger, _param):
-    print ("call WhenAction callback with param [%s]", _param)
-
 # 备注：实际使用时删掉注释与空行，使得python的续行符正常使用
 # 如果当状态机的当前状态是 MyState.Rest
 _smb.Configure (MyState.Rest)\
@@ -64,17 +53,27 @@ _smb.Configure (MyState.Rest)\
     .WhenIgnore (MyTrigger.Close)\
 
     # 如果触发 MyTrigger.Read，则调用回调函数，并将状态调整为返回值
+    # def _rest_read (_state, _trigger):
+    #     print ("call WhenFunc callback")
+    #     return MyState.Ready
     .WhenFunc (MyTrigger.Read, _rest_read)\
 
     # 如果触发 MyTrigger.FinishRead，则调用回调函数，并将状态调整为返回值
     # 需注意，触发时候需传入参数，数量与类型必须完全匹配，否则抛异常
+    # def _rest_finishread (_state, _trigger, _param):
+    #     print ("call WhenFunc callback with param [%s]", _param)
+    #     return MyState.Ready
     .WhenFunc (MyTrigger.FinishRead, _rest_finishread)\
 
     # 如果触发 MyTrigger.Write，则调用回调函数（触发此方法回调不调整返回值）
+    # def _rest_write (_state, _trigger):
+    #     print ("call WhenAction callback")
     .WhenAction (MyTrigger.Write, _rest_write)\
 
     # 如果触发 MyTrigger.FinishWrite，则调用回调函数（触发此方法回调不调整返回值）
     # 需注意，触发时候需传入参数，数量与类型必须完全匹配，否则抛异常
+    # def _rest_finishwrite (_state, _trigger, _param):
+    #     print ("call WhenAction callback with param [%s]", _param)
     .WhenAction (MyTrigger.FinishWrite, _rest_finishwrite)
 ```
 
@@ -101,3 +100,58 @@ _sm.Triggering (MyTrigger.Run, "hello")
 # 强行修改当前状态，此操作将不会触发OnEntry、OnLeave事件
 _sm.SetState (MyState.Ready)
 ```
+
+Step 6. 如果用到异步
+
+使用与上面非常相似，下面是指定异步触发回调函数
+
+```python
+_smb.Configure (MyState.Ready)\
+
+    # 与 OnEntry 效果一致，不过这函数指定异步方法，并且不能与 OnEntry 同时调用
+    # async def _ready_entry ():
+    #     await asyncio.sleep (0.01)
+    #     print ("entry Ready")
+    .OnEntryAsync (_ready_entry)\
+
+    # 与 OnLeave 效果一致，不过这函数指定异步方法，并且不能与 OnLeave 同时调用
+    # async def _ready_leave ():
+    #     await asyncio.sleep (0.01)
+    #     print ("leave Ready")
+   .OnLeaveAsync (_ready_leave)\
+
+    # 效果与 WhenFunc 一致，不过这函数指定异步方法
+    # async def _ready_read (_state, _trigger):
+    #     await asyncio.sleep (0.01)
+    #     print ("call WhenFuncAsync callback")
+    #     return MyState.Ready
+    .WhenFuncAsync (MyTrigger.Read, _ready_read)\
+
+    # 效果与 WhenFunc 一致，不过这函数指定异步方法
+    # async def _ready_finishread (_state, _trigger, _param):
+    #     await asyncio.sleep (0.01)
+    #     print ("call WhenFuncAsync callback with param %s", _param)
+    #     return MyState.Ready
+    .WhenFuncAsync (MyTrigger.FinishRead, _ready_finishread)\
+
+    # 效果与 WhenAction 一致，不过这函数指定异步方法
+    # async def _ready_write (_state, _trigger):
+    #     await asyncio.sleep (0.01)
+    #     print ("call WhenActionAsync callback")
+    .WhenActionAsync (MyTrigger.Write, _ready_write)\
+
+    # 效果与 WhenAction 一致，不过这函数指定异步方法
+    # async def _ready_finishwrite (_state, _trigger, _param):
+    #     await asyncio.sleep (0.01)
+    #     print ("call WhenActionAsync callback with param %s", _param)
+    .WhenActionAsync (MyTrigger.FinishWrite, _ready_finishwrite)\
+```
+
+然后是触发一个事件：
+
+```python
+# 异步触发一个事件，并传入指定参数
+await _sm.TriggeringAsync (MyTrigger.Run, "hello")
+```
+
+await异步触发的事件将在所有函数执行完毕之后返回。另外需要注意，同步与异步最好不要混用，使用的不好就很容易导致死锁，最佳实践是统一同步或统一异步。

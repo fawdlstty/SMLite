@@ -36,17 +36,6 @@ _smb = SMLiteBuilder ()
 Step 4. Rules that define a state machine, specifying what triggers are allowed to be fired for a specific state
 
 ```python
-def _rest_read (_state, _trigger):
-    print ("call WhenFunc callback")
-    return MyState.Ready
-def _rest_finishread (_state, _trigger, _param):
-    print ("call WhenFunc callback with param [%s]", _param)
-    return MyState.Ready
-def _rest_write (_state, _trigger):
-    print ("call WhenAction callback")
-def _rest_finishwrite (_state, _trigger, _param):
-    print ("call WhenAction callback with param [%s]", _param)
-
 # Note: When actually used, delete the comment and blank line so that Python's line continuation character can work properly
 # If the current state of the state machine is MyState.Rest
 _smb.Configure (MyState.Rest)\
@@ -64,17 +53,27 @@ _smb.Configure (MyState.Rest)\
     .WhenIgnore (MyTrigger.Close)\
 
     # If MyTrigger.Read is fired, the callback function is called and the state is adjusted to the return value
+    # def _rest_read (_state, _trigger):
+    #     print ("call WhenFunc callback")
+    #     return MyState.Ready
     .WhenFunc (MyTrigger.Read, _rest_read)\
 
     # If MyTrigger.FinishRead is fired, the callback function is called and the state is adjusted to the return value
     # Note that an argument must be passed when firing, and the number and type must match exactly, otherwise an exception is thrown
+    # def _rest_finishread (_state, _trigger, _param):
+    #     print ("call WhenFunc callback with param [%s]", _param)
+    #     return MyState.Ready
     .WhenFunc (MyTrigger.FinishRead, _rest_finishread)\
 
     # If MyTrigger.Write is fired, the callback function is called (triggering this method callback does not adjust the return value)
+    # def _rest_write (_state, _trigger):
+    #     print ("call WhenAction callback")
     .WhenAction (MyTrigger.Write, _rest_write)\
 
     # If MyTrigger.FinishWrite is fired, the callback function is called (triggering this method callback does not adjust the return value).
     # Note that an argument must be passed when firing, and the number and type must match exactly, otherwise an exception is thrown
+    # def _rest_finishwrite (_state, _trigger, _param):
+    #     print ("call WhenAction callback with param [%s]", _param)
     .WhenAction (MyTrigger.FinishWrite, _rest_finishwrite)
 ```
 
@@ -101,3 +100,58 @@ _sm.Triggering (MyTrigger.Run, "hello")
 # Forced to modify the current state, this code will not trigger OnEntry and OnLeave methods
 _sm.SetState (MyState.Ready)
 ```
+
+Step 6. If you use asynchrony
+
+Much like the above, the following is to specify the asynchronous trigger callback function
+
+```python
+_smb.Configure (MyState.Ready)\
+
+    # Same effect as onEntry, except this function specifies an asynchronous method and cannot be called at the same time as OnEntry
+    # async def _ready_entry ():
+    #     await asyncio.sleep (0.01)
+    #     print ("entry Ready")
+    .OnEntryAsync (_ready_entry)\
+
+    # This function specifies an asynchronous method and cannot be called at the same time as OnLeave
+    # async def _ready_leave ():
+    #     await asyncio.sleep (0.01)
+    #     print ("leave Ready")
+   .OnLeaveAsync (_ready_leave)\
+
+    # The effect is identical to WhenFunc, but this function specifies an asynchronous method
+    # async def _ready_read (_state, _trigger):
+    #     await asyncio.sleep (0.01)
+    #     print ("call WhenFuncAsync callback")
+    #     return MyState.Ready
+    .WhenFuncAsync (MyTrigger.Read, _ready_read)\
+
+    # The effect is identical to WhenFunc, but this function specifies an asynchronous method
+    # async def _ready_finishread (_state, _trigger, _param):
+    #     await asyncio.sleep (0.01)
+    #     print ("call WhenFuncAsync callback with param %s", _param)
+    #     return MyState.Ready
+    .WhenFuncAsync (MyTrigger.FinishRead, _ready_finishread)\
+
+    # The effect is identical to WhenAction, but this function specifies an asynchronous method
+    # async def _ready_write (_state, _trigger):
+    #     await asyncio.sleep (0.01)
+    #     print ("call WhenActionAsync callback")
+    .WhenActionAsync (MyTrigger.Write, _ready_write)\
+
+    # The effect is identical to WhenAction, but this function specifies an asynchronous method
+    # async def _ready_finishwrite (_state, _trigger, _param):
+    #     await asyncio.sleep (0.01)
+    #     print ("call WhenActionAsync callback with param %s", _param)
+    .WhenActionAsync (MyTrigger.FinishWrite, _ready_finishwrite)\
+```
+
+Then there is the firing of an event:
+
+```csharp
+// An event is fired asynchronously, passing in the specified parameters
+await _sm.TriggeringAsync (MyTrigger.Run, "hello")
+```
+
+Await asynchronously fired events will be returned after all functions have finished executing. In addition, it is important to note that synchronous and asynchronous should not be used together. If not used properly, it will easily lead to deadlock. The best practice is to use uniform synchronous or uniform asynchronous.

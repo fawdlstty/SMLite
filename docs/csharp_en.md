@@ -102,27 +102,27 @@ _smb.Configure (MyState.Ready)
     // The effect is identical to WhenFunc, but this function specifies an asynchronous method
     .WhenFuncAsync (MyTrigger.Read, async (MyState _state, MyTrigger _trigger, CancellationToken _token) => {
         await Task.Yield ();
-        Console.WriteLine ("call WhenFunc callback");
+        Console.WriteLine ("call WhenFuncAsync callback");
         return MyState.Ready;
     })
 
     // The effect is identical to WhenFunc, but this function specifies an asynchronous method
     .WhenFuncAsync (MyTrigger.FinishRead, async (MyState _state, MyTrigger _trigger, CancellationToken _token, string _param) => {
         await Task.Yield ();
-        Console.WriteLine ($"call WhenFunc callback with param [{_param}]");
+        Console.WriteLine ($"call WhenFuncAsync callback with param [{_param}]");
         return MyState.Ready;
     })
 
     // The effect is identical to WhenAction, but this function specifies an asynchronous method
     .WhenActionAsync (MyTrigger.Write, async (MyState _state, MyTrigger _trigger, CancellationToken _token) => {
         await Task.Yield ();
-        Console.WriteLine ("call WhenAction callback");
+        Console.WriteLine ("call WhenActionAsync callback");
     })
 
     // The effect is identical to WhenAction, but this function specifies an asynchronous method
     .WhenActionAsync (MyTrigger.FinishWrite, async (MyState _state, MyTrigger _trigger, CancellationToken _token, string _param) => {
         await Task.Yield ();
-        Console.WriteLine ($"call WhenAction callback with param [{_param}]");
+        Console.WriteLine ($"call WhenActionAsync callback with param [{_param}]");
     });
 ```
 
