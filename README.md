@@ -39,7 +39,14 @@ Accelerated access from mainland Chinese users: [Document Images](https://www.fa
 - [Python Library Tutorials](docs/python_en.md)
 - [VB.Net Library Tutorials](docs/vb.net_en.md)
 
-## Dependence
+## Depends
+
+The project uses submodules and initializes them if local compilation is required.
+
+```cmd
+git clone https://github.com/fawdlstty/SMLite
+git submodule update --init --recursive
+```
 
 - tstl2cl
     + https://sourceforge.net/projects/tstl2cl/

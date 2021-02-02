@@ -41,6 +41,13 @@ C、C++、C#、Python、VB.Net 的状态机库
 
 ## 依赖库
 
+项目有使用到子模块，如果需要本地编译那么需初始化子模块。
+
+```cmd
+git clone https://github.com/fawdlstty/SMLite
+git submodule update --init --recursive
+```
+
 - tstl2cl
     + https://sourceforge.net/projects/tstl2cl/
     + 开源协议: zlib/libpng License

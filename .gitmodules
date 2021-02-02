@@ -1,0 +1,3 @@
+[submodule "src_c/libsmlite/tstl2cl"]
+	path = src_c/libsmlite/tstl2cl
+	url = https://github.com/fawdlstty/tstl2cl
