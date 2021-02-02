@@ -38,6 +38,10 @@ Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "PySMLite", "src_python\PySM
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "PySMLite.Test", "src_python\PySMLite.Test\PySMLite.Test.pyproj", "{855F3052-EC09-4121-9159-170EDB71B5A8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src_js", "src_js", "{84D12FAB-EB55-4348-9117-107847DB930D}"
+EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "SMLite.js", "src_js\SMLite.js\SMLite.js.njsproj", "{0C64D46B-ECF8-4EF6-A015-8329D80EDDA9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -76,6 +80,10 @@ Global
 		{63D3C3F0-1183-4B15-9098-BE61B662C458}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{855F3052-EC09-4121-9159-170EDB71B5A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{855F3052-EC09-4121-9159-170EDB71B5A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C64D46B-ECF8-4EF6-A015-8329D80EDDA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C64D46B-ECF8-4EF6-A015-8329D80EDDA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C64D46B-ECF8-4EF6-A015-8329D80EDDA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C64D46B-ECF8-4EF6-A015-8329D80EDDA9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -90,6 +98,7 @@ Global
 		{8F522352-D027-44E9-BA9B-88B261CBBF7B} = {BD66C62A-13F0-428A-AC50-70E345FFAB30}
 		{63D3C3F0-1183-4B15-9098-BE61B662C458} = {E81D1CAA-9014-436B-BFC5-CD3679048DAC}
 		{855F3052-EC09-4121-9159-170EDB71B5A8} = {E81D1CAA-9014-436B-BFC5-CD3679048DAC}
+		{0C64D46B-ECF8-4EF6-A015-8329D80EDDA9} = {84D12FAB-EB55-4348-9117-107847DB930D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BE6CE8BD-95EA-4617-933E-FE2164D938E8}

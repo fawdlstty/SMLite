@@ -1,0 +1,9 @@
+{
+  "name": "smlite.js",
+  "version": "0.0.0",
+  "description": "SMLite.js",
+  "main": "app.js",
+  "author": {
+    "name": ""
+  }
+}
