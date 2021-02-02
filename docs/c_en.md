@@ -97,4 +97,8 @@ smlite_triggering (_sm, MyTrigger_Run, (const char *) "hello");
 
 // Forced to modify the current state, this code will not trigger OnEntry and OnLeave methods
 smlite_set_state (_sm, MyState_Ready);
+
+// Release the state machine and state machine builder
+smlite_delete (&_sm);
+smlite_builder_delete (&_smb);
 ```

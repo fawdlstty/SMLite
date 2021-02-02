@@ -184,6 +184,9 @@ public:
 			smlite_set_state (_sm, MyState_Writing);
 			smlite_set_state (_sm, MyState_Rest);
 			Assert::AreEqual (n, 11113421);
+
+			smlite_delete (&_sm);
+			smlite_builder_delete (&_smb);
 		}
 
 		TEST_METHOD (TestMethod3) {
@@ -232,6 +235,9 @@ public:
 			smlite_triggering (_sm, MyTrigger_FinishWrite, (const char *) "world", 1);
 			Assert::AreEqual (s, std::string ("world1"));
 			Assert::AreEqual ((MyState) smlite_get_state (_sm), MyState_Rest);
+
+			smlite_delete (&_sm);
+			smlite_builder_delete (&_smb);
 		}
 	};
 }

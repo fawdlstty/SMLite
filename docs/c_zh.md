@@ -97,4 +97,8 @@ smlite_triggering (_sm, MyTrigger_Run, (const char *) "hello");
 
 // 强行修改当前状态，此操作将不会触发OnEntry、OnLeave事件
 smlite_set_state (_sm, MyState_Ready);
+
+// 释放状态机与状态及生成器
+smlite_delete (&_sm);
+smlite_builder_delete (&_smb);
 ```
