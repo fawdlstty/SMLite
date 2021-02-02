@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from SMLite import SMLite
+
 if __name__ == '__main__':
-	SMLite.print_info ()
+	print (SMLite.__doc__)

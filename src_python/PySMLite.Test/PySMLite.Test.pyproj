@@ -2,15 +2,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>63d3c3f0-1183-4b15-9098-be61b662c458</ProjectGuid>
-    <ProjectHome>.</ProjectHome>
-    <StartupFile>SMLite.py</StartupFile>
-    <SearchPath>
-    </SearchPath>
+    <ProjectGuid>855f3052-ec09-4121-9159-170edb71b5a8</ProjectGuid>
+    <ProjectHome>
+    </ProjectHome>
+    <StartupFile>SMLite.Test.py</StartupFile>
+    <SearchPath>..\PySMLite</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
-    <Name>SMLite</Name>
-    <RootNamespace>SMLite</RootNamespace>
+    <Name>PySMLite.Test</Name>
+    <RootNamespace>SMLite.Test</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,26 +21,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ItemStruct\_SMLite_BuildItem.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ItemStruct\_SMLite_ConfigItem.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ItemStruct\__init__.py" />
-    <Compile Include="SMLiteBuilder.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ItemStruct\_SMLite_ConfigState.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="__init__.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SMLite.py" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ItemStruct\" />
+    <Compile Include="SMLite.Test.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
