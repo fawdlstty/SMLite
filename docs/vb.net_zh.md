@@ -107,22 +107,22 @@ With _smb.Configure(MyState.Rest)
 
     ' 与 OnEntry 效果一致，不过这函数指定异步方法，并且不能与 OnEntry 同时调用
     .OnEntryAsync(Async Function() As Task
-                            Await Task.Yield()
-                            Console.WriteLine ("entry Ready")
-                        End Function)
+                      Await Task.Yield()
+                      Console.WriteLine ("entry Ready")
+                  End Function)
 
     ' 与 OnLeave 效果一致，不过这函数指定异步方法，并且不能与 OnLeave 同时调用
     .OnLeaveAsync(Async Function() As Task
-                            Await Task.Yield()
-                            Console.WriteLine ("leave Ready")
-                        End Function)
+                      Await Task.Yield()
+                      Console.WriteLine ("leave Ready")
+                  End Function)
 
     ' 效果与 WhenFunc 一致，不过这函数指定异步方法
     .WhenFuncAsync(MyTrigger.Read, Async Function(_state As MyState, _trigger As MyTrigger, _token As CancellationToken) As Task(Of MyState)
-                                            Await Task.Yield()
-                                            Console.WriteLine ("call WhenFunc callback")
-                                            Return MyState.Ready
-                                        End Function)
+                                       Await Task.Yield()
+                                       Console.WriteLine ("call WhenFunc callback")
+                                       Return MyState.Ready
+                                   End Function)
 
     ' 效果与 WhenFunc 一致，不过这函数指定异步方法
     .WhenFuncAsync(MyTrigger.FinishRead, Async Function(_state As MyState, _trigger As MyTrigger, _token As CancellationToken, _param As String) As Task(Of MyState)
@@ -133,15 +133,15 @@ With _smb.Configure(MyState.Rest)
 
     ' 效果与 WhenAction 一致，不过这函数指定异步方法
     .WhenActionAsync(MyTrigger.Write, Async Function(_state As MyState, _trigger As MyTrigger, _token As CancellationToken) As Task
-                                                Await Task.Yield()
-                                                Console.WriteLine ("call WhenAction callback")
-                                            End Function)
+                                          Await Task.Yield()
+                                          Console.WriteLine ("call WhenAction callback")
+                                      End Function)
 
     ' 效果与 WhenAction 一致，不过这函数指定异步方法
     .WhenActionAsync(MyTrigger.FinishWrite, Async Function(_state As MyState, _trigger As MyTrigger, _token As CancellationToken, _p1 As String) As Task
-                                                      Await Task.Yield()
-                                                      Console.WriteLine ($"call WhenAction callback with param [{_param}]")
-                                                  End Function)
+                                                Await Task.Yield()
+                                                Console.WriteLine ($"call WhenAction callback with param [{_param}]")
+                                            End Function)
 End With
 ```
 

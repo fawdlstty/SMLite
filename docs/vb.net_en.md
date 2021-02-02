@@ -106,22 +106,22 @@ With _smb.Configure(MyState.Rest)
 
     ' Same effect as onEntry, except this function specifies an asynchronous method and cannot be called at the same time as OnEntry
     .OnEntryAsync(Async Function() As Task
-                            Await Task.Yield()
-                            Console.WriteLine ("entry Ready")
-                        End Function)
+                      Await Task.Yield()
+                      Console.WriteLine ("entry Ready")
+                  End Function)
 
     ' This function specifies an asynchronous method and cannot be called at the same time as OnLeave
     .OnLeaveAsync(Async Function() As Task
-                            Await Task.Yield()
-                            Console.WriteLine ("leave Ready")
-                        End Function)
+                      Await Task.Yield()
+                      Console.WriteLine ("leave Ready")
+                  End Function)
 
     ' The effect is identical to WhenFunc, but this function specifies an asynchronous method
     .WhenFuncAsync(MyTrigger.Read, Async Function(_state As MyState, _trigger As MyTrigger, _token As CancellationToken) As Task(Of MyState)
-                                            Await Task.Yield()
-                                            Console.WriteLine ("call WhenFunc callback")
-                                            Return MyState.Ready
-                                        End Function)
+                                       Await Task.Yield()
+                                       Console.WriteLine ("call WhenFunc callback")
+                                       Return MyState.Ready
+                                   End Function)
 
     ' The effect is identical to WhenFunc, but this function specifies an asynchronous method
     .WhenFuncAsync(MyTrigger.FinishRead, Async Function(_state As MyState, _trigger As MyTrigger, _token As CancellationToken, _param As String) As Task(Of MyState)
@@ -132,15 +132,15 @@ With _smb.Configure(MyState.Rest)
 
     ' The effect is identical to WhenAction, but this function specifies an asynchronous method
     .WhenActionAsync(MyTrigger.Write, Async Function(_state As MyState, _trigger As MyTrigger, _token As CancellationToken) As Task
-                                                Await Task.Yield()
-                                                Console.WriteLine ("call WhenAction callback")
-                                            End Function)
+                                          Await Task.Yield()
+                                          Console.WriteLine ("call WhenAction callback")
+                                      End Function)
 
     ' The effect is identical to WhenAction, but this function specifies an asynchronous method
     .WhenActionAsync(MyTrigger.FinishWrite, Async Function(_state As MyState, _trigger As MyTrigger, _token As CancellationToken, _p1 As String) As Task
-                                                      Await Task.Yield()
-                                                      Console.WriteLine ($"call WhenAction callback with param [{_param}]")
-                                                  End Function)
+                                                Await Task.Yield()
+                                                Console.WriteLine ($"call WhenAction callback with param [{_param}]")
+                                            End Function)
 End With
 ```
 
