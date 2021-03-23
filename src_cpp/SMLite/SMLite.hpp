@@ -17,6 +17,7 @@
 #include <functional>
 #include <map>
 #include <memory>
+#include <mutex>
 #include <tuple>
 #include <vector>
 
@@ -185,16 +186,24 @@ namespace Fawdlstty {
 		SMLite (TState init_state, std::shared_ptr<std::map<TState, std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>>>> _states)
 			: m_state (init_state), m_states (_states) {}
 	public:
-		TState GetState () { return m_state; }
-		void SetState (TState new_state) { m_state = new_state; }
+		TState GetState () {
+			std::unique_lock<std::recursive_mutex> ul (m_mtx);
+			return m_state;
+		}
+		void SetState (TState new_state) {
+			std::unique_lock<std::recursive_mutex> ul (m_mtx);
+			m_state = new_state;
+		}
 		bool AllowTriggering (TTrigger trigger) {
+			std::unique_lock<std::recursive_mutex> ul (m_mtx);
 			if (m_states->find (m_state) != m_states->end ())
 				return (*m_states) [m_state]->_allow_trigger (trigger);
 			return false;
 		}
-		void Triggering (TTrigger trigger) {
+		bool Triggering (TTrigger trigger) {
+			std::unique_lock<std::recursive_mutex> ul (m_mtx);
 			if (!AllowTriggering (trigger))
-				throw _SMLite_Exception ("current state cannot launch this trigger.");
+				return false;
 			auto _p = (*m_states) [m_state];
 			auto _state = _p->_trigger (trigger);
 			if (m_state != _state) {
@@ -205,11 +214,13 @@ namespace Fawdlstty {
 				if (_p->m_on_entry)
 					_p->m_on_entry ();
 			}
+			return true;
 		}
 		template<typename... Args>
-		void Triggering (TTrigger trigger, Args... args) {
+		bool Triggering (TTrigger trigger, Args... args) {
+			std::unique_lock<std::recursive_mutex> ul (m_mtx);
 			if (!AllowTriggering (trigger))
-				throw _SMLite_Exception ("current state cannot launch this trigger.");
+				return false;
 			auto _p = (*m_states) [m_state];
 			auto _state = _p->_trigger (trigger, args...);
 			if (m_state != _state) {
@@ -220,11 +231,13 @@ namespace Fawdlstty {
 				if (_p->m_on_entry)
 					_p->m_on_entry ();
 			}
+			return true;
 		}
 
 	private:
 		TState m_state;
 		std::shared_ptr<std::map<TState, std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>>>> m_states;
+		std::recursive_mutex m_mtx;
 	};
 
 	template<typename TState, typename TTrigger>
