@@ -34,15 +34,21 @@ namespace Fawdlstty {
 		const char* m_reason;
 	};
 
+	template<typename TState, typename TTrigger>
 	class _SMLite_ConfigItem {
-		virtual void f () = 0;
-
 	public:
-		virtual ~_SMLite_ConfigItem () = default; // fix warning
+		_SMLite_ConfigItem (TState _state, TTrigger _trigger): m_state (_state), m_trigger (_trigger) {}
+		virtual ~_SMLite_ConfigItem () = default;
+	protected:
+		TState m_state;
+		TTrigger m_trigger;
+		virtual void _f () = 0;
 	};
 
-	template<typename TState, typename TTrigger>					class _SMLite_ConfigItem0;
-	template<typename TState, typename TTrigger, typename... Args>	class _SMLite_ConfigItem1;
+	template<typename TState, typename TTrigger, typename... Args>	class _SMLite_ConfigItem_A;
+	template<typename TState, typename TTrigger, typename... Args>	class _SMLite_ConfigItem_SA;
+	template<typename TState, typename TTrigger, typename... Args>	class _SMLite_ConfigItem_TA;
+	template<typename TState, typename TTrigger, typename... Args>	class _SMLite_ConfigItem_STA;
 	template<typename TState, typename TTrigger>					class _SMLite_ConfigState;
 	template<typename TState, typename TTrigger>					class SMLite;
 	template<typename TState, typename TTrigger>					class SMLiteBuilder;
@@ -53,36 +59,52 @@ namespace Fawdlstty {
 	// trigger item
 	//
 
-	template<typename TState, typename TTrigger>
-	class _SMLite_ConfigItem0: public _SMLite_ConfigItem {
-		void f () override {}
-
+	template<typename TState, typename TTrigger, typename... Args>
+	class _SMLite_ConfigItem_A: public _SMLite_ConfigItem<TState, TTrigger> {
 	public:
-		virtual ~_SMLite_ConfigItem0 () = default; // fix warning
-		_SMLite_ConfigItem0 (TState state, TTrigger trigger, std::function<TState (TState, TTrigger)> callback)
-			: m_state (state), m_trigger (trigger), m_callback (callback) {}
-		TState _call () { return m_callback (m_state, m_trigger); }
-
-	private:
-		TState m_state;
-		TTrigger m_trigger;
-		std::function<TState (TState, TTrigger)> m_callback;
+		virtual ~_SMLite_ConfigItem_A () = default;
+		_SMLite_ConfigItem_A (TState _state, TTrigger _trigger, std::function<TState (Args...)> _callback)
+			: _SMLite_ConfigItem<TState, TTrigger> (_state, _trigger), m_callback (_callback) {}
+		TState _call (Args... args) { return m_callback (args...); }
+	protected:
+		std::function<TState (Args...)> m_callback;
+		void _f () override {}
 	};
 
 	template<typename TState, typename TTrigger, typename... Args>
-	class _SMLite_ConfigItem1: public _SMLite_ConfigItem {
-		void f () override {}
-
+	class _SMLite_ConfigItem_SA: public _SMLite_ConfigItem<TState, TTrigger> {
 	public:
-		virtual ~_SMLite_ConfigItem1 () = default; // fix warning
-		_SMLite_ConfigItem1 (TState state, TTrigger trigger, std::function<TState (TState, TTrigger, Args...)> callback)
-			: m_state (state), m_trigger (trigger), m_callback (callback) {}
-		TState _call (Args... args) { return m_callback (m_state, m_trigger, args...); }
+		virtual ~_SMLite_ConfigItem_SA () = default;
+		_SMLite_ConfigItem_SA (TState _state, TTrigger _trigger, std::function<TState (TState, Args...)> _callback)
+			: _SMLite_ConfigItem<TState, TTrigger> (_state, _trigger), m_callback (_callback) {}
+		TState _call (Args... args) { return m_callback (m_state, args...); }
+	protected:
+		std::function<TState (TState, Args...)> m_callback;
+		void _f () override {}
+	};
 
-	private:
-		TState m_state;
-		TTrigger m_trigger;
+	template<typename TState, typename TTrigger, typename... Args>
+	class _SMLite_ConfigItem_TA: public _SMLite_ConfigItem<TState, TTrigger> {
+	public:
+		virtual ~_SMLite_ConfigItem_TA () = default;
+		_SMLite_ConfigItem_TA (TState _state, TTrigger _trigger, std::function<TState (TTrigger, Args...)> _callback)
+			: _SMLite_ConfigItem<TState, TTrigger> (_state, _trigger), m_callback (_callback) {}
+		TState _call (Args... args) { return m_callback (m_trigger, args...); }
+	protected:
+		std::function<TState (TTrigger, Args...)> m_callback;
+		void _f () override {}
+	};
+
+	template<typename TState, typename TTrigger, typename... Args>
+	class _SMLite_ConfigItem_STA: public _SMLite_ConfigItem<TState, TTrigger> {
+	public:
+		virtual ~_SMLite_ConfigItem_STA () = default;
+		_SMLite_ConfigItem_STA (TState _state, TTrigger _trigger, std::function<TState (TState, TTrigger, Args...)> _callback)
+			: _SMLite_ConfigItem<TState, TTrigger> (_state, _trigger), m_callback (_callback) {}
+		TState _call (Args... args) { return m_callback (m_state, m_trigger, args...); }
+	protected:
 		std::function<TState (TState, TTrigger, Args...)> m_callback;
+		void _f () override {}
 	};
 
 
@@ -94,45 +116,94 @@ namespace Fawdlstty {
 	template<typename TState, typename TTrigger>
 	class _SMLite_ConfigState : public std::enable_shared_from_this<_SMLite_ConfigState<TState, TTrigger>> {
 		friend class SMLite<TState, TTrigger>;
-		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> _try_add_trigger (TTrigger _trigger, _SMLite_ConfigItem *_ptr) {
+		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> _try_add_trigger (TTrigger _trigger, _SMLite_ConfigItem<TState, TTrigger> *_ptr) {
 			if (m_items.find (_trigger) != m_items.end ())
 				throw _SMLite_Exception ("state is already has this trigger methods.");
-			m_items [_trigger] = std::shared_ptr<_SMLite_ConfigItem> (_ptr);
+			m_items [_trigger] = std::shared_ptr<_SMLite_ConfigItem<TState, TTrigger>> (_ptr);
 			return this->shared_from_this ();
 		}
 
 	public:
 		_SMLite_ConfigState (TState state) : m_state (state) {}
-		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenFunc (TTrigger trigger, std::function<TState (TState, TTrigger)> callback) {
-			return _try_add_trigger (trigger, new _SMLite_ConfigItem0<TState, TTrigger> (m_state, trigger, callback));
+#pragma region WhenFunc/WhenAction
+		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenFunc (TTrigger trigger, std::function<TState ()> callback) {
+			return _try_add_trigger (trigger, new _SMLite_ConfigItem_A<TState, TTrigger> (m_state, trigger, callback));
 		}
 		template<typename... Args>
-		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenFunc (TTrigger trigger, std::function<TState (TState, TTrigger, Args...)> callback) {
-			return _try_add_trigger (trigger, new _SMLite_ConfigItem1<TState, TTrigger, Args...> (m_state, trigger, callback));
+		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenFunc (TTrigger trigger, std::function<TState (Args...)> callback) {
+			return _try_add_trigger (trigger, new _SMLite_ConfigItem_A<TState, TTrigger, Args...> (m_state, trigger, callback));
 		}
-		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenAction (TTrigger trigger, std::function<void (TState, TTrigger)> callback) {
-			return _try_add_trigger (trigger, new _SMLite_ConfigItem0<TState, TTrigger> (m_state, trigger, std::function<TState (TState, TTrigger)> ([callback] (TState state, TTrigger trigger) -> TState {
-				callback (state, trigger);
-				return state;
-			})));
+		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenAction (TTrigger trigger, std::function<void ()> callback) {
+			std::function<TState (TState)> f = [callback] (TState state) -> TState { callback (); return state; };
+			return _try_add_trigger (trigger, new _SMLite_ConfigItem_SA<TState, TTrigger> (m_state, trigger, f));
 		}
 		template<typename... Args>
-		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenAction (TTrigger trigger, std::function<void (TState, TTrigger, Args...)> callback) {
-			return _try_add_trigger (trigger, new _SMLite_ConfigItem1<TState, TTrigger, Args...> (m_state, trigger, std::function<TState (TState, TTrigger, Args...)> ([callback] (TState state, TTrigger trigger, Args... args) -> TState {
-				callback (state, trigger, args...);
-				return state;
-			})));
+		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenAction (TTrigger trigger, std::function<void (Args...)> callback) {
+			std::function<TState (TState, Args...)> f = [callback] (TState state, Args... args) -> TState { callback (args...); return state; };
+			return _try_add_trigger (trigger, new _SMLite_ConfigItem_SA<TState, TTrigger, Args...> (m_state, trigger, f));
 		}
+#pragma endregion
+#pragma region WhenFunc/WhenAction S
+		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenFunc_S (TTrigger trigger, std::function<TState (TState)> callback) {
+			return _try_add_trigger (trigger, new _SMLite_ConfigItem_SA<TState, TTrigger> (m_state, trigger, callback));
+		}
+		template<typename... Args>
+		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenFunc_S (TTrigger trigger, std::function<TState (TState, Args...)> callback) {
+			return _try_add_trigger (trigger, new _SMLite_ConfigItem_SA<TState, TTrigger, Args...> (m_state, trigger, callback));
+		}
+		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenAction_S (TTrigger trigger, std::function<void (TState)> callback) {
+			std::function<TState (TState)> f = [callback] (TState state) -> TState { callback (state); return state; };
+			return _try_add_trigger (trigger, new _SMLite_ConfigItem_SA<TState, TTrigger> (m_state, trigger, f));
+		}
+		template<typename... Args>
+		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenAction_S (TTrigger trigger, std::function<void (TState, Args...)> callback) {
+			std::function<TState (TState, Args...)> f = [callback] (TState state, Args... args) -> TState { callback (state, args...); return state; };
+			return _try_add_trigger (trigger, new _SMLite_ConfigItem_SA<TState, TTrigger, Args...> (m_state, trigger, f));
+		}
+#pragma endregion
+#pragma region WhenFunc/WhenAction T
+		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenFunc_T (TTrigger trigger, std::function<TState (TTrigger)> callback) {
+			return _try_add_trigger (trigger, new _SMLite_ConfigItem_TA<TState, TTrigger> (m_state, trigger, callback));
+		}
+		template<typename... Args>
+		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenFunc_T (TTrigger trigger, std::function<TState (TTrigger, Args...)> callback) {
+			return _try_add_trigger (trigger, new _SMLite_ConfigItem_TA<TState, TTrigger, Args...> (m_state, trigger, callback));
+		}
+		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenAction_T (TTrigger trigger, std::function<void (TTrigger)> callback) {
+			std::function<TState (TState, TTrigger)> f = [callback] (TState state, TTrigger trigger) -> TState { callback (trigger); return state; };
+			return _try_add_trigger (trigger, new _SMLite_ConfigItem_STA<TState, TTrigger> (m_state, trigger, f));
+		}
+		template<typename... Args>
+		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenAction_T (TTrigger trigger, std::function<void (TTrigger, Args...)> callback) {
+			std::function<TState (TState, TTrigger, Args...)> f = [callback] (TState state, TTrigger trigger, Args... args) -> TState { callback (trigger, args...); return state; };
+			return _try_add_trigger (trigger, new _SMLite_ConfigItem_STA<TState, TTrigger, Args...> (m_state, trigger, f));
+		}
+#pragma endregion
+#pragma region WhenFunc/WhenAction ST
+		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenFunc_ST (TTrigger trigger, std::function<TState (TState, TTrigger)> callback) {
+			return _try_add_trigger (trigger, new _SMLite_ConfigItem_STA<TState, TTrigger> (m_state, trigger, callback));
+		}
+		template<typename... Args>
+		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenFunc_ST (TTrigger trigger, std::function<TState (TState, TTrigger, Args...)> callback) {
+			return _try_add_trigger (trigger, new _SMLite_ConfigItem_STA<TState, TTrigger, Args...> (m_state, trigger, callback));
+		}
+		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenAction_ST (TTrigger trigger, std::function<void (TState, TTrigger)> callback) {
+			std::function<TState (TState, TTrigger)> f = [callback] (TState state, TTrigger trigger) -> TState { callback (state, trigger); return state; };
+			return _try_add_trigger (trigger, new _SMLite_ConfigItem_STA<TState, TTrigger> (m_state, trigger, f));
+		}
+		template<typename... Args>
+		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenAction_ST (TTrigger trigger, std::function<void (TState, TTrigger, Args...)> callback) {
+			std::function<TState (TState, TTrigger, Args...)> f = [callback] (TState state, TTrigger trigger, Args... args) -> TState { callback (state, trigger, args...); return state; };
+			return _try_add_trigger (trigger, new _SMLite_ConfigItem_STA<TState, TTrigger, Args...> (m_state, trigger, f));
+		}
+#pragma endregion
 		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenChangeTo (TTrigger trigger, TState new_state) {
-			return _try_add_trigger (trigger, new _SMLite_ConfigItem0<TState, TTrigger> (m_state, trigger, std::function<TState (TState, TTrigger)> ([new_state] (TState state, TTrigger trigger) -> TState {
-				return new_state;
-			})));
+			std::function<TState ()> f = [new_state] () -> TState { return new_state; };
+			return _try_add_trigger (trigger, new _SMLite_ConfigItem_A<TState, TTrigger> (m_state, trigger, f));
 		}
 		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> WhenIgnore (TTrigger trigger) {
-			std::function<TState (TState, TTrigger)> f = std::function<TState (TState, TTrigger)> ([] (TState state, TTrigger trigger) -> TState {
-				return state;
-			});
-			return _try_add_trigger (trigger, new _SMLite_ConfigItem0<TState, TTrigger> (m_state, trigger, f));
+			std::function<TState (TState)> f = [] (TState state) -> TState { return state; };
+			return _try_add_trigger (trigger, new _SMLite_ConfigItem_SA<TState, TTrigger> (m_state, trigger, f));
 		}
 		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> OnEntry (std::function<void ()> callback) {
 			if (m_on_entry)
@@ -150,28 +221,46 @@ namespace Fawdlstty {
 	private:
 		bool _allow_trigger (TTrigger trigger) { return m_items.find (trigger) != m_items.end (); }
 		TState _trigger (TTrigger trigger) {
-			_SMLite_ConfigItem *_ptr0 = m_items [trigger].get ();
-			if (_ptr0) {
-				auto _ptr1 = dynamic_cast<_SMLite_ConfigItem0<TState, TTrigger>*> (_ptr0);
-				if (_ptr1)
-					return _ptr1->_call ();
+			_SMLite_ConfigItem<TState, TTrigger> *_ptr = m_items [trigger].get ();
+			if (_ptr) {
+				auto _ptrA = dynamic_cast<_SMLite_ConfigItem_A<TState, TTrigger>*> (_ptr);
+				if (_ptrA)
+					return _ptrA->_call ();
+				auto _ptrSA = dynamic_cast<_SMLite_ConfigItem_SA<TState, TTrigger>*> (_ptr);
+				if (_ptrSA)
+					return _ptrSA->_call ();
+				auto _ptrTA = dynamic_cast<_SMLite_ConfigItem_TA<TState, TTrigger>*> (_ptr);
+				if (_ptrTA)
+					return _ptrTA->_call ();
+				auto _ptrSTA = dynamic_cast<_SMLite_ConfigItem_STA<TState, TTrigger>*> (_ptr);
+				if (_ptrSTA)
+					return _ptrSTA->_call ();
 			}
 			throw _SMLite_Exception ("not match function found.");
 		}
 		template<typename... Args>
 		TState _trigger (TTrigger trigger, Args... args) {
-			_SMLite_ConfigItem *_ptr0 = m_items [trigger].get ();
-			if (_ptr0) {
-				auto _ptr1 = dynamic_cast<_SMLite_ConfigItem1<TState, TTrigger, Args...>*> (_ptr0);
-				if (_ptr1)
-					return _ptr1->_call (args...);
+			_SMLite_ConfigItem<TState, TTrigger> *_ptr = m_items [trigger].get ();
+			if (_ptr) {
+				auto _ptrA = dynamic_cast<_SMLite_ConfigItem_A<TState, TTrigger, Args...>*> (_ptr);
+				if (_ptrA)
+					return _ptrA->_call (args...);
+				auto _ptrSA = dynamic_cast<_SMLite_ConfigItem_SA<TState, TTrigger, Args...>*> (_ptr);
+				if (_ptrSA)
+					return _ptrSA->_call (args...);
+				auto _ptrTA = dynamic_cast<_SMLite_ConfigItem_TA<TState, TTrigger, Args...>*> (_ptr);
+				if (_ptrTA)
+					return _ptrTA->_call (args...);
+				auto _ptrSTA = dynamic_cast<_SMLite_ConfigItem_STA<TState, TTrigger, Args...>*> (_ptr);
+				if (_ptrSTA)
+					return _ptrSTA->_call (args...);
 			}
 			throw _SMLite_Exception ("not match function found.");
 		}
 
 		std::function<void ()> m_on_entry, m_on_leave;
 		TState m_state;
-		std::map<TTrigger, std::shared_ptr<_SMLite_ConfigItem>> m_items;
+		std::map<TTrigger, std::shared_ptr<_SMLite_ConfigItem<TState, TTrigger>>> m_items;
 	};
 
 

@@ -140,17 +140,173 @@ namespace SMLiteTest {
 			std::function<void (MyState, MyTrigger, std::string)> _f = [&] (MyState _state, MyTrigger _trigger, std::string _p1) { s = _p1; };
 			Fawdlstty::SMLiteBuilder<MyState, MyTrigger> _smb {};
 			_smb.Configure (MyState::Rest)
-				->WhenFunc (MyTrigger::Run, std::function<MyState (MyState, MyTrigger)> (
+				->WhenFunc (MyTrigger::Run, std::function<MyState ()> (
+					[&] () { s = "WhenFunc_Run"; return MyState::Ready; }))
+				->WhenFunc (MyTrigger::Read, std::function<MyState (std::string)> (
+					[&] (std::string _p1) { s = _p1; return MyState::Ready; }))
+				->WhenFunc (MyTrigger::FinishRead, std::function<MyState (std::string, int)> (
+					[&] (std::string _p1, int _p2) { s = _append (_p1, _p2); return MyState::Ready; }))
+				->WhenAction (MyTrigger::Close, std::function<void ()> (
+					[&] () { s = "WhenAction_Close"; }))
+				->WhenAction (MyTrigger::Write, std::function<void (std::string)> (
+					[&] (std::string _p1) { s = _p1; }))
+				->WhenAction (MyTrigger::FinishWrite, std::function<void (std::string, int)> (
+					[&] (std::string _p1, int _p2) { s = _append (_p1, _p2); }));
+			_smb.Configure (MyState::Ready)
+				->WhenChangeTo (MyTrigger::Close, MyState::Rest);
+
+			auto _sm = _smb.Build (MyState::Rest);
+			Assert::AreEqual (_sm->GetState (), MyState::Rest);
+			Assert::AreEqual (s, std::string (""));
+
+			_sm->Triggering (MyTrigger::Run);
+			Assert::AreEqual (_sm->GetState (), MyState::Ready);
+			Assert::AreEqual (s, std::string ("WhenFunc_Run"));
+			_sm->Triggering (MyTrigger::Close);
+
+			_sm->Triggering (MyTrigger::Read, std::string ("hello"));
+			Assert::AreEqual (_sm->GetState (), MyState::Ready);
+			Assert::AreEqual (s, std::string ("hello"));
+			_sm->Triggering (MyTrigger::Close);
+
+			_sm->Triggering (MyTrigger::FinishRead, std::string ("hello"), 1);
+			Assert::AreEqual (_sm->GetState (), MyState::Ready);
+			Assert::AreEqual (s, std::string ("hello1"));
+			_sm->Triggering (MyTrigger::Close);
+
+			_sm->Triggering (MyTrigger::Close);
+			Assert::AreEqual (s, std::string ("WhenAction_Close"));
+			Assert::AreEqual (_sm->GetState (), MyState::Rest);
+
+			_sm->Triggering (MyTrigger::Write, std::string ("world"));
+			Assert::AreEqual (s, std::string ("world"));
+			Assert::AreEqual (_sm->GetState (), MyState::Rest);
+
+			_sm->Triggering (MyTrigger::FinishWrite, std::string ("world"), 1);
+			Assert::AreEqual (s, std::string ("world1"));
+			Assert::AreEqual (_sm->GetState (), MyState::Rest);
+		}
+
+		TEST_METHOD (TestMethod5) {
+			std::string s = "";
+			std::function<void (MyState, MyTrigger, std::string)> _f = [&] (MyState _state, MyTrigger _trigger, std::string _p1) { s = _p1; };
+			Fawdlstty::SMLiteBuilder<MyState, MyTrigger> _smb {};
+			_smb.Configure (MyState::Rest)
+				->WhenFunc_S (MyTrigger::Run, std::function<MyState (MyState)> (
+					[&] (MyState _state) { s = "WhenFunc_Run"; return MyState::Ready; }))
+				->WhenFunc_S (MyTrigger::Read, std::function<MyState (MyState, std::string)> (
+					[&] (MyState _state, std::string _p1) { s = _p1; return MyState::Ready; }))
+				->WhenFunc_S (MyTrigger::FinishRead, std::function<MyState (MyState, std::string, int)> (
+					[&] (MyState _state, std::string _p1, int _p2) { s = _append (_p1, _p2); return MyState::Ready; }))
+				->WhenAction_S (MyTrigger::Close, std::function<void (MyState)> (
+					[&] (MyState _state) { s = "WhenAction_Close"; }))
+				->WhenAction_S (MyTrigger::Write, std::function<void (MyState, std::string)> (
+					[&] (MyState _state, std::string _p1) { s = _p1; }))
+				->WhenAction_S (MyTrigger::FinishWrite, std::function<void (MyState, std::string, int)> (
+					[&] (MyState _state, std::string _p1, int _p2) { s = _append (_p1, _p2); }));
+			_smb.Configure (MyState::Ready)
+				->WhenChangeTo (MyTrigger::Close, MyState::Rest);
+
+			auto _sm = _smb.Build (MyState::Rest);
+			Assert::AreEqual (_sm->GetState (), MyState::Rest);
+			Assert::AreEqual (s, std::string (""));
+
+			_sm->Triggering (MyTrigger::Run);
+			Assert::AreEqual (_sm->GetState (), MyState::Ready);
+			Assert::AreEqual (s, std::string ("WhenFunc_Run"));
+			_sm->Triggering (MyTrigger::Close);
+
+			_sm->Triggering (MyTrigger::Read, std::string ("hello"));
+			Assert::AreEqual (_sm->GetState (), MyState::Ready);
+			Assert::AreEqual (s, std::string ("hello"));
+			_sm->Triggering (MyTrigger::Close);
+
+			_sm->Triggering (MyTrigger::FinishRead, std::string ("hello"), 1);
+			Assert::AreEqual (_sm->GetState (), MyState::Ready);
+			Assert::AreEqual (s, std::string ("hello1"));
+			_sm->Triggering (MyTrigger::Close);
+
+			_sm->Triggering (MyTrigger::Close);
+			Assert::AreEqual (s, std::string ("WhenAction_Close"));
+			Assert::AreEqual (_sm->GetState (), MyState::Rest);
+
+			_sm->Triggering (MyTrigger::Write, std::string ("world"));
+			Assert::AreEqual (s, std::string ("world"));
+			Assert::AreEqual (_sm->GetState (), MyState::Rest);
+
+			_sm->Triggering (MyTrigger::FinishWrite, std::string ("world"), 1);
+			Assert::AreEqual (s, std::string ("world1"));
+			Assert::AreEqual (_sm->GetState (), MyState::Rest);
+		}
+
+		TEST_METHOD (TestMethod7) {
+			std::string s = "";
+			std::function<void (MyState, MyTrigger, std::string)> _f = [&] (MyState _state, MyTrigger _trigger, std::string _p1) { s = _p1; };
+			Fawdlstty::SMLiteBuilder<MyState, MyTrigger> _smb {};
+			_smb.Configure (MyState::Rest)
+				->WhenFunc_T (MyTrigger::Run, std::function<MyState (MyTrigger)> (
+					[&] (MyTrigger _trigger) { s = "WhenFunc_Run"; return MyState::Ready; }))
+				->WhenFunc_T (MyTrigger::Read, std::function<MyState (MyTrigger, std::string)> (
+					[&] (MyTrigger _trigger, std::string _p1) { s = _p1; return MyState::Ready; }))
+				->WhenFunc_T (MyTrigger::FinishRead, std::function<MyState (MyTrigger, std::string, int)> (
+					[&] (MyTrigger _trigger, std::string _p1, int _p2) { s = _append (_p1, _p2); return MyState::Ready; }))
+				->WhenAction_T (MyTrigger::Close, std::function<void (MyTrigger)> (
+					[&] (MyTrigger _trigger) { s = "WhenAction_Close"; }))
+				->WhenAction_T (MyTrigger::Write, std::function<void (MyTrigger, std::string)> (
+					[&] (MyTrigger _trigger, std::string _p1) { s = _p1; }))
+				->WhenAction_T (MyTrigger::FinishWrite, std::function<void (MyTrigger, std::string, int)> (
+					[&] (MyTrigger _trigger, std::string _p1, int _p2) { s = _append (_p1, _p2); }));
+			_smb.Configure (MyState::Ready)
+				->WhenChangeTo (MyTrigger::Close, MyState::Rest);
+
+			auto _sm = _smb.Build (MyState::Rest);
+			Assert::AreEqual (_sm->GetState (), MyState::Rest);
+			Assert::AreEqual (s, std::string (""));
+
+			_sm->Triggering (MyTrigger::Run);
+			Assert::AreEqual (_sm->GetState (), MyState::Ready);
+			Assert::AreEqual (s, std::string ("WhenFunc_Run"));
+			_sm->Triggering (MyTrigger::Close);
+
+			_sm->Triggering (MyTrigger::Read, std::string ("hello"));
+			Assert::AreEqual (_sm->GetState (), MyState::Ready);
+			Assert::AreEqual (s, std::string ("hello"));
+			_sm->Triggering (MyTrigger::Close);
+
+			_sm->Triggering (MyTrigger::FinishRead, std::string ("hello"), 1);
+			Assert::AreEqual (_sm->GetState (), MyState::Ready);
+			Assert::AreEqual (s, std::string ("hello1"));
+			_sm->Triggering (MyTrigger::Close);
+
+			_sm->Triggering (MyTrigger::Close);
+			Assert::AreEqual (s, std::string ("WhenAction_Close"));
+			Assert::AreEqual (_sm->GetState (), MyState::Rest);
+
+			_sm->Triggering (MyTrigger::Write, std::string ("world"));
+			Assert::AreEqual (s, std::string ("world"));
+			Assert::AreEqual (_sm->GetState (), MyState::Rest);
+
+			_sm->Triggering (MyTrigger::FinishWrite, std::string ("world"), 1);
+			Assert::AreEqual (s, std::string ("world1"));
+			Assert::AreEqual (_sm->GetState (), MyState::Rest);
+		}
+
+		TEST_METHOD (TestMethod9) {
+			std::string s = "";
+			std::function<void (MyState, MyTrigger, std::string)> _f = [&] (MyState _state, MyTrigger _trigger, std::string _p1) { s = _p1; };
+			Fawdlstty::SMLiteBuilder<MyState, MyTrigger> _smb {};
+			_smb.Configure (MyState::Rest)
+				->WhenFunc_ST (MyTrigger::Run, std::function<MyState (MyState, MyTrigger)> (
 					[&] (MyState _state, MyTrigger _trigger) { s = "WhenFunc_Run"; return MyState::Ready; }))
-				->WhenFunc (MyTrigger::Read, std::function<MyState (MyState, MyTrigger, std::string)> (
+				->WhenFunc_ST (MyTrigger::Read, std::function<MyState (MyState, MyTrigger, std::string)> (
 					[&] (MyState _state, MyTrigger _trigger, std::string _p1) { s = _p1; return MyState::Ready; }))
-				->WhenFunc (MyTrigger::FinishRead, std::function<MyState (MyState, MyTrigger, std::string, int)> (
+				->WhenFunc_ST (MyTrigger::FinishRead, std::function<MyState (MyState, MyTrigger, std::string, int)> (
 					[&] (MyState _state, MyTrigger _trigger, std::string _p1, int _p2) { s = _append (_p1, _p2); return MyState::Ready; }))
-				->WhenAction (MyTrigger::Close, std::function<void (MyState, MyTrigger)> (
+				->WhenAction_ST (MyTrigger::Close, std::function<void (MyState, MyTrigger)> (
 					[&] (MyState _state, MyTrigger _trigger) { s = "WhenAction_Close"; }))
-				->WhenAction (MyTrigger::Write, std::function<void (MyState, MyTrigger, std::string)> (
+				->WhenAction_ST (MyTrigger::Write, std::function<void (MyState, MyTrigger, std::string)> (
 					[&] (MyState _state, MyTrigger _trigger, std::string _p1) { s = _p1; }))
-				->WhenAction (MyTrigger::FinishWrite, std::function<void (MyState, MyTrigger, std::string, int)> (
+				->WhenAction_ST (MyTrigger::FinishWrite, std::function<void (MyState, MyTrigger, std::string, int)> (
 					[&] (MyState _state, MyTrigger _trigger, std::string _p1, int _p2) { s = _append (_p1, _p2); }));
 			_smb.Configure (MyState::Ready)
 				->WhenChangeTo (MyTrigger::Close, MyState::Rest);
