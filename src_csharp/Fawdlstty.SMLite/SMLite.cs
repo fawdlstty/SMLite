@@ -1,8 +1,8 @@
 ﻿/*
 * SMLite
-* State machine library for C, C++, C#, Python, VB.Net
+* State machine library for C, C++, C#, JavaScript, Python, VB.Net
 * Author: Fawdlstty
-* Version 0.1.5
+* Version 0.1.6
 *
 * Source Repository            <https://github.com/fawdlstty/SMLite>
 * Report                       <https://github.com/fawdlstty/SMLite/issues>
@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace Fawdlstty.SMLite {
     public class SMLite<TState, TTrigger> where TState : Enum where TTrigger : Enum {
-		public SMLite (TState init_state, Dictionary<TState, _SMLite_ConfigState<TState, TTrigger>> _states) {
+		internal SMLite (TState init_state, Dictionary<TState, _SMLite_ConfigState<TState, TTrigger>> _states) {
 			State = init_state;
 			m_states = _states;
 		}
@@ -32,52 +32,17 @@ namespace Fawdlstty.SMLite {
 		public void Triggering (TTrigger trigger, params object[] args) {
 			if (m_states.ContainsKey (State)) {
 				if (m_states[State]._allow_trigger (trigger)) {
-					var _new_state = m_states[State]._trigger_async (trigger, CancellationToken.None, args).Result;
+					var _new_state = m_states[State]._trigger (trigger, args);
 					if (_new_state.CompareTo (State) != 0) {
 						if (m_states[State].m_on_leave != null)
 							m_states[State].m_on_leave ();
-						if (m_states[State].m_on_leave_async != null)
-							m_states[State].m_on_leave_async ().Wait ();
 						State = _new_state;
 						if (m_states[State].m_on_entry != null)
 							m_states[State].m_on_entry ();
-						if (m_states[State].m_on_entry_async != null)
-							m_states[State].m_on_entry_async ().Wait ();
 					}
 					return;
 				}
             }
-			throw new Exception ("not match function found.");
-		}
-
-		public async Task TriggeringAsync (TTrigger trigger, params object[] args) {
-			await TriggeringAsync (trigger, CancellationToken.None, args);
-		}
-
-		public async Task TriggeringAsync (TTrigger trigger, CancellationToken token, params object[] args) {
-			if (m_states.ContainsKey (State)) {
-				if (m_states[State]._allow_trigger (trigger)) {
-					var _old_state = State;
-					try {
-						var _new_state = await m_states[State]._trigger_async (trigger, token, args);
-						if (_new_state.CompareTo (State) != 0) {
-							if (m_states[State].m_on_leave != null)
-								m_states[State].m_on_leave ();
-							if (m_states[State].m_on_leave_async != null)
-								await m_states[State].m_on_leave_async ();
-							State = _new_state;
-							if (m_states[State].m_on_entry != null)
-								m_states[State].m_on_entry ();
-							if (m_states[State].m_on_entry_async != null)
-								await m_states[State].m_on_entry_async ();
-						}
-						return;
-					} catch (Exception) {
-						State = _old_state;
-						throw;
-					}
-				}
-			}
 			throw new Exception ("not match function found.");
 		}
 

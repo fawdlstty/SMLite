@@ -14,7 +14,7 @@
 
 [English](./README.md) | 简体中文
 
-C、C++、C#、Python、VB.Net 的状态机库
+C、C++、C#、JavaScript、Python、VB.Net 的状态机库
 
 ## 支持的环境
 
@@ -26,6 +26,8 @@ C、C++、C#、Python、VB.Net 的状态机库
     + `.Net Framework 4.5` 及以上
     + `.Net Standard 2.0/2.1`
     + `.Net 5`
+- JavaScript库 支持的版本
+    + ECMAScript 2015
 - Python库 支持的运行时
     + `Python 3.7`
 

@@ -155,7 +155,7 @@ Namespace Fawdlstty.SMLite.vb.Test
 		Async Function TestSub2() As Task
 			Dim n As Integer = 0
 			Dim entry_one As Boolean = True
-			Dim _smb As SMLiteBuilder(Of MyState, MyTrigger) = New SMLiteBuilder(Of MyState, MyTrigger)()
+			Dim _smb As SMLiteBuilderAsync(Of MyState, MyTrigger) = New SMLiteBuilderAsync(Of MyState, MyTrigger)()
 			With _smb.Configure(MyState.Rest)
 				.OnEntryAsync(Async Function() As Task
 								  Await Task.Yield()
@@ -291,31 +291,31 @@ Namespace Fawdlstty.SMLite.vb.Test
 		End Function
 
 		<TestMethod>
-		Sub TestSub3()
+		Sub TestSub9()
 			Dim s As String = ""
 			Dim _smb As SMLiteBuilder(Of MyState, MyTrigger) = New SMLiteBuilder(Of MyState, MyTrigger)()
 			With _smb.Configure(MyState.Rest)
-				.WhenFunc(MyTrigger.Run, Function(_state As MyState, _trigger As MyTrigger) As MyState
-											 s = "WhenFunc_Run"
-											 Return MyState.Ready
-										 End Function)
-				.WhenFunc(MyTrigger.Read, Function(_state As MyState, _trigger As MyTrigger, _p1 As String) As MyState
-											  s = _p1
-											  Return MyState.Ready
-										  End Function)
-				.WhenFunc(MyTrigger.FinishRead, Function(_state As MyState, _trigger As MyTrigger, _p1 As String, _p2 As Integer) As MyState
-													s = $"{_p1}{_p2}"
-													Return MyState.Ready
-												End Function)
-				.WhenAction(MyTrigger.Close, Sub(_state As MyState, _trigger As MyTrigger)
-												 s = "WhenAction_Close"
-											 End Sub)
-				.WhenAction(MyTrigger.Write, Sub(_state As MyState, _trigger As MyTrigger, _p1 As String)
+				.WhenFunc_st(MyTrigger.Run, Function(_state As MyState, _trigger As MyTrigger) As MyState
+												s = "WhenFunc_Run"
+												Return MyState.Ready
+											End Function)
+				.WhenFunc_st(MyTrigger.Read, Function(_state As MyState, _trigger As MyTrigger, _p1 As String) As MyState
 												 s = _p1
-											 End Sub)
-				.WhenAction(MyTrigger.FinishWrite, Sub(_state As MyState, _trigger As MyTrigger, _p1 As String, _p2 As Integer)
+												 Return MyState.Ready
+											 End Function)
+				.WhenFunc_st(MyTrigger.FinishRead, Function(_state As MyState, _trigger As MyTrigger, _p1 As String, _p2 As Integer) As MyState
 													   s = $"{_p1}{_p2}"
-												   End Sub)
+													   Return MyState.Ready
+												   End Function)
+				.WhenAction_st(MyTrigger.Close, Sub(_state As MyState, _trigger As MyTrigger)
+													s = "WhenAction_Close"
+												End Sub)
+				.WhenAction_st(MyTrigger.Write, Sub(_state As MyState, _trigger As MyTrigger, _p1 As String)
+													s = _p1
+												End Sub)
+				.WhenAction_st(MyTrigger.FinishWrite, Sub(_state As MyState, _trigger As MyTrigger, _p1 As String, _p2 As Integer)
+														  s = $"{_p1}{_p2}"
+													  End Sub)
 			End With
 			With _smb.Configure(MyState.Ready)
 				.WhenChangeTo(MyTrigger.Close, MyState.Rest)
@@ -354,37 +354,37 @@ Namespace Fawdlstty.SMLite.vb.Test
 		End Sub
 
 		<TestMethod>
-		Async Function TestSub4() As Task
+		Async Function TestSub10() As Task
 			Dim s As String = ""
-			Dim _smb As SMLiteBuilder(Of MyState, MyTrigger) = New SMLiteBuilder(Of MyState, MyTrigger)()
+			Dim _smb As SMLiteBuilderAsync(Of MyState, MyTrigger) = New SMLiteBuilderAsync(Of MyState, MyTrigger)()
 			With _smb.Configure(MyState.Rest)
-				.WhenFuncAsync(MyTrigger.Run, Async Function(_state As MyState, _trigger As MyTrigger, _token As CancellationToken) As Task(Of MyState)
-												  Await Task.Yield()
-												  s = "WhenFunc_Run"
-												  Return MyState.Ready
-											  End Function)
-				.WhenFuncAsync(MyTrigger.Read, Async Function(_state As MyState, _trigger As MyTrigger, _token As CancellationToken, _p1 As String) As Task(Of MyState)
-												   Await Task.Yield()
-												   s = _p1
-												   Return MyState.Ready
-											   End Function)
-				.WhenFuncAsync(MyTrigger.FinishRead, Async Function(_state As MyState, _trigger As MyTrigger, _token As CancellationToken, _p1 As String, _p2 As Integer) As Task(Of MyState)
-														 Await Task.Yield()
-														 s = $"{_p1}{_p2}"
-														 Return MyState.Ready
-													 End Function)
-				.WhenActionAsync(MyTrigger.Close, Async Function(_state As MyState, _trigger As MyTrigger, _token As CancellationToken) As Task
-													  Await Task.Yield()
-													  s = "WhenAction_Close"
-												  End Function)
-				.WhenActionAsync(MyTrigger.Write, Async Function(_state As MyState, _trigger As MyTrigger, _token As CancellationToken, _p1 As String) As Task
+				.WhenFuncAsync_st(MyTrigger.Run, Async Function(_state As MyState, _trigger As MyTrigger, _token As CancellationToken) As Task(Of MyState)
+													 Await Task.Yield()
+													 s = "WhenFunc_Run"
+													 Return MyState.Ready
+												 End Function)
+				.WhenFuncAsync_st(MyTrigger.Read, Async Function(_state As MyState, _trigger As MyTrigger, _token As CancellationToken, _p1 As String) As Task(Of MyState)
 													  Await Task.Yield()
 													  s = _p1
+													  Return MyState.Ready
 												  End Function)
-				.WhenActionAsync(MyTrigger.FinishWrite, Async Function(_state As MyState, _trigger As MyTrigger, _token As CancellationToken, _p1 As String, _p2 As Integer) As Task
+				.WhenFuncAsync_st(MyTrigger.FinishRead, Async Function(_state As MyState, _trigger As MyTrigger, _token As CancellationToken, _p1 As String, _p2 As Integer) As Task(Of MyState)
 															Await Task.Yield()
 															s = $"{_p1}{_p2}"
+															Return MyState.Ready
 														End Function)
+				.WhenActionAsync_st(MyTrigger.Close, Async Function(_state As MyState, _trigger As MyTrigger, _token As CancellationToken) As Task
+														 Await Task.Yield()
+														 s = "WhenAction_Close"
+													 End Function)
+				.WhenActionAsync_st(MyTrigger.Write, Async Function(_state As MyState, _trigger As MyTrigger, _token As CancellationToken, _p1 As String) As Task
+														 Await Task.Yield()
+														 s = _p1
+													 End Function)
+				.WhenActionAsync_st(MyTrigger.FinishWrite, Async Function(_state As MyState, _trigger As MyTrigger, _token As CancellationToken, _p1 As String, _p2 As Integer) As Task
+															   Await Task.Yield()
+															   s = $"{_p1}{_p2}"
+														   End Function)
 			End With
 			With _smb.Configure(MyState.Ready)
 				.WhenChangeTo(MyTrigger.Close, MyState.Rest)

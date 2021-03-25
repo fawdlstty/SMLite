@@ -24,6 +24,18 @@ namespace Fawdlstty.SMLite.ItemStruct {
             CallbackInfo = callback_info;
         }
 
+        internal TState _call (params object[] args) {
+            var _v = new List<object> ();
+            if ((BuildItem & _SMLite_BuildItem.State) > 0)
+                _v.Add (State);
+            if ((BuildItem & _SMLite_BuildItem.Trigger) > 0)
+                _v.Add (Trigger);
+            if (args?.Length > 0)
+                _v.AddRange (args);
+            var _state = Callback.GetType ().InvokeMember ("Invoke", BindingFlags.InvokeMethod, null, Callback, _v.ToArray ());
+            return _state != null ? (TState) _state : State;
+        }
+
         internal async Task<TState> _call_async (CancellationToken token, params object[] args) {
             var _v = new List<object> ();
             if ((BuildItem & _SMLite_BuildItem.State) > 0)
