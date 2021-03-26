@@ -5,7 +5,9 @@ import os
 import sys
 from enum import IntEnum
 from SMLite import SMLite
+from SMLiteAsync import SMLiteAsync
 from SMLiteBuilder import SMLiteBuilder
+from SMLiteBuilderAsync import SMLiteBuilderAsync
 
 class MyState (IntEnum):
 	Rest = 0
@@ -234,7 +236,7 @@ async def TestMethod2 ():
 		entry_one = False
 		n += 10000000
 
-	_smb = SMLiteBuilder ()
+	_smb = SMLiteBuilderAsync ()
 	_smb.Configure (MyState.Rest)\
 		.OnEntryAsync (_rest_entry)\
 		.OnLeaveAsync (_rest_leave)\
@@ -424,7 +426,7 @@ async def TestMethod4 ():
 		global s
 		s = _p1 + str (_p2)
 
-	_smb = SMLiteBuilder ()
+	_smb = SMLiteBuilderAsync ()
 	_smb.Configure (MyState.Rest)\
 		.WhenFuncAsync (MyTrigger.Run, _rest_run)\
 		.WhenFuncAsync (MyTrigger.Read, _rest_read)\

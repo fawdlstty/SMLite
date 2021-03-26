@@ -77,7 +77,7 @@ namespace Fawdlstty {
 		virtual ~_SMLite_ConfigItem_SA () = default;
 		_SMLite_ConfigItem_SA (TState _state, TTrigger _trigger, std::function<TState (TState, Args...)> _callback)
 			: _SMLite_ConfigItem<TState, TTrigger> (_state, _trigger), m_callback (_callback) {}
-		TState _call (Args... args) { return m_callback (m_state, args...); }
+		TState _call (Args... args) { return m_callback (this->m_state, args...); }
 	protected:
 		std::function<TState (TState, Args...)> m_callback;
 		void _f () override {}
@@ -89,7 +89,7 @@ namespace Fawdlstty {
 		virtual ~_SMLite_ConfigItem_TA () = default;
 		_SMLite_ConfigItem_TA (TState _state, TTrigger _trigger, std::function<TState (TTrigger, Args...)> _callback)
 			: _SMLite_ConfigItem<TState, TTrigger> (_state, _trigger), m_callback (_callback) {}
-		TState _call (Args... args) { return m_callback (m_trigger, args...); }
+		TState _call (Args... args) { return m_callback (this->m_trigger, args...); }
 	protected:
 		std::function<TState (TTrigger, Args...)> m_callback;
 		void _f () override {}
@@ -101,7 +101,7 @@ namespace Fawdlstty {
 		virtual ~_SMLite_ConfigItem_STA () = default;
 		_SMLite_ConfigItem_STA (TState _state, TTrigger _trigger, std::function<TState (TState, TTrigger, Args...)> _callback)
 			: _SMLite_ConfigItem<TState, TTrigger> (_state, _trigger), m_callback (_callback) {}
-		TState _call (Args... args) { return m_callback (m_state, m_trigger, args...); }
+		TState _call (Args... args) { return m_callback (this->m_state, this->m_trigger, args...); }
 	protected:
 		std::function<TState (TState, TTrigger, Args...)> m_callback;
 		void _f () override {}

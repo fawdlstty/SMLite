@@ -28,11 +28,23 @@
     <Compile Include="ItemStruct\_SMLite_ConfigItem.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ItemStruct\_SMLite_ConfigItemAsync.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ItemStruct\_SMLite_ConfigStateAsync.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ItemStruct\__init__.py" />
+    <Compile Include="SMLiteAsync.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SMLiteBuilder.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ItemStruct\_SMLite_ConfigState.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SMLiteBuilderAsync.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="__init__.py">
