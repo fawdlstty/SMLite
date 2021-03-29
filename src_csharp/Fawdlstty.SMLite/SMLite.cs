@@ -19,34 +19,40 @@ using System.Threading.Tasks;
 namespace Fawdlstty.SMLite {
     public class SMLite<TState, TTrigger> where TState : Enum where TTrigger : Enum {
 		internal SMLite (TState init_state, Dictionary<TState, _SMLite_ConfigState<TState, TTrigger>> _states) {
-			State = init_state;
-			m_states = _states;
+			m_state = init_state;
+			m_cfg_states = _states;
 		}
 
 		public bool AllowTriggering (TTrigger trigger) {
-			if (m_states.ContainsKey (State))
-				return m_states[State]._allow_trigger (trigger);
+			if (m_cfg_states.ContainsKey (m_state))
+				return m_cfg_states[m_state]._allow_trigger (trigger);
 			return false;
 		}
 
 		public void Triggering (TTrigger trigger, params object[] args) {
-			if (m_states.ContainsKey (State)) {
-				if (m_states[State]._allow_trigger (trigger)) {
-					var _new_state = m_states[State]._trigger (trigger, args);
-					if (_new_state.CompareTo (State) != 0) {
-						if (m_states[State].m_on_leave != null)
-							m_states[State].m_on_leave ();
-						State = _new_state;
-						if (m_states[State].m_on_entry != null)
-							m_states[State].m_on_entry ();
+			lock (m_cfg_states) {
+				if (m_cfg_states.ContainsKey (m_state)) {
+					if (m_cfg_states[m_state]._allow_trigger (trigger)) {
+						var _new_state = m_cfg_states[m_state]._trigger (trigger, args);
+						if (_new_state.CompareTo (m_state) != 0) {
+							if (m_cfg_states[m_state].m_on_leave != null)
+								m_cfg_states[m_state].m_on_leave ();
+							m_state = _new_state;
+							if (m_cfg_states[m_state].m_on_entry != null)
+								m_cfg_states[m_state].m_on_entry ();
+						}
+						return;
 					}
-					return;
 				}
-            }
-			throw new Exception ("not match function found.");
+				throw new Exception ("not match function found.");
+			}
 		}
 
-		public TState State { get; set; }
-		Dictionary<TState, _SMLite_ConfigState<TState, TTrigger>> m_states = null;
+		public TState State {
+			get { return m_state; }
+			set { lock (m_cfg_states) m_state = value; }
+		}
+		private TState m_state;
+		private Dictionary<TState, _SMLite_ConfigState<TState, TTrigger>> m_cfg_states = null;
 	}
 }

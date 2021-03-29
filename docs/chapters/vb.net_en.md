@@ -102,6 +102,7 @@ Step 6. If you use asynchrony
 Much like the above, the following is to specify the asynchronous trigger callback function
 
 ```vb
+Dim _smb As SMLiteBuilderAsync(Of MyState, MyTrigger) = New SMLiteBuilderAsync(Of MyState, MyTrigger)()
 With _smb.Configure(MyState.Rest)
 
     ' Same effect as onEntry, except this function specifies an asynchronous method and cannot be called at the same time as OnEntry

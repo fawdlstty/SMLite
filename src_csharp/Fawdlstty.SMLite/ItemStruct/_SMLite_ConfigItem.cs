@@ -42,8 +42,11 @@ namespace Fawdlstty.SMLite.ItemStruct {
                 _v.Add (State);
             if ((BuildItem & _SMLite_BuildItem.Trigger) > 0)
                 _v.Add (Trigger);
-            if ((BuildItem & _SMLite_BuildItem.CancellationToken) > 0)
+            if ((BuildItem & _SMLite_BuildItem.CancellationToken) > 0) {
                 _v.Add (token);
+            } else if (token != CancellationToken.None) {
+                throw new Exception ("State machine method does not support the CancellationToken parameter, but the parameter 'token' is not 'CancellationToken.None'");
+			}
             if (args?.Length > 0)
                 _v.AddRange (args);
             var _state = Callback.GetType ().InvokeMember ("Invoke", BindingFlags.InvokeMethod, null, Callback, _v.ToArray ());

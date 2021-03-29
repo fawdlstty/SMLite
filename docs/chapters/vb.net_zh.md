@@ -103,6 +103,7 @@ Step 6. 如果用到异步
 使用与上面非常相似，下面是指定异步触发回调函数
 
 ```vb
+Dim _smb As SMLiteBuilderAsync(Of MyState, MyTrigger) = New SMLiteBuilderAsync(Of MyState, MyTrigger)()
 With _smb.Configure(MyState.Rest)
 
     ' 与 OnEntry 效果一致，不过这函数指定异步方法，并且不能与 OnEntry 同时调用

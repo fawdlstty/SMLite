@@ -4,7 +4,9 @@ Step 1. Download the repository, copy the `src_python/SMLite/` folder in the rep
 
 ```python
 from SMLite import SMLite
+from SMLiteAsync import SMLiteAsync
 from SMLiteBuilder import SMLiteBuilder
+from SMLiteBuilderAsync import SMLiteBuilderAsync
 ```
 
 Step 2. Define two enum class that represent all states and all triggers
@@ -106,6 +108,7 @@ Step 6. If you use asynchrony
 Much like the above, the following is to specify the asynchronous trigger callback function
 
 ```python
+_smb = SMLiteBuilderAsync ()
 _smb.Configure (MyState.Ready)\
 
     # Same effect as onEntry, except this function specifies an asynchronous method and cannot be called at the same time as OnEntry

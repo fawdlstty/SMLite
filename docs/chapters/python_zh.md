@@ -4,7 +4,9 @@ Step 1. 下载仓库，将仓库中的`src_python/SMLite/`文件夹下的Python�
 
 ```python
 from SMLite import SMLite
+from SMLiteAsync import SMLiteAsync
 from SMLiteBuilder import SMLiteBuilder
+from SMLiteBuilderAsync import SMLiteBuilderAsync
 ```
 
 Step 2. 定义两个强枚举类，分别代表所有的状态与所有的触发器
@@ -106,6 +108,7 @@ Step 6. 如果用到异步
 使用与上面非常相似，下面是指定异步触发回调函数
 
 ```python
+_smb = SMLiteBuilderAsync ()
 _smb.Configure (MyState.Ready)\
 
     # 与 OnEntry 效果一致，不过这函数指定异步方法，并且不能与 OnEntry 同时调用

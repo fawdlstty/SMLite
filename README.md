@@ -35,11 +35,11 @@ State machine library for C, C++, C#, JavaScript, Python, VB.Net
 
 Accelerated access from mainland Chinese users: [Document Images](https://www.fawdlstty.com/smlite/)
 
-- [C Library Tutorials](docs/c_en.md)
-- [C++ Library Tutorials](docs/cpp_en.md)
-- [C# Library Tutorials](docs/csharp_en.md)
-- [Python Library Tutorials](docs/python_en.md)
-- [VB.Net Library Tutorials](docs/vb.net_en.md)
+- [C Library Tutorials](docs/chapters/c_en.md)
+- [C++ Library Tutorials](docs/chapters/cpp_en.md)
+- [C# Library Tutorials](docs/chapters/csharp_en.md)
+- [Python Library Tutorials](docs/chapters/python_en.md)
+- [VB.Net Library Tutorials](docs/chapters/vb.net_en.md)
 
 ## Depends
 

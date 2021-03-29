@@ -85,6 +85,7 @@ Step 6. If you use asynchrony
 Much like the above, the following is to specify the asynchronous trigger callback function
 
 ```csharp
+var _smb = new SMLiteBuilderAsync <MyState, MyTrigger> ();
 _smb.Configure (MyState.Ready)
 
     // Same effect as onEntry, except this function specifies an asynchronous method and cannot be called at the same time as OnEntry

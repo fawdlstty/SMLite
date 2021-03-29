@@ -35,11 +35,11 @@ C、C++、C#、JavaScript、Python、VB.Net 的状态机库
 
 中国大陆用户加速访问：[文档镜像](https://www.fawdlstty.com/smlite/)
 
-- [C库用户手册](docs/c_zh.md)
-- [C++库用户手册](docs/cpp_zh.md)
-- [C#库用户手册](docs/csharp_zh.md)
-- [Python库用户手册](docs/python_zh.md)
-- [VB.Net库用户手册](docs/vb.net_zh.md)
+- [C库用户手册](docs/chapters/c_zh.md)
+- [C++库用户手册](docs/chapters/cpp_zh.md)
+- [C#库用户手册](docs/chapters/csharp_zh.md)
+- [Python库用户手册](docs/chapters/python_zh.md)
+- [VB.Net库用户手册](docs/chapters/vb.net_zh.md)
 
 ## 依赖库
 
