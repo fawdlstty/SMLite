@@ -26,7 +26,7 @@ namespace Fawdlstty.SMLite.ItemStruct {
 			return _try_add_trigger (trigger, _item);
 		}
 
-		#region has_cancellationtoken
+		#region WhenFuncAsync
 		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync (TTrigger trigger, Func<Task<TState>> callback) {
 			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.None, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
@@ -51,7 +51,9 @@ namespace Fawdlstty.SMLite.ItemStruct {
 			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.None, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
 		}
+		#endregion
 
+		#region WhenFuncAsync_s
 		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_s (TTrigger trigger, Func<TState, Task<TState>> callback) {
 			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
@@ -76,7 +78,9 @@ namespace Fawdlstty.SMLite.ItemStruct {
 			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
 		}
+		#endregion
 
+		#region WhenFuncAsync_t
 		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_t (TTrigger trigger, Func<TTrigger, Task<TState>> callback) {
 			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.Trigger, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
@@ -101,7 +105,36 @@ namespace Fawdlstty.SMLite.ItemStruct {
 			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.Trigger, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
 		}
+		#endregion
 
+		#region WhenFuncAsync_c
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_c (TTrigger trigger, Func<CancellationToken, Task<TState>> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.None | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+			return _try_add_trigger (trigger, _item);
+		}
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_c<T1> (TTrigger trigger, Func<CancellationToken, T1, Task<TState>> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.None | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+			return _try_add_trigger (trigger, _item);
+		}
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_c<T1, T2> (TTrigger trigger, Func<CancellationToken, T1, T2, Task<TState>> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.None | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+			return _try_add_trigger (trigger, _item);
+		}
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_c<T1, T2, T3> (TTrigger trigger, Func<CancellationToken, T1, T2, T3, Task<TState>> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.None | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+			return _try_add_trigger (trigger, _item);
+		}
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_c<T1, T2, T3, T4> (TTrigger trigger, Func<CancellationToken, T1, T2, T3, T4, Task<TState>> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.None | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+			return _try_add_trigger (trigger, _item);
+		}
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_c<T1, T2, T3, T4, T5> (TTrigger trigger, Func<CancellationToken, T1, T2, T3, T4, T5, Task<TState>> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.None | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+			return _try_add_trigger (trigger, _item);
+		}
+		#endregion
+
+		#region WhenFuncAsync_st
 		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_st (TTrigger trigger, Func<TState, TTrigger, Task<TState>> callback) {
 			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.Trigger, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
@@ -126,7 +159,90 @@ namespace Fawdlstty.SMLite.ItemStruct {
 			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.Trigger, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
 		}
+		#endregion
 
+		#region WhenFuncAsync_sc
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_sc (TTrigger trigger, Func<TState, CancellationToken, Task<TState>> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+			return _try_add_trigger (trigger, _item);
+		}
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_sc<T1> (TTrigger trigger, Func<TState, CancellationToken, T1, Task<TState>> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+			return _try_add_trigger (trigger, _item);
+		}
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_sc<T1, T2> (TTrigger trigger, Func<TState, CancellationToken, T1, T2, Task<TState>> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+			return _try_add_trigger (trigger, _item);
+		}
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_sc<T1, T2, T3> (TTrigger trigger, Func<TState, CancellationToken, T1, T2, T3, Task<TState>> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+			return _try_add_trigger (trigger, _item);
+		}
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_sc<T1, T2, T3, T4> (TTrigger trigger, Func<TState, CancellationToken, T1, T2, T3, T4, Task<TState>> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+			return _try_add_trigger (trigger, _item);
+		}
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_sc<T1, T2, T3, T4, T5> (TTrigger trigger, Func<TState, CancellationToken, T1, T2, T3, T4, T5, Task<TState>> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+			return _try_add_trigger (trigger, _item);
+		}
+		#endregion
+
+		#region WhenFuncAsync_tc
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_tc (TTrigger trigger, Func<TTrigger, CancellationToken, Task<TState>> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+			return _try_add_trigger (trigger, _item);
+		}
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_tc<T1> (TTrigger trigger, Func<TTrigger, CancellationToken, T1, Task<TState>> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+			return _try_add_trigger (trigger, _item);
+		}
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_tc<T1, T2> (TTrigger trigger, Func<TTrigger, CancellationToken, T1, T2, Task<TState>> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+			return _try_add_trigger (trigger, _item);
+		}
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_tc<T1, T2, T3> (TTrigger trigger, Func<TTrigger, CancellationToken, T1, T2, T3, Task<TState>> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+			return _try_add_trigger (trigger, _item);
+		}
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_tc<T1, T2, T3, T4> (TTrigger trigger, Func<TTrigger, CancellationToken, T1, T2, T3, T4, Task<TState>> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+			return _try_add_trigger (trigger, _item);
+		}
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_tc<T1, T2, T3, T4, T5> (TTrigger trigger, Func<TTrigger, CancellationToken, T1, T2, T3, T4, T5, Task<TState>> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+			return _try_add_trigger (trigger, _item);
+		}
+		#endregion
+
+		#region WhenFuncAsync_stc
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_stc (TTrigger trigger, Func<TState, TTrigger, CancellationToken, Task<TState>> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+			return _try_add_trigger (trigger, _item);
+		}
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_stc<T1> (TTrigger trigger, Func<TState, TTrigger, CancellationToken, T1, Task<TState>> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+			return _try_add_trigger (trigger, _item);
+		}
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_stc<T1, T2> (TTrigger trigger, Func<TState, TTrigger, CancellationToken, T1, T2, Task<TState>> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+			return _try_add_trigger (trigger, _item);
+		}
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_stc<T1, T2, T3> (TTrigger trigger, Func<TState, TTrigger, CancellationToken, T1, T2, T3, Task<TState>> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+			return _try_add_trigger (trigger, _item);
+		}
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_stc<T1, T2, T3, T4> (TTrigger trigger, Func<TState, TTrigger, CancellationToken, T1, T2, T3, T4, Task<TState>> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+			return _try_add_trigger (trigger, _item);
+		}
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_stc<T1, T2, T3, T4, T5> (TTrigger trigger, Func<TState, TTrigger, CancellationToken, T1, T2, T3, T4, T5, Task<TState>> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+			return _try_add_trigger (trigger, _item);
+		}
+		#endregion
+
+		#region WhenActionAsync
 		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync (TTrigger trigger, Func<Task> callback) {
 			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.None, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
@@ -151,7 +267,9 @@ namespace Fawdlstty.SMLite.ItemStruct {
 			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.None, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
 		}
+		#endregion
 
+		#region WhenActionAsync_s
 		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_s (TTrigger trigger, Func<TState, Task> callback) {
 			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
@@ -176,7 +294,9 @@ namespace Fawdlstty.SMLite.ItemStruct {
 			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
 		}
+		#endregion
 
+		#region WhenActionAsync_t
 		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_t (TTrigger trigger, Func<TTrigger, Task> callback) {
 			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.Trigger, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
@@ -201,7 +321,36 @@ namespace Fawdlstty.SMLite.ItemStruct {
 			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.Trigger, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
 		}
+		#endregion
 
+		#region WhenActionAsync_c
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_c (TTrigger trigger, Func<CancellationToken, Task> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+			return _try_add_trigger (trigger, _item);
+		}
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_c<T1> (TTrigger trigger, Func<CancellationToken, T1, Task> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+			return _try_add_trigger (trigger, _item);
+		}
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_c<T1, T2> (TTrigger trigger, Func<CancellationToken, T1, T2, Task> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+			return _try_add_trigger (trigger, _item);
+		}
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_c<T1, T2, T3> (TTrigger trigger, Func<CancellationToken, T1, T2, T3, Task> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+			return _try_add_trigger (trigger, _item);
+		}
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_c<T1, T2, T3, T4> (TTrigger trigger, Func<CancellationToken, T1, T2, T3, T4, Task> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+			return _try_add_trigger (trigger, _item);
+		}
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_c<T1, T2, T3, T4, T5> (TTrigger trigger, Func<CancellationToken, T1, T2, T3, T4, T5, Task> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+			return _try_add_trigger (trigger, _item);
+		}
+		#endregion
+
+		#region WhenActionAsync_st
 		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_st (TTrigger trigger, Func<TState, TTrigger, Task> callback) {
 			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.Trigger, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
@@ -228,203 +377,82 @@ namespace Fawdlstty.SMLite.ItemStruct {
 		}
 		#endregion
 
-		#region no_cancellationtoken
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync (TTrigger trigger, Func<CancellationToken, Task<TState>> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.None | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+		#region WhenActionAsync_sc
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_sc (TTrigger trigger, Func<TState, CancellationToken, Task> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
 		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync<T1> (TTrigger trigger, Func<CancellationToken, T1, Task<TState>> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.None | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_sc<T1> (TTrigger trigger, Func<TState, CancellationToken, T1, Task> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
 		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync<T1, T2> (TTrigger trigger, Func<CancellationToken, T1, T2, Task<TState>> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.None | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_sc<T1, T2> (TTrigger trigger, Func<TState, CancellationToken, T1, T2, Task> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
 		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync<T1, T2, T3> (TTrigger trigger, Func<CancellationToken, T1, T2, T3, Task<TState>> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.None | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_sc<T1, T2, T3> (TTrigger trigger, Func<TState, CancellationToken, T1, T2, T3, Task> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
 		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync<T1, T2, T3, T4> (TTrigger trigger, Func<CancellationToken, T1, T2, T3, T4, Task<TState>> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.None | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_sc<T1, T2, T3, T4> (TTrigger trigger, Func<TState, CancellationToken, T1, T2, T3, T4, Task> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
 		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync<T1, T2, T3, T4, T5> (TTrigger trigger, Func<CancellationToken, T1, T2, T3, T4, T5, Task<TState>> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.None | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_sc<T1, T2, T3, T4, T5> (TTrigger trigger, Func<TState, CancellationToken, T1, T2, T3, T4, T5, Task> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
 		}
+		#endregion
 
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_s (TTrigger trigger, Func<TState, CancellationToken, Task<TState>> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+		#region WhenActionAsync_tc
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_tc (TTrigger trigger, Func<TTrigger, CancellationToken, Task> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
 		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_s<T1> (TTrigger trigger, Func<TState, CancellationToken, T1, Task<TState>> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_tc<T1> (TTrigger trigger, Func<TTrigger, CancellationToken, T1, Task> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
 		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_s<T1, T2> (TTrigger trigger, Func<TState, CancellationToken, T1, T2, Task<TState>> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_tc<T1, T2> (TTrigger trigger, Func<TTrigger, CancellationToken, T1, T2, Task> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
 		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_s<T1, T2, T3> (TTrigger trigger, Func<TState, CancellationToken, T1, T2, T3, Task<TState>> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_tc<T1, T2, T3> (TTrigger trigger, Func<TTrigger, CancellationToken, T1, T2, T3, Task> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
 		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_s<T1, T2, T3, T4> (TTrigger trigger, Func<TState, CancellationToken, T1, T2, T3, T4, Task<TState>> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_tc<T1, T2, T3, T4> (TTrigger trigger, Func<TTrigger, CancellationToken, T1, T2, T3, T4, Task> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
 		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_s<T1, T2, T3, T4, T5> (TTrigger trigger, Func<TState, CancellationToken, T1, T2, T3, T4, T5, Task<TState>> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_tc<T1, T2, T3, T4, T5> (TTrigger trigger, Func<TTrigger, CancellationToken, T1, T2, T3, T4, T5, Task> callback) {
+			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
 		}
+		#endregion
 
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_t (TTrigger trigger, Func<TTrigger, CancellationToken, Task<TState>> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
-			return _try_add_trigger (trigger, _item);
-		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_t<T1> (TTrigger trigger, Func<TTrigger, CancellationToken, T1, Task<TState>> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
-			return _try_add_trigger (trigger, _item);
-		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_t<T1, T2> (TTrigger trigger, Func<TTrigger, CancellationToken, T1, T2, Task<TState>> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
-			return _try_add_trigger (trigger, _item);
-		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_t<T1, T2, T3> (TTrigger trigger, Func<TTrigger, CancellationToken, T1, T2, T3, Task<TState>> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
-			return _try_add_trigger (trigger, _item);
-		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_t<T1, T2, T3, T4> (TTrigger trigger, Func<TTrigger, CancellationToken, T1, T2, T3, T4, Task<TState>> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
-			return _try_add_trigger (trigger, _item);
-		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_t<T1, T2, T3, T4, T5> (TTrigger trigger, Func<TTrigger, CancellationToken, T1, T2, T3, T4, T5, Task<TState>> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
-			return _try_add_trigger (trigger, _item);
-		}
-
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_st (TTrigger trigger, Func<TState, TTrigger, CancellationToken, Task<TState>> callback) {
+		#region WhenActionAsync_stc
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_stc (TTrigger trigger, Func<TState, TTrigger, CancellationToken, Task> callback) {
 			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
 		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_st<T1> (TTrigger trigger, Func<TState, TTrigger, CancellationToken, T1, Task<TState>> callback) {
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_stc<T1> (TTrigger trigger, Func<TState, TTrigger, CancellationToken, T1, Task> callback) {
 			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
 		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_st<T1, T2> (TTrigger trigger, Func<TState, TTrigger, CancellationToken, T1, T2, Task<TState>> callback) {
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_stc<T1, T2> (TTrigger trigger, Func<TState, TTrigger, CancellationToken, T1, T2, Task> callback) {
 			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
 		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_st<T1, T2, T3> (TTrigger trigger, Func<TState, TTrigger, CancellationToken, T1, T2, T3, Task<TState>> callback) {
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_stc<T1, T2, T3> (TTrigger trigger, Func<TState, TTrigger, CancellationToken, T1, T2, T3, Task> callback) {
 			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
 		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_st<T1, T2, T3, T4> (TTrigger trigger, Func<TState, TTrigger, CancellationToken, T1, T2, T3, T4, Task<TState>> callback) {
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_stc<T1, T2, T3, T4> (TTrigger trigger, Func<TState, TTrigger, CancellationToken, T1, T2, T3, T4, Task> callback) {
 			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
 		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenFuncAsync_st<T1, T2, T3, T4, T5> (TTrigger trigger, Func<TState, TTrigger, CancellationToken, T1, T2, T3, T4, T5, Task<TState>> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
-			return _try_add_trigger (trigger, _item);
-		}
-
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync (TTrigger trigger, Func<CancellationToken, Task> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
-			return _try_add_trigger (trigger, _item);
-		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync<T1> (TTrigger trigger, Func<CancellationToken, T1, Task> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
-			return _try_add_trigger (trigger, _item);
-		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync<T1, T2> (TTrigger trigger, Func<CancellationToken, T1, T2, Task> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
-			return _try_add_trigger (trigger, _item);
-		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync<T1, T2, T3> (TTrigger trigger, Func<CancellationToken, T1, T2, T3, Task> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
-			return _try_add_trigger (trigger, _item);
-		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync<T1, T2, T3, T4> (TTrigger trigger, Func<CancellationToken, T1, T2, T3, T4, Task> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
-			return _try_add_trigger (trigger, _item);
-		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync<T1, T2, T3, T4, T5> (TTrigger trigger, Func<CancellationToken, T1, T2, T3, T4, T5, Task> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
-			return _try_add_trigger (trigger, _item);
-		}
-
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_s (TTrigger trigger, Func<TState, CancellationToken, Task> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
-			return _try_add_trigger (trigger, _item);
-		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_s<T1> (TTrigger trigger, Func<TState, CancellationToken, T1, Task> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
-			return _try_add_trigger (trigger, _item);
-		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_s<T1, T2> (TTrigger trigger, Func<TState, CancellationToken, T1, T2, Task> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
-			return _try_add_trigger (trigger, _item);
-		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_s<T1, T2, T3> (TTrigger trigger, Func<TState, CancellationToken, T1, T2, T3, Task> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
-			return _try_add_trigger (trigger, _item);
-		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_s<T1, T2, T3, T4> (TTrigger trigger, Func<TState, CancellationToken, T1, T2, T3, T4, Task> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
-			return _try_add_trigger (trigger, _item);
-		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_s<T1, T2, T3, T4, T5> (TTrigger trigger, Func<TState, CancellationToken, T1, T2, T3, T4, T5, Task> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
-			return _try_add_trigger (trigger, _item);
-		}
-
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_t (TTrigger trigger, Func<TTrigger, CancellationToken, Task> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
-			return _try_add_trigger (trigger, _item);
-		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_t<T1> (TTrigger trigger, Func<TTrigger, CancellationToken, T1, Task> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
-			return _try_add_trigger (trigger, _item);
-		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_t<T1, T2> (TTrigger trigger, Func<TTrigger, CancellationToken, T1, T2, Task> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
-			return _try_add_trigger (trigger, _item);
-		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_t<T1, T2, T3> (TTrigger trigger, Func<TTrigger, CancellationToken, T1, T2, T3, Task> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
-			return _try_add_trigger (trigger, _item);
-		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_t<T1, T2, T3, T4> (TTrigger trigger, Func<TTrigger, CancellationToken, T1, T2, T3, T4, Task> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
-			return _try_add_trigger (trigger, _item);
-		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_t<T1, T2, T3, T4, T5> (TTrigger trigger, Func<TTrigger, CancellationToken, T1, T2, T3, T4, T5, Task> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
-			return _try_add_trigger (trigger, _item);
-		}
-
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_st (TTrigger trigger, Func<TState, TTrigger, CancellationToken, Task> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
-			return _try_add_trigger (trigger, _item);
-		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_st<T1> (TTrigger trigger, Func<TState, TTrigger, CancellationToken, T1, Task> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
-			return _try_add_trigger (trigger, _item);
-		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_st<T1, T2> (TTrigger trigger, Func<TState, TTrigger, CancellationToken, T1, T2, Task> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
-			return _try_add_trigger (trigger, _item);
-		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_st<T1, T2, T3> (TTrigger trigger, Func<TState, TTrigger, CancellationToken, T1, T2, T3, Task> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
-			return _try_add_trigger (trigger, _item);
-		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_st<T1, T2, T3, T4> (TTrigger trigger, Func<TState, TTrigger, CancellationToken, T1, T2, T3, T4, Task> callback) {
-			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
-			return _try_add_trigger (trigger, _item);
-		}
-		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_st<T1, T2, T3, T4, T5> (TTrigger trigger, Func<TState, TTrigger, CancellationToken, T1, T2, T3, T4, T5, Task> callback) {
+		public _SMLite_ConfigStateAsync<TState, TTrigger> WhenActionAsync_stc<T1, T2, T3, T4, T5> (TTrigger trigger, Func<TState, TTrigger, CancellationToken, T1, T2, T3, T4, T5, Task> callback) {
 			var _item = new _SMLite_ConfigItem<TState, TTrigger> (_SMLite_BuildItem.State | _SMLite_BuildItem.Trigger | _SMLite_BuildItem.CancellationToken, State, trigger, callback, callback.Method);
 			return _try_add_trigger (trigger, _item);
 		}
