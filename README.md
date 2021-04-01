@@ -14,7 +14,7 @@
 
 English | [简体中文](./README.zh.md)
 
-State machine library for C, C++, C#, JavaScript, Python, VB.Net
+State machine library for C, C++, C#, Java, JavaScript, Python, VB.Net
 
 ## Support Environments
 
@@ -26,6 +26,8 @@ State machine library for C, C++, C#, JavaScript, Python, VB.Net
     + `.Net Framework 4.5` and above
     + `.Net Standard 2.0/2.1`
     + `.Net 5`
+- Java library supported versions
+    + Java 8
 - JavaScript library supported versions
     + ECMAScript 2015
 - Python library supported runtimes
@@ -38,6 +40,8 @@ Accelerated access from mainland Chinese users: [Document Images](https://www.fa
 - [C Library Tutorials](docs/chapters/c_en.md)
 - [C++ Library Tutorials](docs/chapters/cpp_en.md)
 - [C# Library Tutorials](docs/chapters/csharp_en.md)
+- Java Library Tutorials
+- JavaScript Library Tutorials
 - [Python Library Tutorials](docs/chapters/python_en.md)
 - [VB.Net Library Tutorials](docs/chapters/vb.net_en.md)
 
