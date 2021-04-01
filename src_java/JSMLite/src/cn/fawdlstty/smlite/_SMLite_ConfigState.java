@@ -89,11 +89,11 @@ public class _SMLite_ConfigState<TState extends Enum, TTrigger extends Enum> {
     }
 
     public _SMLite_ConfigState<TState, TTrigger> WhenAction_st (TTrigger trigger, IAction_st<TState, TTrigger> callback) throws Exception {
-        _SMLite_ConfigItem<TState, TTrigger> _item = new _SMLite_ConfigItem (EnumSet.of (_SMLite_BuildItem.Trigger), m_state, trigger, callback);
+        _SMLite_ConfigItem<TState, TTrigger> _item = new _SMLite_ConfigItem (EnumSet.of (_SMLite_BuildItem.State, _SMLite_BuildItem.Trigger), m_state, trigger, callback);
         return _try_add_trigger (trigger, _item);
     }
     public _SMLite_ConfigState<TState, TTrigger> WhenAction_st (TTrigger trigger, IAction_sta<TState, TTrigger> callback) throws Exception {
-        _SMLite_ConfigItem<TState, TTrigger> _item = new _SMLite_ConfigItem (EnumSet.of (_SMLite_BuildItem.Trigger), m_state, trigger, callback);
+        _SMLite_ConfigItem<TState, TTrigger> _item = new _SMLite_ConfigItem (EnumSet.of (_SMLite_BuildItem.State, _SMLite_BuildItem.Trigger), m_state, trigger, callback);
         return _try_add_trigger (trigger, _item);
     }
 

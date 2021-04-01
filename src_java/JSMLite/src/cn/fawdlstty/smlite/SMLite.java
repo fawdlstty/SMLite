@@ -33,7 +33,7 @@ public class SMLite<TState extends Enum, TTrigger extends Enum> {
         }
     }
 
-    public void Triggering (TTrigger trigger, Object[] args) throws Exception {
+    public void Triggering (TTrigger trigger, Object... args) throws Exception {
         synchronized (m_cfg_states) {
             if (m_cfg_states.containsKey (m_state)) {
                 if (m_cfg_states.get (m_state)._allow_trigger (trigger)) {

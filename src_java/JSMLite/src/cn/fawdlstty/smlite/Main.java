@@ -1,8 +1,8 @@
 package cn.fawdlstty.smlite;
 
-import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 enum MyState { Rest, Ready, Reading, Writing };
 enum MyTrigger { Run, Close, Read, FinishRead, Write, FinishWrite };
@@ -107,9 +107,193 @@ public class Main {
         _sm.SetState(MyState.Rest);
         Assert.AreEqual (n.get(), 11113421);
     }
+    
+    static void TestMethod3 () throws Exception {
+        AtomicReference<String> s = new AtomicReference<>("");
+        SMLiteBuilder<MyState, MyTrigger> _smb = new SMLiteBuilder ();
+        _smb.Configure (MyState.Rest)
+                .WhenFunc (MyTrigger.Run, () -> { s.set("WhenFunc_Run"); return MyState.Ready; })
+				.WhenFunc (MyTrigger.Read, (Object[] _p) -> { s.set((String)_p[0]); return MyState.Ready; })
+				.WhenFunc (MyTrigger.FinishRead, (Object[] _p) -> { s.set(String.format("%s%d", (String)_p[0], (int)_p[1])); return MyState.Ready; })
+				.WhenAction (MyTrigger.Close, () -> s.set("WhenAction_Close"))
+				.WhenAction (MyTrigger.Write, (Object[] _p) -> s.set((String)_p[0]))
+				.WhenAction (MyTrigger.FinishWrite, (Object[] _p) -> s.set(String.format("%s%d", (String)_p[0], (int)_p[1])));
+        _smb.Configure (MyState.Ready)
+                .WhenChangeTo (MyTrigger.Close, MyState.Rest);
+
+        SMLite<MyState, MyTrigger> _sm = _smb.Build (MyState.Rest);
+        Assert.AreEqual (_sm.GetState(), MyState.Rest);
+        Assert.AreEqual (s.get(), "");
+
+        _sm.Triggering (MyTrigger.Run);
+        Assert.AreEqual (_sm.GetState(), MyState.Ready);
+        Assert.AreEqual (s.get(), "WhenFunc_Run");
+        _sm.Triggering (MyTrigger.Close);
+
+        _sm.Triggering (MyTrigger.Read, "hello");
+        Assert.AreEqual (_sm.GetState(), MyState.Ready);
+        Assert.AreEqual (s.get(), "hello");
+        _sm.Triggering (MyTrigger.Close);
+
+        _sm.Triggering (MyTrigger.FinishRead, "hello", 1);
+        Assert.AreEqual (_sm.GetState(), MyState.Ready);
+        Assert.AreEqual (s.get(), "hello1");
+        _sm.Triggering (MyTrigger.Close);
+
+        _sm.Triggering (MyTrigger.Close);
+        Assert.AreEqual (s.get(), "WhenAction_Close");
+        Assert.AreEqual (_sm.GetState(), MyState.Rest);
+
+        _sm.Triggering (MyTrigger.Write, "world");
+        Assert.AreEqual (s.get(), "world");
+        Assert.AreEqual (_sm.GetState(), MyState.Rest);
+
+        _sm.Triggering (MyTrigger.FinishWrite, "world", 1);
+        Assert.AreEqual (s.get(), "world1");
+        Assert.AreEqual (_sm.GetState(), MyState.Rest);
+    }
+
+    static void TestMethod5 () throws Exception {
+        AtomicReference<String> s = new AtomicReference<>("");
+        SMLiteBuilder<MyState, MyTrigger> _smb = new SMLiteBuilder ();
+        _smb.Configure (MyState.Rest)
+                .WhenFunc_s (MyTrigger.Run, (MyState _state) -> { s.set("WhenFunc_Run"); return MyState.Ready; })
+				.WhenFunc_s (MyTrigger.Read, (MyState _state, Object[] _p) -> { s.set((String)_p[0]); return MyState.Ready; })
+				.WhenFunc_s (MyTrigger.FinishRead, (MyState _state, Object[] _p) -> { s.set(String.format("%s%d", (String)_p[0], (int)_p[1])); return MyState.Ready; })
+				.WhenAction_s (MyTrigger.Close, (MyState _state) -> s.set("WhenAction_Close"))
+				.WhenAction_s (MyTrigger.Write, (MyState _state, Object[] _p) -> s.set((String)_p[0]))
+				.WhenAction_s (MyTrigger.FinishWrite, (MyState _state, Object[] _p) -> s.set(String.format("%s%d", (String)_p[0], (int)_p[1])));
+        _smb.Configure (MyState.Ready)
+                .WhenChangeTo (MyTrigger.Close, MyState.Rest);
+
+        SMLite<MyState, MyTrigger> _sm = _smb.Build (MyState.Rest);
+        Assert.AreEqual (_sm.GetState(), MyState.Rest);
+        Assert.AreEqual (s.get(), "");
+
+        _sm.Triggering (MyTrigger.Run);
+        Assert.AreEqual (_sm.GetState(), MyState.Ready);
+        Assert.AreEqual (s.get(), "WhenFunc_Run");
+        _sm.Triggering (MyTrigger.Close);
+
+        _sm.Triggering (MyTrigger.Read, "hello");
+        Assert.AreEqual (_sm.GetState(), MyState.Ready);
+        Assert.AreEqual (s.get(), "hello");
+        _sm.Triggering (MyTrigger.Close);
+
+        _sm.Triggering (MyTrigger.FinishRead, "hello", 1);
+        Assert.AreEqual (_sm.GetState(), MyState.Ready);
+        Assert.AreEqual (s.get(), "hello1");
+        _sm.Triggering (MyTrigger.Close);
+
+        _sm.Triggering (MyTrigger.Close);
+        Assert.AreEqual (s.get(), "WhenAction_Close");
+        Assert.AreEqual (_sm.GetState(), MyState.Rest);
+
+        _sm.Triggering (MyTrigger.Write, "world");
+        Assert.AreEqual (s.get(), "world");
+        Assert.AreEqual (_sm.GetState(), MyState.Rest);
+
+        _sm.Triggering (MyTrigger.FinishWrite, "world", 1);
+        Assert.AreEqual (s.get(), "world1");
+        Assert.AreEqual (_sm.GetState(), MyState.Rest);
+    }
+
+    static void TestMethod7 () throws Exception {
+        AtomicReference<String> s = new AtomicReference<>("");
+        SMLiteBuilder<MyState, MyTrigger> _smb = new SMLiteBuilder ();
+        _smb.Configure (MyState.Rest)
+                .WhenFunc_t (MyTrigger.Run, (MyTrigger _trigger) -> { s.set("WhenFunc_Run"); return MyState.Ready; })
+				.WhenFunc_t (MyTrigger.Read, (MyTrigger _trigger, Object[] _p) -> { s.set((String)_p[0]); return MyState.Ready; })
+				.WhenFunc_t (MyTrigger.FinishRead, (MyTrigger _trigger, Object[] _p) -> { s.set(String.format("%s%d", (String)_p[0], (int)_p[1])); return MyState.Ready; })
+				.WhenAction_t (MyTrigger.Close, (MyTrigger _trigger) -> s.set("WhenAction_Close"))
+				.WhenAction_t (MyTrigger.Write, (MyTrigger _trigger, Object[] _p) -> s.set((String)_p[0]))
+				.WhenAction_t (MyTrigger.FinishWrite, (MyTrigger _trigger, Object[] _p) -> s.set(String.format("%s%d", (String)_p[0], (int)_p[1])));
+        _smb.Configure (MyState.Ready)
+                .WhenChangeTo (MyTrigger.Close, MyState.Rest);
+
+        SMLite<MyState, MyTrigger> _sm = _smb.Build (MyState.Rest);
+        Assert.AreEqual (_sm.GetState(), MyState.Rest);
+        Assert.AreEqual (s.get(), "");
+
+        _sm.Triggering (MyTrigger.Run);
+        Assert.AreEqual (_sm.GetState(), MyState.Ready);
+        Assert.AreEqual (s.get(), "WhenFunc_Run");
+        _sm.Triggering (MyTrigger.Close);
+
+        _sm.Triggering (MyTrigger.Read, "hello");
+        Assert.AreEqual (_sm.GetState(), MyState.Ready);
+        Assert.AreEqual (s.get(), "hello");
+        _sm.Triggering (MyTrigger.Close);
+
+        _sm.Triggering (MyTrigger.FinishRead, "hello", 1);
+        Assert.AreEqual (_sm.GetState(), MyState.Ready);
+        Assert.AreEqual (s.get(), "hello1");
+        _sm.Triggering (MyTrigger.Close);
+
+        _sm.Triggering (MyTrigger.Close);
+        Assert.AreEqual (s.get(), "WhenAction_Close");
+        Assert.AreEqual (_sm.GetState(), MyState.Rest);
+
+        _sm.Triggering (MyTrigger.Write, "world");
+        Assert.AreEqual (s.get(), "world");
+        Assert.AreEqual (_sm.GetState(), MyState.Rest);
+
+        _sm.Triggering (MyTrigger.FinishWrite, "world", 1);
+        Assert.AreEqual (s.get(), "world1");
+        Assert.AreEqual (_sm.GetState(), MyState.Rest);
+    }
+
+    static void TestMethod9 () throws Exception {
+        AtomicReference<String> s = new AtomicReference<>("");
+        SMLiteBuilder<MyState, MyTrigger> _smb = new SMLiteBuilder ();
+        _smb.Configure (MyState.Rest)
+                .WhenFunc_st (MyTrigger.Run, (MyState _state, MyTrigger _trigger) -> { s.set("WhenFunc_Run"); return MyState.Ready; })
+				.WhenFunc_st (MyTrigger.Read, (MyState _state, MyTrigger _trigger, Object[] _p) -> { s.set((String)_p[0]); return MyState.Ready; })
+				.WhenFunc_st (MyTrigger.FinishRead, (MyState _state, MyTrigger _trigger, Object[] _p) -> { s.set(String.format("%s%d", (String)_p[0], (int)_p[1])); return MyState.Ready; })
+				.WhenAction_st (MyTrigger.Close, (MyState _state, MyTrigger _trigger) -> s.set("WhenAction_Close"))
+				.WhenAction_st (MyTrigger.Write, (MyState _state, MyTrigger _trigger, Object[] _p) -> s.set((String)_p[0]))
+				.WhenAction_st (MyTrigger.FinishWrite, (MyState _state, MyTrigger _trigger, Object[] _p) -> s.set(String.format("%s%d", (String)_p[0], (int)_p[1])));
+        _smb.Configure (MyState.Ready)
+                .WhenChangeTo (MyTrigger.Close, MyState.Rest);
+
+        SMLite<MyState, MyTrigger> _sm = _smb.Build (MyState.Rest);
+        Assert.AreEqual (_sm.GetState(), MyState.Rest);
+        Assert.AreEqual (s.get(), "");
+
+        _sm.Triggering (MyTrigger.Run);
+        Assert.AreEqual (_sm.GetState(), MyState.Ready);
+        Assert.AreEqual (s.get(), "WhenFunc_Run");
+        _sm.Triggering (MyTrigger.Close);
+
+        _sm.Triggering (MyTrigger.Read, "hello");
+        Assert.AreEqual (_sm.GetState(), MyState.Ready);
+        Assert.AreEqual (s.get(), "hello");
+        _sm.Triggering (MyTrigger.Close);
+
+        _sm.Triggering (MyTrigger.FinishRead, "hello", 1);
+        Assert.AreEqual (_sm.GetState(), MyState.Ready);
+        Assert.AreEqual (s.get(), "hello1");
+        _sm.Triggering (MyTrigger.Close);
+
+        _sm.Triggering (MyTrigger.Close);
+        Assert.AreEqual (s.get(), "WhenAction_Close");
+        Assert.AreEqual (_sm.GetState(), MyState.Rest);
+
+        _sm.Triggering (MyTrigger.Write, "world");
+        Assert.AreEqual (s.get(), "world");
+        Assert.AreEqual (_sm.GetState(), MyState.Rest);
+
+        _sm.Triggering (MyTrigger.FinishWrite, "world", 1);
+        Assert.AreEqual (s.get(), "world1");
+        Assert.AreEqual (_sm.GetState(), MyState.Rest);
+    }
 
     public static void main(String[] args) throws Exception {
         TestMethod1 ();
+        TestMethod3 ();
+        TestMethod5 ();
+        TestMethod7 ();
+        TestMethod9 ();
         System.out.println ("Test Success");
     }
 }
