@@ -5,7 +5,7 @@ import cn.fawdlstty.smlite.internface.*;
 import java.util.EnumSet;
 import java.util.HashMap;
 
-public class _SMLite_ConfigState<TState extends Enum, TTrigger extends Enum> {
+public class _SMLite_ConfigState<TState, TTrigger> {
     private _SMLite_ConfigState<TState, TTrigger> _try_add_trigger (TTrigger _trigger, _SMLite_ConfigItem<TState, TTrigger> _item) throws Exception {
         if (m_items.containsKey (_trigger))
             throw new Exception ("state is already has this trigger methods.");

@@ -4,7 +4,7 @@ import cn.fawdlstty.smlite.internface.*;
 
 import java.util.EnumSet;
 
-public class _SMLite_ConfigItem<TState extends Enum, TTrigger extends Enum> {
+public class _SMLite_ConfigItem<TState, TTrigger> {
     public _SMLite_ConfigItem (EnumSet<_SMLite_BuildItem> build_item, TState state, TTrigger trigger, Object callback) {
         m_build_item = build_item;
         m_state = state;

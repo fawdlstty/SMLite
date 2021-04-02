@@ -3,7 +3,7 @@ package cn.fawdlstty.smlite;
 import java.util.Dictionary;
 import java.util.HashMap;
 
-public class SMLiteBuilder<TState extends Enum, TTrigger extends Enum> {
+public class SMLiteBuilder<TState extends Comparable, TTrigger extends Enum> {
     public _SMLite_ConfigState<TState, TTrigger> Configure (TState state) throws Exception {
         if (m_builded)
             throw new Exception ("shouldn't configure builder after builded.");

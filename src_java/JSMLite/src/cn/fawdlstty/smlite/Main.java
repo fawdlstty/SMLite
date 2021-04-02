@@ -288,6 +288,100 @@ public class Main {
         Assert.AreEqual (_sm.GetState(), MyState.Rest);
     }
 
+    static void TestMethod11 () throws Exception {
+        AtomicInteger n = new AtomicInteger(0);
+        AtomicBoolean entry_one = new AtomicBoolean(true);
+        SMLiteBuilder<Tuple2<MyState, MyState>, MyTrigger> _smb = new SMLiteBuilder ();
+        _smb.Configure (new Tuple2 (MyState.Rest, MyState.Rest))
+                .OnEntry (() -> { Assert.IsFalse (entry_one.get()); entry_one.set(true); n.addAndGet(1); })
+                .OnLeave (() -> { Assert.IsTrue (entry_one.get()); entry_one.set(false); n.addAndGet(10); })
+                .WhenChangeTo (MyTrigger.Run, new Tuple2 (MyState.Ready, MyState.Ready))
+                .WhenIgnore (MyTrigger.Close);
+        _smb.Configure (new Tuple2 (MyState.Ready, MyState.Ready))
+                .OnEntry (() -> { Assert.IsFalse (entry_one.get()); entry_one.set(true); n.addAndGet(100); })
+                .OnLeave (() -> { Assert.IsTrue (entry_one.get()); entry_one.set(false); n.addAndGet(1000); })
+                .WhenChangeTo (MyTrigger.Read, new Tuple2 (MyState.Reading, MyState.Reading))
+                .WhenChangeTo (MyTrigger.Write, new Tuple2 (MyState.Writing, MyState.Writing))
+                .WhenChangeTo (MyTrigger.Close, new Tuple2 (MyState.Rest, MyState.Rest));
+        _smb.Configure (new Tuple2 (MyState.Reading, MyState.Reading))
+                .OnEntry (() -> { Assert.IsFalse (entry_one.get()); entry_one.set(true); n.addAndGet(10000); })
+                .OnLeave (() -> { Assert.IsTrue (entry_one.get()); entry_one.set(false); n.addAndGet(100000); })
+                .WhenChangeTo (MyTrigger.FinishRead, new Tuple2 (MyState.Ready, MyState.Ready))
+                .WhenChangeTo (MyTrigger.Close, new Tuple2 (MyState.Rest, MyState.Rest));
+        _smb.Configure (new Tuple2 (MyState.Writing, MyState.Writing))
+                .OnEntry (() -> { Assert.IsFalse (entry_one.get()); entry_one.set(true); n.addAndGet(1000000); })
+                .OnLeave (() -> { Assert.IsTrue (entry_one.get()); entry_one.set(false); n.addAndGet(10000000); })
+                .WhenChangeTo (MyTrigger.FinishWrite, new Tuple2 (MyState.Ready, MyState.Ready))
+                .WhenChangeTo (MyTrigger.Close, new Tuple2 (MyState.Rest, MyState.Rest));
+
+        SMLite<Tuple2<MyState, MyState>, MyTrigger> _sm = _smb.Build (new Tuple2 (MyState.Rest, MyState.Rest));
+        Assert.AreEqual (_sm.GetState (), new Tuple2 (MyState.Rest, MyState.Rest));
+        Assert.AreEqual (n.get(), 0);
+        Assert.IsTrue (_sm.AllowTriggering (MyTrigger.Run));
+        Assert.IsTrue (_sm.AllowTriggering (MyTrigger.Close));
+        Assert.IsFalse (_sm.AllowTriggering (MyTrigger.Read));
+        Assert.IsFalse (_sm.AllowTriggering (MyTrigger.FinishRead));
+        Assert.IsFalse (_sm.AllowTriggering (MyTrigger.Write));
+        Assert.IsFalse (_sm.AllowTriggering (MyTrigger.FinishWrite));
+
+        _sm.Triggering (MyTrigger.Close);
+        Assert.AreEqual (_sm.GetState(), new Tuple2 (MyState.Rest, MyState.Rest));
+        Assert.AreEqual (n.get(), 0);
+
+        _sm.Triggering (MyTrigger.Close);
+        Assert.AreEqual (_sm.GetState(), new Tuple2 (MyState.Rest, MyState.Rest));
+        Assert.AreEqual (n.get(), 0);
+
+        _sm.Triggering (MyTrigger.Close);
+        Assert.AreEqual (_sm.GetState(), new Tuple2 (MyState.Rest, MyState.Rest));
+        Assert.AreEqual (n.get(), 0);
+
+        _sm.Triggering (MyTrigger.Run);
+        Assert.AreEqual (_sm.GetState(), new Tuple2 (MyState.Ready, MyState.Ready));
+        Assert.AreEqual (n.get(), 110);
+        Assert.IsFalse (_sm.AllowTriggering (MyTrigger.Run));
+        Assert.IsTrue (_sm.AllowTriggering (MyTrigger.Close));
+        Assert.IsTrue (_sm.AllowTriggering (MyTrigger.Read));
+        Assert.IsFalse (_sm.AllowTriggering (MyTrigger.FinishRead));
+        Assert.IsTrue (_sm.AllowTriggering (MyTrigger.Write));
+        Assert.IsFalse (_sm.AllowTriggering (MyTrigger.FinishWrite));
+
+        _sm.Triggering (MyTrigger.Close);
+        Assert.AreEqual (_sm.GetState(), new Tuple2 (MyState.Rest, MyState.Rest));
+        Assert.AreEqual (n.get(), 1111);
+        Assert.IsTrue (_sm.AllowTriggering (MyTrigger.Run));
+        Assert.IsTrue (_sm.AllowTriggering (MyTrigger.Close));
+        Assert.IsFalse (_sm.AllowTriggering (MyTrigger.Read));
+        Assert.IsFalse (_sm.AllowTriggering (MyTrigger.FinishRead));
+        Assert.IsFalse (_sm.AllowTriggering (MyTrigger.Write));
+        Assert.IsFalse (_sm.AllowTriggering (MyTrigger.FinishWrite));
+
+        _sm.Triggering (MyTrigger.Run);
+        Assert.AreEqual (_sm.GetState(), new Tuple2 (MyState.Ready, MyState.Ready));
+        Assert.AreEqual (n.get(), 1221);
+
+        _sm.Triggering (MyTrigger.Read);
+        Assert.AreEqual (_sm.GetState(), new Tuple2 (MyState.Reading, MyState.Reading));
+        Assert.AreEqual (n.get(), 12221);
+
+        _sm.Triggering (MyTrigger.FinishRead);
+        Assert.AreEqual (_sm.GetState(), new Tuple2 (MyState.Ready, MyState.Ready));
+        Assert.AreEqual (n.get(), 112321);
+
+        _sm.Triggering (MyTrigger.Write);
+        Assert.AreEqual (_sm.GetState(), new Tuple2 (MyState.Writing, MyState.Writing));
+        Assert.AreEqual (n.get(), 1113321);
+
+        _sm.Triggering (MyTrigger.FinishWrite);
+        Assert.AreEqual (_sm.GetState(), new Tuple2 (MyState.Ready, MyState.Ready));
+        Assert.AreEqual (n.get(), 11113421);
+
+        _sm.SetState(new Tuple2 (MyState.Reading, MyState.Reading));
+        _sm.SetState(new Tuple2 (MyState.Writing, MyState.Writing));
+        _sm.SetState(new Tuple2 (MyState.Rest, MyState.Rest));
+        Assert.AreEqual (n.get(), 11113421);
+    }
+
     public static void main(String[] args) throws Exception {
         TestMethod1 ();
         TestMethod3 ();

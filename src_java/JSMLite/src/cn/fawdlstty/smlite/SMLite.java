@@ -2,7 +2,7 @@ package cn.fawdlstty.smlite;
 
 import java.util.HashMap;
 
-public class SMLite<TState extends Enum, TTrigger extends Enum> {
+public class SMLite<TState extends Comparable, TTrigger extends Enum> {
     public SMLite (TState init_state, HashMap<TState, _SMLite_ConfigState<TState, TTrigger>> _states) {
         m_state = init_state;
         m_cfg_states = _states;
