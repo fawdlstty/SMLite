@@ -2,7 +2,7 @@
 * SMLite
 * State machine library for C, C++, C#, Java, JavaScript, Python, VB.Net
 * Author: Fawdlstty
-* Version 0.1.6
+* Version 0.1.7
 *
 * Source Repository            <https://github.com/fawdlstty/SMLite>
 * Report                       <https://github.com/fawdlstty/SMLite/issues>
@@ -15,8 +15,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Fawdlstty.SMLite {
     public class SMLite<TState, TTrigger> where TState : IComparable where TTrigger : Enum {
