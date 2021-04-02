@@ -1,6 +1,6 @@
 /*
 * SMLite
-* State machine library for C, C++, C#, JavaScript, Python, VB.Net
+* State machine library for C, C++, C#, Java, JavaScript, Python, VB.Net
 * Author: Fawdlstty
 * Version 0.1.6
 * 
@@ -13,11 +13,14 @@
 #ifndef __SMLITE_HPP__
 #define __SMLITE_HPP__
 
+#include <cstdio>
 #include <exception>
 #include <functional>
 #include <map>
 #include <memory>
 #include <mutex>
+#include <sstream>
+#include <string>
 #include <tuple>
 #include <vector>
 
@@ -27,11 +30,11 @@ namespace Fawdlstty {
 
 	class _SMLite_Exception: public std::exception {
 	public:
-		_SMLite_Exception (const char* _reason): m_reason (_reason) {}
-		const char* what () const noexcept override { return m_reason; }
+		_SMLite_Exception (std::string _reason): m_reason (_reason) {}
+		const char* what () const noexcept override { return m_reason.data (); }
 
 	private:
-		const char* m_reason;
+		std::string m_reason;
 	};
 
 	template<typename TState, typename TTrigger>
@@ -272,34 +275,38 @@ namespace Fawdlstty {
 	template<typename TState, typename TTrigger>
 	class SMLite {
 		friend class SMLiteBuilder<TState, TTrigger>;
-		SMLite (TState init_state, std::shared_ptr<std::map<TState, std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>>>> _states)
-			: m_state (init_state), m_states (_states) {}
 	public:
-		TState GetState () {
-			std::unique_lock<std::recursive_mutex> ul (m_mtx);
-			return m_state;
-		}
+		SMLite (TState init_state, int _cfg_state): m_state (init_state), m_cfg_state_index (_cfg_state) {}
+		TState GetState () { return m_state; }
 		void SetState (TState new_state) {
 			std::unique_lock<std::recursive_mutex> ul (m_mtx);
 			m_state = new_state;
 		}
 		bool AllowTriggering (TTrigger trigger) {
 			std::unique_lock<std::recursive_mutex> ul (m_mtx);
-			if (m_states->find (m_state) != m_states->end ())
-				return (*m_states) [m_state]->_allow_trigger (trigger);
+			std::shared_ptr<std::map<TState, std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>>>> _states;
+			_get_ref ([&] (std::map<int, std::shared_ptr<std::map<TState, std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>>>>> &s_cfg_states_group, int &s_cfg_states_group_index) {
+				_states = s_cfg_states_group [m_cfg_state_index];
+			});
+			if (_states->find (m_state) != _states->end ())
+				return (*_states) [m_state]->_allow_trigger (trigger);
 			return false;
 		}
 		bool Triggering (TTrigger trigger) {
 			std::unique_lock<std::recursive_mutex> ul (m_mtx);
+			std::shared_ptr<std::map<TState, std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>>>> _states;
+			_get_ref ([&] (std::map<int, std::shared_ptr<std::map<TState, std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>>>>> &s_cfg_states_group, int &s_cfg_states_group_index) {
+				_states = s_cfg_states_group [m_cfg_state_index];
+			});
 			if (!AllowTriggering (trigger))
 				return false;
-			auto _p = (*m_states) [m_state];
+			auto _p = (*_states) [m_state];
 			auto _state = _p->_trigger (trigger);
 			if (m_state != _state) {
 				if (_p->m_on_leave)
 					_p->m_on_leave ();
 				m_state = _state;
-				_p = (*m_states) [m_state];
+				_p = (*_states) [m_state];
 				if (_p->m_on_entry)
 					_p->m_on_entry ();
 			}
@@ -308,15 +315,19 @@ namespace Fawdlstty {
 		template<typename... Args>
 		bool Triggering (TTrigger trigger, Args... args) {
 			std::unique_lock<std::recursive_mutex> ul (m_mtx);
+			std::shared_ptr<std::map<TState, std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>>>> _states;
+			_get_ref ([&] (std::map<int, std::shared_ptr<std::map<TState, std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>>>>> &s_cfg_states_group, int &s_cfg_states_group_index) {
+				_states = s_cfg_states_group[m_cfg_state_index];
+			});
 			if (!AllowTriggering (trigger))
 				return false;
-			auto _p = (*m_states) [m_state];
+			auto _p = (*_states) [m_state];
 			auto _state = _p->_trigger (trigger, args...);
 			if (m_state != _state) {
 				if (_p->m_on_leave)
 					_p->m_on_leave ();
 				m_state = _state;
-				_p = (*m_states) [m_state];
+				_p = (*_states) [m_state];
 				if (_p->m_on_entry)
 					_p->m_on_entry ();
 			}
@@ -325,15 +336,53 @@ namespace Fawdlstty {
 
 	private:
 		TState m_state;
-		std::shared_ptr<std::map<TState, std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>>>> m_states;
 		std::recursive_mutex m_mtx;
+
+	public:
+		std::string Serialize () {
+			std::stringstream _ss;
+			_ss << "SMLite|" << typeid (TState).name () << "|" << typeid (TTrigger).name () << "|" << (int) m_state << "|" << m_cfg_state_index;
+			return _ss.str ();
+		}
+
+		static std::shared_ptr<SMLite<TState, TTrigger>> Deserialize (std::string _ser) {
+			std::vector<std::string> _v;
+			size_t _begin = 0;
+			size_t _p = _ser.find ('|', _begin);
+			while (_p != std::string::npos) {
+				_v.push_back (_ser.substr (_begin, _p - _begin));
+				_begin = _p + 1;
+				_p = _ser.find ('|', _begin);
+			}
+			_v.push_back (_ser.substr (_begin));
+			if (_v.size () != 5)
+				throw _SMLite_Exception ("Serialize string format error.");
+			if (_v [0] != "SMLite")
+				throw _SMLite_Exception ("You must deserialize by " + _v [0] + "<>::Deserialize ()");
+			if (typeid (TState).name () != _v [1] || typeid (TTrigger).name () != _v [2])
+				throw new _SMLite_Exception ("TState or TTrigger not match");
+			TState _state = (TState) std::stoi (_v [3]);
+			int _state_idx = std::stoi (_v [4]);
+			return std::make_shared<SMLite<TState, TTrigger>> (_state, _state_idx);
+		}
+
+	private:
+		int m_cfg_state_index = 0;
+	public:
+		static void _get_ref (std::function<void (std::map<int, std::shared_ptr<std::map<TState, std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>>>>> &, int &)> _callback) {
+			static std::map<int, std::shared_ptr<std::map<TState, std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>>>>> s_cfg_states_group;
+			static int s_cfg_states_group_index = 0;
+			static std::mutex s_mtx;
+			std::unique_lock<std::mutex> _ul (s_mtx);
+			_callback (s_cfg_states_group, s_cfg_states_group_index);
+		}
 	};
 
 	template<typename TState, typename TTrigger>
 	class SMLiteBuilder {
 	public:
 		std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>> Configure (TState state) {
-			if (m_builded)
+			if (m_builded_index > 0)
 				throw _SMLite_Exception ("shouldn't configure builder after builded.");
 			if (m_states->find (state) != m_states->end ())
 				throw _SMLite_Exception ("state is already exists.");
@@ -342,15 +391,19 @@ namespace Fawdlstty {
 			return _ptr;
 		}
 		std::shared_ptr<SMLite<TState, TTrigger>> Build (TState init_state) {
-			m_builded = true;
-			return std::shared_ptr<SMLite<TState, TTrigger>> (new SMLite<TState, TTrigger> (init_state, m_states)); // fix compile error
-			//return std::make_shared<SMLite<TState, TTrigger>> (init_state, m_states);
+			if (m_builded_index == 0) {
+				SMLite<TState, TTrigger>::_get_ref ([&] (std::map<int, std::shared_ptr<std::map<TState, std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>>>>> &s_cfg_states_group, int &s_cfg_states_group_index) {
+					m_builded_index = ++s_cfg_states_group_index;
+					s_cfg_states_group [m_builded_index] = m_states;
+				});
+			}
+			return std::shared_ptr<SMLite<TState, TTrigger>> (new SMLite<TState, TTrigger> (init_state, m_builded_index));
 		}
 
 	private:
 		std::shared_ptr<std::map<TState, std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>>>> m_states
 			= std::make_shared<std::map<TState, std::shared_ptr<_SMLite_ConfigState<TState, TTrigger>>>> ();
-		bool m_builded = false;
+		int m_builded_index = 0;
 	};
 }
 

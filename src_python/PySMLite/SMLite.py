@@ -6,7 +6,7 @@ from ItemStruct._SMLite_ConfigState import _SMLite_ConfigState
 class SMLite (object):
 	"""
 SMLite
-State machine library for C, C++, C#, JavaScript, Python, VB.Net
+State machine library for C, C++, C#, Java, JavaScript, Python, VB.Net
 Author: Fawdlstty
 Version 0.1.6
 

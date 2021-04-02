@@ -2,6 +2,7 @@
 #include "../SMLite/SMLite.hpp"
 
 #include <sstream>
+#include <tuple>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -32,6 +33,9 @@ namespace Microsoft {
 			template<> static std::wstring ToString<MyState> (const MyState &t) { return _wstr (t); }
 			template<> static std::wstring ToString<MyState> (const MyState *t) { return _wstr (*t); }
 			template<> static std::wstring ToString<MyState> (MyState *t) { return _wstr (*t); }
+			template<> static std::wstring ToString<std::tuple<MyState, MyState>> (const std::tuple<MyState, MyState> &t) { return _wstr (std::get<0> (t)) + _wstr (std::get<1> (t)); }
+			template<> static std::wstring ToString<std::tuple<MyState, MyState>> (const std::tuple<MyState, MyState> *t) { return _wstr (std::get<0> (*t)) + _wstr (std::get<1> (*t)); }
+			template<> static std::wstring ToString<std::tuple<MyState, MyState>> (std::tuple<MyState, MyState> *t) { return _wstr (std::get<0> (*t)) + _wstr (std::get<1> (*t)); }
 		}
 	}
 }
@@ -68,6 +72,8 @@ namespace SMLiteTest {
 				->WhenChangeTo (MyTrigger::Close, MyState::Rest);
 
 			auto _sm = _smb.Build (MyState::Rest);
+			std::string _ser = _sm->Serialize ();
+			_sm = Fawdlstty::SMLite<MyState, MyTrigger>::Deserialize (_ser);
 			Assert::AreEqual (_sm->GetState (), MyState::Rest);
 			Assert::AreEqual (n, 0);
 			Assert::IsTrue (_sm->AllowTriggering (MyTrigger::Run));
@@ -341,6 +347,100 @@ namespace SMLiteTest {
 			_sm->Triggering (MyTrigger::FinishWrite, std::string ("world"), 1);
 			Assert::AreEqual (s, std::string ("world1"));
 			Assert::AreEqual (_sm->GetState (), MyState::Rest);
+		}
+
+		TEST_METHOD (TestMethod11) {
+			int n = 0;
+			bool entry_one = true;
+			Fawdlstty::SMLiteBuilder<std::tuple<MyState, MyState>, MyTrigger> _smb {};
+			_smb.Configure ({ MyState::Rest , MyState::Rest })
+				->OnEntry ([&] () { Assert::IsFalse (entry_one); entry_one = true; n += 1; })
+				->OnLeave ([&] () { Assert::IsTrue (entry_one); entry_one = false; n += 10; })
+				->WhenChangeTo (MyTrigger::Run, { MyState::Ready, MyState::Ready })
+				->WhenIgnore (MyTrigger::Close);
+			_smb.Configure ({ MyState::Ready, MyState::Ready })
+				->OnEntry ([&] () { Assert::IsFalse (entry_one); entry_one = true; n += 100; })
+				->OnLeave ([&] () { Assert::IsTrue (entry_one); entry_one = false; n += 1000; })
+				->WhenChangeTo (MyTrigger::Read, { MyState::Reading, MyState::Reading })
+				->WhenChangeTo (MyTrigger::Write, { MyState::Writing, MyState::Writing })
+				->WhenChangeTo (MyTrigger::Close, { MyState::Rest , MyState::Rest });
+			_smb.Configure ({ MyState::Reading, MyState::Reading })
+				->OnEntry ([&] () { Assert::IsFalse (entry_one); entry_one = true; n += 10000; })
+				->OnLeave ([&] () { Assert::IsTrue (entry_one); entry_one = false; n += 100000; })
+				->WhenChangeTo (MyTrigger::FinishRead, { MyState::Ready, MyState::Ready })
+				->WhenChangeTo (MyTrigger::Close, { MyState::Rest , MyState::Rest });
+			_smb.Configure ({ MyState::Writing, MyState::Writing })
+				->OnEntry ([&] () { Assert::IsFalse (entry_one); entry_one = true; n += 1000000; })
+				->OnLeave ([&] () { Assert::IsTrue (entry_one); entry_one = false; n += 10000000; })
+				->WhenChangeTo (MyTrigger::FinishWrite, { MyState::Ready, MyState::Ready })
+				->WhenChangeTo (MyTrigger::Close, { MyState::Rest , MyState::Rest });
+
+			auto _sm = _smb.Build ({ MyState::Rest , MyState::Rest });
+			Assert::AreEqual (_sm->GetState (), { MyState::Rest , MyState::Rest });
+			Assert::AreEqual (n, 0);
+			Assert::IsTrue (_sm->AllowTriggering (MyTrigger::Run));
+			Assert::IsTrue (_sm->AllowTriggering (MyTrigger::Close));
+			Assert::IsFalse (_sm->AllowTriggering (MyTrigger::Read));
+			Assert::IsFalse (_sm->AllowTriggering (MyTrigger::FinishRead));
+			Assert::IsFalse (_sm->AllowTriggering (MyTrigger::Write));
+			Assert::IsFalse (_sm->AllowTriggering (MyTrigger::FinishWrite));
+
+			_sm->Triggering (MyTrigger::Close);
+			Assert::AreEqual (_sm->GetState (), { MyState::Rest , MyState::Rest });
+			Assert::AreEqual (n, 0);
+
+			_sm->Triggering (MyTrigger::Close);
+			Assert::AreEqual (_sm->GetState (), { MyState::Rest , MyState::Rest });
+			Assert::AreEqual (n, 0);
+
+			_sm->Triggering (MyTrigger::Close);
+			Assert::AreEqual (_sm->GetState (), { MyState::Rest , MyState::Rest });
+			Assert::AreEqual (n, 0);
+
+			_sm->Triggering (MyTrigger::Run);
+			Assert::AreEqual (_sm->GetState (), { MyState::Ready, MyState::Ready });
+			Assert::AreEqual (n, 110);
+			Assert::IsFalse (_sm->AllowTriggering (MyTrigger::Run));
+			Assert::IsTrue (_sm->AllowTriggering (MyTrigger::Close));
+			Assert::IsTrue (_sm->AllowTriggering (MyTrigger::Read));
+			Assert::IsFalse (_sm->AllowTriggering (MyTrigger::FinishRead));
+			Assert::IsTrue (_sm->AllowTriggering (MyTrigger::Write));
+			Assert::IsFalse (_sm->AllowTriggering (MyTrigger::FinishWrite));
+
+			_sm->Triggering (MyTrigger::Close);
+			Assert::AreEqual (_sm->GetState (), { MyState::Rest , MyState::Rest });
+			Assert::AreEqual (n, 1111);
+			Assert::IsTrue (_sm->AllowTriggering (MyTrigger::Run));
+			Assert::IsTrue (_sm->AllowTriggering (MyTrigger::Close));
+			Assert::IsFalse (_sm->AllowTriggering (MyTrigger::Read));
+			Assert::IsFalse (_sm->AllowTriggering (MyTrigger::FinishRead));
+			Assert::IsFalse (_sm->AllowTriggering (MyTrigger::Write));
+			Assert::IsFalse (_sm->AllowTriggering (MyTrigger::FinishWrite));
+
+			_sm->Triggering (MyTrigger::Run);
+			Assert::AreEqual (_sm->GetState (), { MyState::Ready, MyState::Ready });
+			Assert::AreEqual (n, 1221);
+
+			_sm->Triggering (MyTrigger::Read);
+			Assert::AreEqual (_sm->GetState (), { MyState::Reading, MyState::Reading });
+			Assert::AreEqual (n, 12221);
+
+			_sm->Triggering (MyTrigger::FinishRead);
+			Assert::AreEqual (_sm->GetState (), { MyState::Ready, MyState::Ready });
+			Assert::AreEqual (n, 112321);
+
+			_sm->Triggering (MyTrigger::Write);
+			Assert::AreEqual (_sm->GetState (), { MyState::Writing, MyState::Writing });
+			Assert::AreEqual (n, 1113321);
+
+			_sm->Triggering (MyTrigger::FinishWrite);
+			Assert::AreEqual (_sm->GetState (), { MyState::Ready, MyState::Ready });
+			Assert::AreEqual (n, 11113421);
+
+			_sm->SetState ({ MyState::Reading, MyState::Reading });
+			_sm->SetState ({ MyState::Writing, MyState::Writing });
+			_sm->SetState ({ MyState::Rest , MyState::Rest });
+			Assert::AreEqual (n, 11113421);
 		}
 	};
 }

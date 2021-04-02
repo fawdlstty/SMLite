@@ -358,30 +358,98 @@ Namespace Fawdlstty.SMLite.vb.Test
 			Dim s As String = ""
 			Dim _smb As SMLiteBuilderAsync(Of MyState, MyTrigger) = New SMLiteBuilderAsync(Of MyState, MyTrigger)()
 			With _smb.Configure(MyState.Rest)
-				.WhenFuncAsync_st(MyTrigger.Run, Async Function(_state As MyState, _trigger As MyTrigger, _token As CancellationToken) As Task(Of MyState)
+				.WhenFuncAsync_stc(MyTrigger.Run, Async Function(_state As MyState, _trigger As MyTrigger, _token As CancellationToken) As Task(Of MyState)
+													  Await Task.Yield()
+													  s = "WhenFunc_Run"
+													  Return MyState.Ready
+												  End Function)
+				.WhenFuncAsync_stc(MyTrigger.Read, Async Function(_state As MyState, _trigger As MyTrigger, _token As CancellationToken, _p1 As String) As Task(Of MyState)
+													   Await Task.Yield()
+													   s = _p1
+													   Return MyState.Ready
+												   End Function)
+				.WhenFuncAsync_stc(MyTrigger.FinishRead, Async Function(_state As MyState, _trigger As MyTrigger, _token As CancellationToken, _p1 As String, _p2 As Integer) As Task(Of MyState)
+															 Await Task.Yield()
+															 s = $"{_p1}{_p2}"
+															 Return MyState.Ready
+														 End Function)
+				.WhenActionAsync_stc(MyTrigger.Close, Async Function(_state As MyState, _trigger As MyTrigger, _token As CancellationToken) As Task
+														  Await Task.Yield()
+														  s = "WhenAction_Close"
+													  End Function)
+				.WhenActionAsync_stc(MyTrigger.Write, Async Function(_state As MyState, _trigger As MyTrigger, _token As CancellationToken, _p1 As String) As Task
+														  Await Task.Yield()
+														  s = _p1
+													  End Function)
+				.WhenActionAsync_stc(MyTrigger.FinishWrite, Async Function(_state As MyState, _trigger As MyTrigger, _token As CancellationToken, _p1 As String, _p2 As Integer) As Task
+																Await Task.Yield()
+																s = $"{_p1}{_p2}"
+															End Function)
+			End With
+			With _smb.Configure(MyState.Ready)
+				.WhenChangeTo(MyTrigger.Close, MyState.Rest)
+			End With
+
+			Dim _sm = _smb.Build(MyState.Rest)
+			Assert.AreEqual(_sm.State, MyState.Rest)
+			Assert.AreEqual(s, "")
+
+			Await _sm.TriggeringAsync(MyTrigger.Run)
+			Assert.AreEqual(_sm.State, MyState.Ready)
+			Assert.AreEqual(s, "WhenFunc_Run")
+			Await _sm.TriggeringAsync(MyTrigger.Close)
+
+			Await _sm.TriggeringAsync(MyTrigger.Read, "hello")
+			Assert.AreEqual(_sm.State, MyState.Ready)
+			Assert.AreEqual(s, "hello")
+			Await _sm.TriggeringAsync(MyTrigger.Close)
+
+			Await _sm.TriggeringAsync(MyTrigger.FinishRead, "hello", 1)
+			Assert.AreEqual(_sm.State, MyState.Ready)
+			Assert.AreEqual(s, "hello1")
+			Await _sm.TriggeringAsync(MyTrigger.Close)
+
+			Await _sm.TriggeringAsync(MyTrigger.Close)
+			Assert.AreEqual(s, "WhenAction_Close")
+			Assert.AreEqual(_sm.State, MyState.Rest)
+
+			Await _sm.TriggeringAsync(MyTrigger.Write, "world")
+			Assert.AreEqual(s, "world")
+			Assert.AreEqual(_sm.State, MyState.Rest)
+
+			Await _sm.TriggeringAsync(MyTrigger.FinishWrite, "world", 1)
+			Assert.AreEqual(s, "world1")
+			Assert.AreEqual(_sm.State, MyState.Rest)
+
+
+
+			s = ""
+			_smb = New SMLiteBuilderAsync(Of MyState, MyTrigger)()
+			With _smb.Configure(MyState.Rest)
+				.WhenFuncAsync_st(MyTrigger.Run, Async Function(_state As MyState, _trigger As MyTrigger) As Task(Of MyState)
 													 Await Task.Yield()
 													 s = "WhenFunc_Run"
 													 Return MyState.Ready
 												 End Function)
-				.WhenFuncAsync_st(MyTrigger.Read, Async Function(_state As MyState, _trigger As MyTrigger, _token As CancellationToken, _p1 As String) As Task(Of MyState)
+				.WhenFuncAsync_st(MyTrigger.Read, Async Function(_state As MyState, _trigger As MyTrigger, _p1 As String) As Task(Of MyState)
 													  Await Task.Yield()
 													  s = _p1
 													  Return MyState.Ready
 												  End Function)
-				.WhenFuncAsync_st(MyTrigger.FinishRead, Async Function(_state As MyState, _trigger As MyTrigger, _token As CancellationToken, _p1 As String, _p2 As Integer) As Task(Of MyState)
+				.WhenFuncAsync_st(MyTrigger.FinishRead, Async Function(_state As MyState, _trigger As MyTrigger, _p1 As String, _p2 As Integer) As Task(Of MyState)
 															Await Task.Yield()
 															s = $"{_p1}{_p2}"
 															Return MyState.Ready
 														End Function)
-				.WhenActionAsync_st(MyTrigger.Close, Async Function(_state As MyState, _trigger As MyTrigger, _token As CancellationToken) As Task
+				.WhenActionAsync_st(MyTrigger.Close, Async Function(_state As MyState, _trigger As MyTrigger) As Task
 														 Await Task.Yield()
 														 s = "WhenAction_Close"
 													 End Function)
-				.WhenActionAsync_st(MyTrigger.Write, Async Function(_state As MyState, _trigger As MyTrigger, _token As CancellationToken, _p1 As String) As Task
+				.WhenActionAsync_st(MyTrigger.Write, Async Function(_state As MyState, _trigger As MyTrigger, _p1 As String) As Task
 														 Await Task.Yield()
 														 s = _p1
 													 End Function)
-				.WhenActionAsync_st(MyTrigger.FinishWrite, Async Function(_state As MyState, _trigger As MyTrigger, _token As CancellationToken, _p1 As String, _p2 As Integer) As Task
+				.WhenActionAsync_st(MyTrigger.FinishWrite, Async Function(_state As MyState, _trigger As MyTrigger, _p1 As String, _p2 As Integer) As Task
 															   Await Task.Yield()
 															   s = $"{_p1}{_p2}"
 														   End Function)
@@ -390,7 +458,7 @@ Namespace Fawdlstty.SMLite.vb.Test
 				.WhenChangeTo(MyTrigger.Close, MyState.Rest)
 			End With
 
-			Dim _sm = _smb.Build(MyState.Rest)
+			_sm = _smb.Build(MyState.Rest)
 			Assert.AreEqual(_sm.State, MyState.Rest)
 			Assert.AreEqual(s, "")
 

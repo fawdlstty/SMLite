@@ -33,6 +33,19 @@ State machine library for C, C++, C#, Java, JavaScript, Python, VB.Net
 - Python library supported runtimes
     + `Python 3.7`
 
+## Implementation Schedule
+
+|                     |   C   |  C++  | C#/VB.Net |  Java  | JavaScript | Python |
+|        :---:        | :---: | :---: |   :---:   | :---: |    :---:    | :---: |
+|      Document       |   √   |   √   |     √     |       |             |   √   |
+| Sync State Machine  |   √   |   √   |     √     |   √   |      √      |   √   |
+| Async State Machine |       |       |     √     |       |             |   √   |
+|     Multi State     |       |   √   |     √     |       |             |       |
+|     Thread Safe     |       |   √   |     √     |       |             |       |
+|   Cancel Trigger    |       |       |     √     |       |             |       |
+|      Serilize       |       |   √   |     √     |       |             |       |
+|        Test         |   √   |   √   |     √     |   √   |      √      |   √   |
+
 ## Tutorials
 
 Accelerated access from mainland Chinese users: [Document Images](https://www.fawdlstty.com/smlite/)
@@ -54,6 +67,9 @@ git clone https://github.com/fawdlstty/SMLite
 git submodule update --init --recursive
 ```
 
-- tstl2cl
+- tstl2cl (Dependency by C Library)
     + https://sourceforge.net/projects/tstl2cl/
     + License: zlib/libpng License
+- magic_enum (Dependency by C++ Library)
+    + https://github.com/Neargye/magic_enum
+    + License: MIT License

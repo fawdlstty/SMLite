@@ -1,6 +1,6 @@
 ﻿/*
 * SMLite
-* State machine library for C, C++, C#, JavaScript, Python, VB.Net
+* State machine library for C, C++, C#, Java, JavaScript, Python, VB.Net
 * Author: Fawdlstty
 * Version 0.1.6
 *
@@ -11,35 +11,39 @@
 */
 
 using Fawdlstty.SMLite.ItemStruct;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Fawdlstty.SMLite {
-    public class SMLite<TState, TTrigger> where TState : Enum where TTrigger : Enum {
-		internal SMLite (TState init_state, Dictionary<TState, _SMLite_ConfigState<TState, TTrigger>> _states) {
+    public class SMLite<TState, TTrigger> where TState : IComparable where TTrigger : Enum {
+		internal SMLite (TState init_state, int _cfg_state) {
 			m_state = init_state;
-			m_cfg_states = _states;
+			m_cfg_state_index = _cfg_state;
 		}
 
 		public bool AllowTriggering (TTrigger trigger) {
-			if (m_cfg_states.ContainsKey (m_state))
-				return m_cfg_states[m_state]._allow_trigger (trigger);
+			var _cfg_states = s_cfg_states_group[m_cfg_state_index];
+			if (_cfg_states.ContainsKey (m_state))
+				return _cfg_states[m_state]._allow_trigger (trigger);
 			return false;
 		}
 
 		public void Triggering (TTrigger trigger, params object[] args) {
-			lock (m_cfg_states) {
-				if (m_cfg_states.ContainsKey (m_state)) {
-					if (m_cfg_states[m_state]._allow_trigger (trigger)) {
-						var _new_state = m_cfg_states[m_state]._trigger (trigger, args);
+			lock (m_locker) {
+				var _cfg_states = s_cfg_states_group[m_cfg_state_index];
+				if (_cfg_states.ContainsKey (m_state)) {
+					if (_cfg_states[m_state]._allow_trigger (trigger)) {
+						var _new_state = _cfg_states[m_state]._trigger (trigger, args);
 						if (_new_state.CompareTo (m_state) != 0) {
-							if (m_cfg_states[m_state].m_on_leave != null)
-								m_cfg_states[m_state].m_on_leave ();
+							if (_cfg_states[m_state].m_on_leave != null)
+								_cfg_states[m_state].m_on_leave ();
 							m_state = _new_state;
-							if (m_cfg_states[m_state].m_on_entry != null)
-								m_cfg_states[m_state].m_on_entry ();
+							if (_cfg_states[m_state].m_on_entry != null)
+								_cfg_states[m_state].m_on_entry ();
 						}
 						return;
 					}
@@ -50,9 +54,34 @@ namespace Fawdlstty.SMLite {
 
 		public TState State {
 			get { return m_state; }
-			set { lock (m_cfg_states) m_state = value; }
+			set { lock (m_locker) m_state = value; }
 		}
 		private TState m_state;
-		private Dictionary<TState, _SMLite_ConfigState<TState, TTrigger>> m_cfg_states = null;
+		private object m_locker = new object { };
+
+		public string Serialize () {
+			lock (m_locker) {
+				return JsonConvert.SerializeObject (new {
+					type = "SMLite",
+					stype = typeof (TState).FullName,
+					ttype = typeof (TTrigger).FullName,
+					state = m_state,
+					cfg_state_idx = m_cfg_state_index
+				});
+			}
+		}
+
+		public static SMLite<TState, TTrigger> Deserialize (string _ser) {
+			JObject _o = JObject.Parse (_ser);
+			if ($"{_o["type"]}" != "SMLite")
+				throw new Exception ($"You must deserialize by {_o["type"]}<>.Deserialize ()");
+			if (typeof (TState).FullName != $"{_o["stype"]}" || typeof (TTrigger).FullName != $"{_o["ttype"]}")
+				throw new Exception ("TState or TTrigger not match");
+			return new SMLite<TState, TTrigger> (_o["state"].ToObject<TState> (), _o["cfg_state_idx"].ToObject<int> ());
+		}
+
+		private int m_cfg_state_index = 0;
+		internal static int s_cfg_states_group_index = 0;
+		internal static Dictionary<int, Dictionary<TState, _SMLite_ConfigState<TState, TTrigger>>> s_cfg_states_group = new Dictionary<int, Dictionary<TState, _SMLite_ConfigState<TState, TTrigger>>> ();
 	}
 }
