@@ -70,6 +70,3 @@ git submodule update --init --recursive
 - tstl2cl (Dependency by C Library)
     + https://sourceforge.net/projects/tstl2cl/
     + License: zlib/libpng License
-- magic_enum (Dependency by C++ Library)
-    + https://github.com/Neargye/magic_enum
-    + License: MIT License
