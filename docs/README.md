@@ -5,7 +5,7 @@
 [![nuget](https://img.shields.io/nuget/dt/Fawdlstty.SMLite?label=nuget%20downloads)](https://www.nuget.org/packages/Fawdlstty.SMLite)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/fawdlstty/SMLite.svg?logo=lgtm)](https://lgtm.com/projects/g/fawdlstty/SMLite/alerts/)
 
-State machine library for C, C++, C#, JavaScript, Python, VB.Net
+State machine library for C, C++, C#, Java, JavaScript, Python, VB.Net
 
 Project URL:  <https://github.com/fawdlstty/SMLite>  
 Document URL: <https://www.fawdlstty.com/smlite/>

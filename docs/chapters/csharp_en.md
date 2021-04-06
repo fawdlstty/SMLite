@@ -32,26 +32,26 @@ _smb.Configure (MyState.Rest)
     .WhenIgnore (MyTrigger.Close)
 
     // If MyTrigger.read is triggered, the callback function is called and the state is adjusted to the return value
-    .WhenFunc (MyTrigger.Read, (MyState _state, MyTrigger _trigger) => {
+    .WhenFunc_st (MyTrigger.Read, (MyState _state, MyTrigger _trigger) => {
         Console.WriteLine ("call WhenFunc callback");
         return MyState.Ready;
     })
 
     // If MyTrigger.FinishRead is fired, the callback function is called and the state is adjusted to the return value
     // Note that an argument must be passed when firing, and the number and type must match exactly, otherwise an exception is thrown
-    .WhenFunc (MyTrigger.FinishRead, (MyState _state, MyTrigger _trigger, string _param) => {
+    .WhenFunc_st (MyTrigger.FinishRead, (MyState _state, MyTrigger _trigger, string _param) => {
         Console.WriteLine ($"call WhenFunc callback with param [{_param}]");
         return MyState.Ready;
     })
 
     // If MyTrigger.Write is fired, the callback function is called (triggering this method callback does not adjust the return value)
-    .WhenAction (MyTrigger.Write, (MyState _state, MyTrigger _trigger) => {
+    .WhenAction_st (MyTrigger.Write, (MyState _state, MyTrigger _trigger) => {
         Console.WriteLine ("call WhenAction callback");
     })
 
     // If MyTrigger.FinishWrite is fired, the callback function is called (triggering this method callback does not adjust the return value)
     // Note that an argument must be passed when firing, and the number and type must match exactly, otherwise an exception is thrown
-    .WhenAction (MyTrigger.FinishWrite, (MyState _state, MyTrigger _trigger, string _param) => {
+    .WhenAction_st (MyTrigger.FinishWrite, (MyState _state, MyTrigger _trigger, string _param) => {
         Console.WriteLine ($"call WhenAction callback with param [{_param}]");
     });
 ```
@@ -101,33 +101,71 @@ _smb.Configure (MyState.Ready)
     })
 
     // The effect is identical to WhenFunc, but this function specifies an asynchronous method
-    .WhenFuncAsync (MyTrigger.Read, async (MyState _state, MyTrigger _trigger, CancellationToken _token) => {
+    .WhenFuncAsync_stc (MyTrigger.Read, async (MyState _state, MyTrigger _trigger, CancellationToken _token) => {
         await Task.Yield ();
         Console.WriteLine ("call WhenFuncAsync callback");
         return MyState.Ready;
     })
 
     // The effect is identical to WhenFunc, but this function specifies an asynchronous method
-    .WhenFuncAsync (MyTrigger.FinishRead, async (MyState _state, MyTrigger _trigger, CancellationToken _token, string _param) => {
+    .WhenFuncAsync_stc (MyTrigger.FinishRead, async (MyState _state, MyTrigger _trigger, CancellationToken _token, string _param) => {
         await Task.Yield ();
         Console.WriteLine ($"call WhenFuncAsync callback with param [{_param}]");
         return MyState.Ready;
     })
 
     // The effect is identical to WhenAction, but this function specifies an asynchronous method
-    .WhenActionAsync (MyTrigger.Write, async (MyState _state, MyTrigger _trigger, CancellationToken _token) => {
+    .WhenActionAsync_stc (MyTrigger.Write, async (MyState _state, MyTrigger _trigger, CancellationToken _token) => {
         await Task.Yield ();
         Console.WriteLine ("call WhenActionAsync callback");
     })
 
     // The effect is identical to WhenAction, but this function specifies an asynchronous method
-    .WhenActionAsync (MyTrigger.FinishWrite, async (MyState _state, MyTrigger _trigger, CancellationToken _token, string _param) => {
+    .WhenActionAsync_stc (MyTrigger.FinishWrite, async (MyState _state, MyTrigger _trigger, CancellationToken _token, string _param) => {
         await Task.Yield ();
         Console.WriteLine ($"call WhenActionAsync callback with param [{_param}]");
     });
 ```
 
-Then there is the firing of an event:
+Step 7. WhenFunc(Async)/WhenAction(Async) Series interfaces
+
+The serial interfaces name may be followed by a comment, such as:
+
+- WhenFunc
+- WhenFunc_s
+- WhenFunc_t
+- WhenFunc_c
+- WhenFunc_st
+- WhenFunc_sc
+- WhenFunc_tc
+- WhenFunc_stc
+
+The meaning of the attached remarks is:
+
+- If contains s, then the callback method needs to receive the current state of the state machine, which is: `MyState _state`
+- If contains t, then the callback method needs to receive the current firing of the state machine, which is: `MyTrigger _trigger`
+- If C is present, then the callback method needs to receive the asynchronous undo token, which is: `CancellationToken _token`
+
+`WhenFunc`、`WhenFuncAsync`、`WhenAction`、`WhenActionAsync` In the same way, the above remarks can be attached, but the CancellationToken is a special one that can only be used for asynchronization. If the initiator carries this parameter, then the onEntryAsync and onLeaveAsync callback methods also need to receive this parameter, otherwise the exception will be thrown.
+
+Example: If we asynchronously fire an event using `WhenFuncAsync_c`, the code would be:
+
+```csharp
+_smb.Configure (MyState.Ready)
+    .OnEntryAsync (async (CancellationToken _token) => {
+        await Task.Yield ();
+        Console.WriteLine ("entry Ready");
+    })
+    .OnLeaveAsync (async (CancellationToken _token) => {
+        await Task.Yield ();
+        Console.WriteLine ("leave Ready");
+    });
+    .WhenFuncAsync_c (MyTrigger.FinishRead, async (CancellationToken _token, string _param) => {
+        //...
+    });
+```
+
+Step 8. Then there is the firing of an event:
 
 ```csharp
 // An event is fired asynchronously, passing in the specified parameters

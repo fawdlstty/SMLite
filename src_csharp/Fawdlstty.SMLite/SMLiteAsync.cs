@@ -24,7 +24,7 @@ namespace Fawdlstty.SMLite {
 			await TriggeringAsync (trigger, CancellationToken.None, args);
 		}
 
-		public async Task TriggeringAsync (TTrigger trigger, CancellationToken token, params object[] args) {
+		public async Task TriggeringAsync_c (TTrigger trigger, CancellationToken token, params object[] args) {
 			using (var _guard = await m_locker.LockAsync ()) {
 				var _cfg_states = s_cfg_states_group[m_cfg_state_index];
 				if (_cfg_states.ContainsKey (m_state)) {

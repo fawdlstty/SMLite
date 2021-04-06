@@ -33,26 +33,26 @@ _smb.Configure (MyState.Rest)
     .WhenIgnore (MyTrigger.Close)
 
     // 如果触发 MyTrigger.Read，则调用回调函数，并将状态调整为返回值
-    .WhenFunc (MyTrigger.Read, (MyState _state, MyTrigger _trigger) => {
+    .WhenFunc_st (MyTrigger.Read, (MyState _state, MyTrigger _trigger) => {
         Console.WriteLine ("call WhenFunc callback");
         return MyState.Ready;
     })
 
     // 如果触发 MyTrigger.FinishRead，则调用回调函数，并将状态调整为返回值
     // 需注意，触发时候需传入参数，数量与类型必须完全匹配，否则抛异常
-    .WhenFunc (MyTrigger.FinishRead, (MyState _state, MyTrigger _trigger, string _param) => {
+    .WhenFunc_st (MyTrigger.FinishRead, (MyState _state, MyTrigger _trigger, string _param) => {
         Console.WriteLine ($"call WhenFunc callback with param [{_param}]");
         return MyState.Ready;
     })
 
     // 如果触发 MyTrigger.Write，则调用回调函数（触发此方法回调不调整返回值）
-    .WhenAction (MyTrigger.Write, (MyState _state, MyTrigger _trigger) => {
+    .WhenAction_st (MyTrigger.Write, (MyState _state, MyTrigger _trigger) => {
         Console.WriteLine ("call WhenAction callback");
     })
 
     // 如果触发 MyTrigger.FinishWrite，则调用回调函数（触发此方法回调不调整返回值）
     // 需注意，触发时候需传入参数，数量与类型必须完全匹配，否则抛异常
-    .WhenAction (MyTrigger.FinishWrite, (MyState _state, MyTrigger _trigger, string _param) => {
+    .WhenAction_st (MyTrigger.FinishWrite, (MyState _state, MyTrigger _trigger, string _param) => {
         Console.WriteLine ($"call WhenAction callback with param [{_param}]");
     });
 ```
@@ -102,33 +102,71 @@ _smb.Configure (MyState.Ready)
     })
 
     // 效果与 WhenFunc 一致，不过这函数指定异步方法
-    .WhenFuncAsync (MyTrigger.Read, async (MyState _state, MyTrigger _trigger, CancellationToken _token) => {
+    .WhenFuncAsync_stc (MyTrigger.Read, async (MyState _state, MyTrigger _trigger, CancellationToken _token) => {
         await Task.Yield ();
         Console.WriteLine ("call WhenFuncAsync callback");
         return MyState.Ready;
     })
 
     // 效果与 WhenFunc 一致，不过这函数指定异步方法
-    .WhenFuncAsync (MyTrigger.FinishRead, async (MyState _state, MyTrigger _trigger, CancellationToken _token, string _param) => {
+    .WhenFuncAsync_stc (MyTrigger.FinishRead, async (MyState _state, MyTrigger _trigger, CancellationToken _token, string _param) => {
         await Task.Yield ();
         Console.WriteLine ($"call WhenFuncAsync callback with param [{_param}]");
         return MyState.Ready;
     })
 
     // 效果与 WhenAction 一致，不过这函数指定异步方法
-    .WhenActionAsync (MyTrigger.Write, async (MyState _state, MyTrigger _trigger, CancellationToken _token) => {
+    .WhenActionAsync_stc (MyTrigger.Write, async (MyState _state, MyTrigger _trigger, CancellationToken _token) => {
         await Task.Yield ();
         Console.WriteLine ("call WhenActionAsync callback");
     })
 
     // 效果与 WhenAction 一致，不过这函数指定异步方法
-    .WhenActionAsync (MyTrigger.FinishWrite, async (MyState _state, MyTrigger _trigger, CancellationToken _token, string _param) => {
+    .WhenActionAsync_stc (MyTrigger.FinishWrite, async (MyState _state, MyTrigger _trigger, CancellationToken _token, string _param) => {
         await Task.Yield ();
         Console.WriteLine ($"call WhenActionAsync callback with param [{_param}]");
     });
 ```
 
-然后是触发一个事件：
+Step 7. WhenFunc(Async)/WhenAction(Async) 系列接口
+
+系列接口名称后面可能会附带备注，比如：
+
+- WhenFunc
+- WhenFunc_s
+- WhenFunc_t
+- WhenFunc_c
+- WhenFunc_st
+- WhenFunc_sc
+- WhenFunc_tc
+- WhenFunc_stc
+
+附带备注的含义是：
+
+- 如果带了s，那么代表回调方法需接收状态机当前状态，也就是：`MyState _state`
+- 如果带了t，那么代表回调方法需接收状态机当前触发，也就是：`MyTrigger _trigger`
+- 如果带了c，那么代表回调方法需接收异步撤销令牌，也就是：`CancellationToken _token`
+
+`WhenFunc`、`WhenFuncAsync`、`WhenAction`、`WhenActionAsync`同理，都能附带上述备注，不过CancellationToken是一个特殊的存在，它只能用于异步，另外假如触发者带了此参数，那么OnEntryAsync、OnLeaveAsync回调方法也需要接收此参数，否则抛异常
+
+示例：假如我们异步触发一个事件，用到了`WhenFuncAsync_c`，那么代码为：
+
+```csharp
+_smb.Configure (MyState.Ready)
+    .OnEntryAsync (async (CancellationToken _token) => {
+        await Task.Yield ();
+        Console.WriteLine ("entry Ready");
+    })
+    .OnLeaveAsync (async (CancellationToken _token) => {
+        await Task.Yield ();
+        Console.WriteLine ("leave Ready");
+    });
+    .WhenFuncAsync_c (MyTrigger.FinishRead, async (CancellationToken _token, string _param) => {
+        //...
+    });
+```
+
+Step 8. 然后是触发一个事件：
 
 ```csharp
 // 异步触发一个事件，并传入指定参数
@@ -136,7 +174,7 @@ await _sm.TriggeringAsync (MyTrigger.Run, "hello");
 
 // 限定异步任务最长执行时间，超时取消
 var _source = new CancellationTokenSource (TimeSpan.FromSeconds (10));
-await _sm.TriggeringAsync (MyTrigger.Run, _source.Token, "hello");
+await _sm.TriggeringAsync_c (MyTrigger.Run, _source.Token, "hello");
 ```
 
 await异步触发的事件将在所有函数执行完毕之后返回。另外需要注意，同步与异步最好不要混用，使用的不好就很容易导致死锁，最佳实践是统一同步或统一异步。
