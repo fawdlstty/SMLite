@@ -34,6 +34,7 @@
     <Content Include="SMLite.js">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="SMLiteAsync.js" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
 </Project>
