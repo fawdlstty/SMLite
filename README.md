@@ -39,12 +39,16 @@ State machine library for C, C++, C#, Java, JavaScript, Python, VB.Net
 |        :---:        | :---: | :---: |   :---:   | :---: |    :---:    | :---: |
 |      Document       |   √   |   √   |     √     |       |             |   √   |
 | Sync State Machine  |   √   |   √   |     √     |   √   |      √      |   √   |
-|     Multi State     |   ×   |   √   |     √     |   √   |             |       |
+|     Multi State     |   -   |   √   |     √     |   √   |             |       |
 |     Thread Safe     |       |   √   |     √     |   √   |             |       |
-| Async State Machine |   ×   |       |     √     |   ×   |      √      |   √   |
-|    Async Cancel     |   ×   |   ×   |     √     |   ×   |             |       |
+| Async State Machine |   -   |       |     √     |   -   |      √      |   √   |
+|    Async Cancel     |   -   |   -   |     √     |   -   |             |       |
 |      Serilize       |       |   √   |     √     |       |             |       |
 |        Test         |   √   |   √   |     √     |   √   |      √      |   √   |
+
+- √ Supported
+- \- Can't Supported
+- (empty) In Plan
 
 ## Tutorials
 
