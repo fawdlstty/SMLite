@@ -339,6 +339,27 @@ namespace Fawdlstty {
 		std::recursive_mutex m_mtx;
 
 	public:
+		void SetUserData (std::string _key, std::string _value) {
+			std::unique_lock<std::recursive_mutex> ul (m_mtx);
+			m_user_data [_key] = _value;
+		}
+		std::string GetUserData (std::string _key) {
+			std::unique_lock<std::recursive_mutex> ul (m_mtx);
+			return m_user_data [_key];
+		}
+		void ClearUserDataItem (std::string _key) {
+			std::unique_lock<std::recursive_mutex> ul (m_mtx);
+			m_user_data.erase (_key);
+		}
+		void ClearUserData () {
+			std::unique_lock<std::recursive_mutex> ul (m_mtx);
+			m_user_data.clear ();
+		}
+
+	private:
+		std::map<std::string, std::string> m_user_data;
+
+	public:
 		std::string Serialize () {
 			std::stringstream _ss;
 			_ss << "SMLite|" << typeid (TState).name () << "|" << typeid (TTrigger).name () << "|" << (int) m_state << "|" << m_cfg_state_index;

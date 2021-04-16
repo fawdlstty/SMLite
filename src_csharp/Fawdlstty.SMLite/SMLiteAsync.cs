@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Fawdlstty.SMLite {
 	public class SMLiteAsync<TState, TTrigger> where TState : IComparable where TTrigger : Enum {
-		internal SMLiteAsync (TState init_state, int _cfg_state) {
+		internal SMLiteAsync (TState init_state, int _cfg_state_index) {
 			State = init_state;
-			m_cfg_state_index = _cfg_state;
+			m_cfg_state_index = _cfg_state_index;
 		}
 
 		public bool AllowTriggering (TTrigger trigger) {
@@ -67,8 +67,26 @@ namespace Fawdlstty.SMLite {
 		private TState m_state;
 		private AsyncLock m_locker = new AsyncLock ();
 
-		public string Serialize () {
-			lock (m_locker) {
+		public async Task SetUserData (string _key, object _value) {
+			using (var _guard = await m_locker.LockAsync ())
+				m_user_data[_key] = _value;
+		}
+		public async Task<T> GetUserData<T> (string _key) {
+			using (var _guard = await m_locker.LockAsync ())
+				return (T) m_user_data[_key];
+		}
+		public async Task ClearUserDataItem (string _key) {
+			using (var _guard = await m_locker.LockAsync ())
+				m_user_data.Remove (_key);
+		}
+		public async Task ClearUserData () {
+			using (var _guard = await m_locker.LockAsync ())
+				m_user_data.Clear ();
+		}
+		private Dictionary<string, object> m_user_data = new Dictionary<string, object> ();
+
+		public async Task<string> SerializeAsync () {
+			using (var _guard = await m_locker.LockAsync ()) {
 				return JsonConvert.SerializeObject (new {
 					type = "SMLiteAsync",
 					stype = typeof (TState).FullName,
@@ -78,7 +96,6 @@ namespace Fawdlstty.SMLite {
 				});
 			}
 		}
-
 		public static SMLiteAsync<TState, TTrigger> Deserialize (string _ser) {
 			JObject _o = JObject.Parse (_ser);
 			if ($"{_o["type"]}" != "SMLiteAsync")

@@ -18,9 +18,9 @@ using System.Collections.Generic;
 
 namespace Fawdlstty.SMLite {
     public class SMLite<TState, TTrigger> where TState : IComparable where TTrigger : Enum {
-		internal SMLite (TState init_state, int _cfg_state) {
+		internal SMLite (TState init_state, int _cfg_state_index) {
 			m_state = init_state;
-			m_cfg_state_index = _cfg_state;
+			m_cfg_state_index = _cfg_state_index;
 		}
 
 		public bool AllowTriggering (TTrigger trigger) {
@@ -57,6 +57,24 @@ namespace Fawdlstty.SMLite {
 		private TState m_state;
 		private object m_locker = new object { };
 
+		public void SetUserData (string _key, object _value) {
+			lock (m_locker)
+				m_user_data[_key] = _value;
+		}
+		public T GetUserData<T> (string _key) {
+			lock (m_locker)
+				return (T) m_user_data[_key];
+		}
+		public void ClearUserDataItem (string _key) {
+			lock (m_locker)
+				m_user_data.Remove (_key);
+		}
+		public void ClearUserData () {
+			lock (m_locker)
+				m_user_data.Clear ();
+		}
+		private Dictionary<string, object> m_user_data = new Dictionary<string, object> ();
+
 		public string Serialize () {
 			lock (m_locker) {
 				return JsonConvert.SerializeObject (new {
@@ -68,7 +86,6 @@ namespace Fawdlstty.SMLite {
 				});
 			}
 		}
-
 		public static SMLite<TState, TTrigger> Deserialize (string _ser) {
 			JObject _o = JObject.Parse (_ser);
 			if ($"{_o["type"]}" != "SMLite")

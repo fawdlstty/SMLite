@@ -50,6 +50,8 @@ function TestMethod1() {
 	Assert.IsFalse(_sm.AllowTriggering(MyTrigger.FinishRead));
 	Assert.IsFalse(_sm.AllowTriggering(MyTrigger.Write));
 	Assert.IsFalse(_sm.AllowTriggering(MyTrigger.FinishWrite));
+	var _ser = _sm.Serialize();
+	_sm = SMLite.SMLite.Deserialize(_ser);
 
 	_sm.Triggering(MyTrigger.Close);
 	Assert.AreEqual(_sm.GetState(), MyState.Rest);
