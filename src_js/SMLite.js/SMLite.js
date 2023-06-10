@@ -108,26 +108,28 @@ class _SMLite_ConfigState {
 }
 
 class SMLite {
-	constructor(init_state, states) {
+	constructor(init_state, states_index) {
 		this.__state = init_state
-		this.__states = states
+		this.__states_index = states_index
 	}
 
 	AllowTriggering(trigger) {
-		if (this.__state in this.__states)
-			return this.__states[this.__state]._allow_trigger(trigger);
+		var _states = SMLite.s_cfg_states_group[this.__states_index]
+		if (this.__state in _states)
+			return _states[this.__state]._allow_trigger(trigger);
 		return false;
 	}
 
 	Triggering(trigger, ...args) {
+		var _states = SMLite.s_cfg_states_group[this.__states_index]
 		if (this.AllowTriggering(trigger)) {
-			let _cfgstate = this.__states[this.__state]
+			let _cfgstate = _states[this.__state]
 			let _new_state = _cfgstate._trigger(trigger, ...args)
 			if (_new_state != this.__state) {
 				if (_cfgstate.f__on_leave != null)
 					_cfgstate.f__on_leave();
 				this.__state = _new_state;
-				_cfgstate = this.__states[this.__state];
+				_cfgstate = _states[this.__state];
 				if (_cfgstate.f__on_entry != null)
 					_cfgstate.f__on_entry();
 			}
@@ -143,16 +145,27 @@ class SMLite {
 	SetState(state) {
 		this.__state = state;
 	}
+
+	Serialize() {
+		return JSON.stringify({ "type":"SMLite.js", "state": this.__state, "state_index": this.__states_index });
+	}
+
+	static Deserialize(_ser) {
+		var _deser = JSON.parse(_ser);
+		return new SMLite(_deser.state, _deser.state_index);
+	}
 }
+SMLite.s_cfg_states_group_index = 0
+SMLite.s_cfg_states_group = {}
 
 class SMLiteBuilder {
 	constructor() {
+		this.__builded_index = 0;
 		this.__states = {};
-		this.__builded = false;
 	}
 
 	Configure(state) {
-		if (this.__builded)
+		if (this.__builded_index > 0)
 			throw "shouldn't configure builder after builded.";
 		if (state in this.__states)
 			throw "state is already exists.";
@@ -162,9 +175,12 @@ class SMLiteBuilder {
 	}
 
 	Build(init_state) {
-		this.__builded = true;
-		return new SMLite(init_state, this.__states);
+		if (this.__builded_index == 0) {
+			this.__builded_index = SMLite.s_cfg_states_group_index += 1;
+			SMLite.s_cfg_states_group[this.__builded_index] = this.__states;
+		}
+		return new SMLite(init_state, this.__builded_index);
 	}
 }
 
-module.exports = { SMLiteBuilder };
+module.exports = { SMLite, SMLiteBuilder };

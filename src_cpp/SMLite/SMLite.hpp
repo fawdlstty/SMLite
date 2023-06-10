@@ -339,6 +339,27 @@ namespace Fawdlstty {
 		std::recursive_mutex m_mtx;
 
 	public:
+		void SetUserData (std::string _key, std::string _value) {
+			std::unique_lock<std::recursive_mutex> ul (m_mtx);
+			m_user_data [_key] = _value;
+		}
+		std::string GetUserData (std::string _key) {
+			std::unique_lock<std::recursive_mutex> ul (m_mtx);
+			return m_user_data [_key];
+		}
+		void ClearUserDataItem (std::string _key) {
+			std::unique_lock<std::recursive_mutex> ul (m_mtx);
+			m_user_data.erase (_key);
+		}
+		void ClearUserData () {
+			std::unique_lock<std::recursive_mutex> ul (m_mtx);
+			m_user_data.clear ();
+		}
+
+	private:
+		std::map<std::string, std::string> m_user_data;
+
+	public:
 		std::string Serialize () {
 			std::stringstream _ss;
 			_ss << "SMLite|" << typeid (TState).name () << "|" << typeid (TTrigger).name () << "|" << (int) m_state << "|" << m_cfg_state_index;
@@ -360,7 +381,7 @@ namespace Fawdlstty {
 			if (_v [0] != "SMLite")
 				throw _SMLite_Exception ("You must deserialize by " + _v [0] + "<>::Deserialize ()");
 			if (typeid (TState).name () != _v [1] || typeid (TTrigger).name () != _v [2])
-				throw new _SMLite_Exception ("TState or TTrigger not match");
+				throw _SMLite_Exception ("TState or TTrigger not match");
 			TState _state = (TState) std::stoi (_v [3]);
 			int _state_idx = std::stoi (_v [4]);
 			return std::make_shared<SMLite<TState, TTrigger>> (_state, _state_idx);
