@@ -42,7 +42,7 @@ State machine library for C, C++, C#, Java, JavaScript, Python, VB.Net
 |     Multi State     |   -   |   √   |     √     |   √   |             |       |
 |     Thread Safe     |       |   √   |     √     |   √   |             |       |
 | Async State Machine |   -   |       |     √     |   -   |      √      |   √   |
-|    Async Cancel     |   -   |   -   |     √     |   -   |             |       |
+|    Async Cancel     |   -   |       |     √     |   -   |             |       |
 |      Serilize       |       |   √   |     √     |       |             |       |
 |        Test         |   √   |   √   |     √     |   √   |      √      |   √   |
 
